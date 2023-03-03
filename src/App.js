@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 import Login from './pages/Login';
-import './App.css';
+import NearStore from './pages/NearStore';
 
 const App = () => {
 	return (
-		<div className='App'>
-			<BrowserRouter>
-				<Routes>
-					<Route path="/" element={<Login />}></Route>
-				</Routes>
-			</BrowserRouter>
-		</div>
+		<BrowserRouter>
+			<Routes>
+				<Route index path="/login" element={<Login />} />
+				<Route path="/nearstore" element={<NearStore />} />
+			</Routes>
+		</BrowserRouter>
 	);
 };
 
