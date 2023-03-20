@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { BsFillCalculatorFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 function Check() {
   const [isCalcOpen, setIsCalcOpen] = useState(false);
@@ -29,6 +30,10 @@ function Check() {
       padding: 10px;
       border-radius: 50px;
     }
+    * {
+      text-decoration: none;
+      color: black;
+    }
     background: #9dc3e6;
     padding: 0 10px;
     height: 50px;
@@ -52,11 +57,24 @@ function Check() {
         <BsFillCalculatorFill />
       </CheckBtn>
       <CheckDiv>
-        <li>서울</li>
-        <li>경북</li>
-        <li>대구</li>
-        <li>부산</li>
-        <li>경남</li>
+        <Link to="https://www.shinhancard.com/pconts/html/benefit/fund2/MOBFM600/MOBFM600R01.html">
+          <li>서울시</li>
+        </Link>
+        <Link to="https://gdream.gg.go.kr/Login/PointCheck.jsp">
+          <li>경기도</li>
+        </Link>
+        <Link to="https://ddnews.co.kr/%EC%95%84%EB%8F%99-%EA%B8%89%EC%8B%9D-%EC%B9%B4%EB%93%9C-%EC%9E%94%EC%95%A1%EC%A1%B0%ED%9A%8C/">
+          <li>부산시</li>
+        </Link>
+        <Link to="https://ice.purmee.kr/main/">
+          <li>인천시</li>
+        </Link>
+        <Link to="https://play.google.com/store/apps/details?id=app.ss.gjDreamtree">
+          <li>광주시</li>
+        </Link>
+        <Link to="https://play.google.com/store/apps/details?id=app.ss.chuncheonDreamtree">
+          <li>춘천시</li>
+        </Link>
       </CheckDiv>
     </>
   );
