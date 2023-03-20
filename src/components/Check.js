@@ -19,8 +19,8 @@ function Check() {
     transition: box-shadow 0.3s;
     cursor: pointer;
     position: fixed;
-    top: 10px;
-    right: 10px;
+    top: 30px;
+    right: 30px;
     color: white;
     font-size: 25px;
     padding: 13px;
@@ -50,8 +50,8 @@ function Check() {
     transform: ${isCalcOpen ? "translateX(0)" : "translateX(200%)"};
     transition: transform 0.5s ease-in-out;
     position: fixed;
-    top: 10px;
-    right: 10px;
+    top: 30px;
+    right: 30px;
   `;
 
   const checkRef = useRef();
