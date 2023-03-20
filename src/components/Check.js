@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { BsFillCalculatorFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
 function Check() {
   const [isCalcOpen, setIsCalcOpen] = useState(false);
+
   const CheckBtn = styled.button`
     :hover {
       box-shadow: 3px 3px 1px 1px rgba(0, 0, 0, 0.3);
@@ -21,6 +22,7 @@ function Check() {
     top: 10px;
     right: 10px;
   `;
+
   const CheckDiv = styled.div`
     li {
       background: white;
@@ -42,21 +44,37 @@ function Check() {
     align-items: center;
     box-shadow: 4px 4px 1px 1px #ccc1cd;
     justify-content: flex-end;
-    transition: transform 3s;
     transform: ${isCalcOpen ? "translateX(0)" : "translateX(200%)"};
+    transition: transform 0.5s ease-in-out;
     position: fixed;
     top: 10px;
     right: 10px;
   `;
+
+  const checkRef = useRef();
+
+  useEffect(() => {
+    const handleClickOutside = event => {
+      if (checkRef.current && !checkRef.current.contains(event.target)) {
+        setIsCalcOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const onClickCheck = () => {
     setIsCalcOpen(!isCalcOpen);
   };
+
   return (
     <>
       <CheckBtn onClick={onClickCheck}>
         <BsFillCalculatorFill />
       </CheckBtn>
-      <CheckDiv>
+      <CheckDiv ref={checkRef}>
         <Link to="https://www.shinhancard.com/pconts/html/benefit/fund2/MOBFM600/MOBFM600R01.html">
           <li>서울시</li>
         </Link>
