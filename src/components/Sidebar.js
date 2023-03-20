@@ -8,18 +8,18 @@ import img from "../assets/img.jpg";
 
 function Sidebar() {
   const [categories, setCategories] = useState([
-    { id: 1, name: "한식", color: "#9dc3e6" },
-    { id: 2, name: "양식", color: "#9dc3e6" },
-    { id: 3, name: "일식", color: "#9dc3e6" },
+    { id: 1, name: "한식", color: "#e6b29d" },
+    { id: 2, name: "양식", color: "#a1e69d" },
+    { id: 3, name: "일식", color: "#e6e69d" },
     { id: 4, name: "중식", color: "#9dc3e6" },
-    { id: 5, name: "분식", color: "#9dc3e6" },
-    { id: 6, name: "도시락", color: "#9dc3e6" },
-    { id: 7, name: "고기", color: "#9dc3e6" },
-    { id: 8, name: "아시안", color: "#9dc3e6" },
-    { id: 9, name: "치킨", color: "#9dc3e6" },
-    { id: 10, name: "햄버거", color: "#9dc3e6" },
-    { id: 11, name: "피자", color: "#9dc3e6" },
-    { id: 12, name: "찜/탕", color: "#9dc3e6" },
+    { id: 5, name: "분식", color: "#9d9de6" },
+    { id: 6, name: "도시락", color: "#e69de0" },
+    { id: 7, name: "고기", color: "#a99de6" },
+    { id: 8, name: "아시안", color: "#e69d9d" },
+    { id: 9, name: "치킨", color: "#9de6ba" },
+    { id: 10, name: "햄버거", color: "#e6be9d" },
+    { id: 11, name: "피자", color: "#a4e69d" },
+    { id: 12, name: "찜/탕", color: "#9d9de6" },
   ]);
 
   const [stores, setStores] = useState([]);
