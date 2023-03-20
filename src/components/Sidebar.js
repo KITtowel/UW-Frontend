@@ -2,21 +2,31 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { AiFillStar } from "react-icons/ai";
 import { AiOutlineRollback } from "react-icons/ai";
+import { AiOutlineSearch } from "react-icons/ai";
+
 import img from "../assets/img.jpg";
 
 function Sidebar() {
   const [categories, setCategories] = useState([
-    { id: 1, name: "한식", color: "#f94144" },
-    { id: 2, name: "일식", color: "#f3722c" },
-    { id: 3, name: "중식", color: "#f8961e" },
-    { id: 4, name: "양식", color: "#f9c74f" },
+    { id: 1, name: "한식", color: "#9dc3e6" },
+    { id: 2, name: "양식", color: "#9dc3e6" },
+    { id: 3, name: "일식", color: "#9dc3e6" },
+    { id: 4, name: "중식", color: "#9dc3e6" },
+    { id: 5, name: "분식", color: "#9dc3e6" },
+    { id: 6, name: "도시락", color: "#9dc3e6" },
+    { id: 7, name: "고기", color: "#9dc3e6" },
+    { id: 8, name: "아시안", color: "#9dc3e6" },
+    { id: 9, name: "치킨", color: "#9dc3e6" },
+    { id: 10, name: "햄버거", color: "#9dc3e6" },
+    { id: 11, name: "피자", color: "#9dc3e6" },
+    { id: 12, name: "찜/탕", color: "#9dc3e6" },
   ]);
 
   const [stores, setStores] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const Sidebar = styled.div`
-    width: 350px;
+    width: 380px;
     height: 100vh;
     overflow: auto;
     box-shadow: 3px 3px 1px 1px #ccc1cd;
@@ -27,15 +37,17 @@ function Sidebar() {
     :hover {
       box-shadow: 5px 5px 1px 1px rgba(0, 0, 0, 0.3);
     }
-    display: inline-block;
     box-shadow: 5px 5px 1px 1px rgba(0, 0, 0, 0.1);
+    display: inline-block;
     border-radius: 15px;
-    padding: 20px 35px;
+    width: 80px;
+    height: 60px;
+    padding: 20px 0;
     margin: 15px;
     font-size: 1.2rem;
     text-align: center;
     vertical-align: middle;
-    color: black;
+    color: white;
     transition: box-shadow 0.3s, cursor 0.3s;
     cursor: pointer;
     background-color: ${props => props.bgColor};
@@ -47,6 +59,41 @@ function Sidebar() {
     padding: 0;
     text-align: left;
   `;
+  const SearchBox = styled.div`
+    position: relative;
+    margin: 15px 30px;
+  `;
+
+  const SearchInput = styled.input`
+    ::placeholder {
+      color: white;
+    }
+    :focus {
+      outline: none;
+    }
+    :hover {
+      box-shadow: 5px 5px 1px 1px rgba(0, 0, 0, 0.3);
+    }
+    border: none;
+    box-shadow: 5px 5px 1px 1px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    padding: 20px 40px 20px 15px;
+    font-size: 1rem;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background: #9dc3e6;
+    color: white;
+  `;
+
+  const SearchIcon = styled(AiOutlineSearch)`
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    color: white;
+  `;
+
   const StoreItem = styled.li`
     :hover {
       transition: 0.5s;
@@ -78,7 +125,7 @@ function Sidebar() {
       height: 50px;
       background-color: #9dc3e6;
       border-radius: 5px;
-      margin: 10px 15px;
+      margin: 10px 25px;
     }
   `;
 
@@ -167,14 +214,20 @@ function Sidebar() {
   return (
     <Sidebar>
       {!selectedCategory ? (
-        categories.map(category => (
-          <Cate
-            key={category.id}
-            onClick={() => handleCategoryClick(category.name)}
-            bgColor={category.color}>
-            {category.name}
-          </Cate>
-        ))
+        <>
+          <SearchBox>
+            <SearchInput type="text" placeholder="검색어를 입력해주세요" />
+            <SearchIcon />
+          </SearchBox>
+          {categories.map(category => (
+            <Cate
+              key={category.id}
+              onClick={() => handleCategoryClick(category.name)}
+              bgColor={category.color}>
+              {category.name}
+            </Cate>
+          ))}
+        </>
       ) : (
         <>
           <BackButton onClick={handleBackClick}>
