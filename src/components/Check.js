@@ -21,6 +21,9 @@ function Check() {
     position: fixed;
     top: 10px;
     right: 10px;
+    color: white;
+    font-size: 25px;
+    padding: 13px;
   `;
 
   const CheckDiv = styled.div`
