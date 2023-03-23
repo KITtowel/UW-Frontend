@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Button from "../components/Button";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import KakaoLogin from "react-kakao-login";
 
 const Container = styled.div`
   text-align: center;
@@ -19,6 +20,8 @@ const Title = styled.h1`
 `;
 
 const Input = styled.input`
+color: rgb(253, 249, 243);
+font-weight: 600;
   max-width: 100%;
   padding: 11px 13px;
   background: #f9f9fa;
@@ -57,6 +60,11 @@ function Login() {
     setInputPw(e.target.value);
   };
 
+  const handleKakaoLogin = response => {
+    console.log(response);
+    // TODO: Handle the Kakao login response here
+  };
+
   const onClickLogin = () => {
     console.log("로그인 버튼 클릭!");
     login();
@@ -78,6 +86,16 @@ function Login() {
         name="input_pw"
         value={inputPw}
         onChange={handleInputPw}
+      />
+      <KakaoLogin
+        token="3032e2541dc72d252ebcc1d74ba444c6"
+        onSuccess={handleKakaoLogin}
+        onFailure={console.error}
+        render={props => (
+          <Button type="button" onClick={props.onClick}>
+            카카오 로그인
+          </Button>
+        )}
       />
       <Button type="button" onClick={onClickLogin}>
         로그인
