@@ -2,11 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { BsFillCalculatorFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-function Check() {
+function User() {
   const [isCalcOpen, setIsCalcOpen] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const CheckBtn = styled.button`
+  const UserBtn = styled.button`
     :hover {
       box-shadow: 3px 3px 1px 1px rgba(0, 0, 0, 0.3);
     }
@@ -19,14 +23,14 @@ function Check() {
     transition: box-shadow 0.3s;
     cursor: pointer;
     position: fixed;
-    top: 110px;
+    top: 30px;
     right: 30px;
     color: white;
     font-size: 25px;
     padding: 13px;
   `;
 
-  const CheckDiv = styled.div`
+  const UserDiv = styled.div`
     li {
       background: white;
       display: inline;
@@ -50,7 +54,7 @@ function Check() {
     transform: ${isCalcOpen ? "translateX(0)" : "translateX(200%)"};
     transition: transform 0.5s ease-in-out;
     position: fixed;
-    top: 110px;
+    top: 30px;
     right: 30px;
   `;
 
@@ -72,33 +76,26 @@ function Check() {
     setIsCalcOpen(!isCalcOpen);
   };
 
+  const onClickLogout = () => {
+    logout();
+    navigate("/login");
+    isAuthenticated = false;
+  };
+
   return (
     <>
-      <CheckBtn onClick={onClickCheck}>
+      <UserBtn onClick={onClickCheck}>
         <BsFillCalculatorFill />
-      </CheckBtn>
-      <CheckDiv ref={checkRef}>
-        <Link to="https://www.shinhancard.com/pconts/html/benefit/fund2/MOBFM600/MOBFM600R01.html">
-          <li>서울시</li>
-        </Link>
-        <Link to="https://gdream.gg.go.kr/Login/PointCheck.jsp">
-          <li>경기도</li>
-        </Link>
-        <Link to="https://ddnews.co.kr/%EC%95%84%EB%8F%99-%EA%B8%89%EC%8B%9D-%EC%B9%B4%EB%93%9C-%EC%9E%94%EC%95%A1%EC%A1%B0%ED%9A%8C/">
-          <li>부산시</li>
-        </Link>
-        <Link to="https://ice.purmee.kr/main/">
-          <li>인천시</li>
-        </Link>
-        <Link to="https://play.google.com/store/apps/details?id=app.ss.gjDreamtree">
-          <li>광주시</li>
-        </Link>
-        <Link to="https://play.google.com/store/apps/details?id=app.ss.chuncheonDreamtree">
-          <li>춘천시</li>
-        </Link>
-      </CheckDiv>
+      </UserBtn>
+      <UserDiv ref={checkRef}>
+        {isAuthenticated ? (
+          <button onClick={onClickLogout}>로그아웃</button>
+        ) : (
+          <Link to="/login">로그인</Link>
+        )}
+      </UserDiv>
     </>
   );
 }
 
-export default Check;
+export default User;

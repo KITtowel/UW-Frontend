@@ -1,6 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 import { BsSearch } from "react-icons/bs";
+import Check from "../components/Check";
+import User from "../components/User";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -31,7 +35,7 @@ const SearchIcon = styled.div`
   top: 50%;
   left: 15px;
   transform: translateY(-45%);
-`
+`;
 
 const TagList = styled.ul`
   display: flex;
@@ -48,13 +52,12 @@ const Tag = styled.li`
   font-size: 0.8em;
   border-radius: 10px;
   border: 1px solid black;
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 `;
 
-const StoreList = styled.ul`
-`;
+const StoreList = styled.ul``;
 
 const StoreItem = styled.li`
   border-bottom: 1px solid black;
@@ -77,15 +80,11 @@ const StoreInfo = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-`
-
-const StoreName = styled.h1`
-
 `;
 
-const StoreLate = styled.h2`
+const StoreName = styled.h1``;
 
-`;
+const StoreLate = styled.h2``;
 
 const StoreTag = styled.h3`
   align-self: flex-end;
@@ -93,20 +92,35 @@ const StoreTag = styled.h3`
   font-size: 0.7em;
 `;
 
-
 const Map = styled.div`
   text-align: center;
   flex: 4 4;
   border: 1px solid black;
-`
+`;
 
 const NearStore = () => {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  // console.log("isAuthenticated: ", isAuthenticated);
+  if (!isAuthenticated) {
+    navigate("/");
+    return null;
+  }
+
   return (
     <Container>
+      <User />
+      <Check />
       <SideBar>
         <SearchWrapper>
-          <SearchIcon><BsSearch /></SearchIcon>
-          <SearchInput type="search" name="search" placeholder='검색어를 입력해주세요.' />
+          <SearchIcon>
+            <BsSearch />
+          </SearchIcon>
+          <SearchInput
+            type="search"
+            name="search"
+            placeholder="검색어를 입력해주세요."
+          />
         </SearchWrapper>
         <TagList>
           <Tag>전체</Tag>
@@ -117,18 +131,18 @@ const NearStore = () => {
           <Tag>편의점</Tag>
         </TagList>
         <StoreList>
-          {Array.from({length: 100}).map(() => 
+          {Array.from({ length: 100 }).map(() => (
             <StoreItem>
               <StoreIcon>Icon</StoreIcon>
               <StoreInfo>
-                <div style={{display: "flex", justifyContent: "center"}}>
+                <div style={{ display: "flex", justifyContent: "center" }}>
                   <StoreName>GS옥계점</StoreName>
                   <StoreTag>편의점</StoreTag>
                 </div>
                 <StoreLate>⭐️ 5.0 (100+)</StoreLate>
               </StoreInfo>
             </StoreItem>
-          )}
+          ))}
         </StoreList>
       </SideBar>
       <Map>map</Map>

@@ -1,15 +1,18 @@
-import React from "react";
-import styled from "styled-components";
-import Check from "../components/Check";
-import Sidebar from "../components/Sidebar";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 function Main() {
-  return (
-    <>
-      <Check />
-      <Sidebar />
-    </>
-  );
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/nearstore");
+    }
+  }, [isAuthenticated, navigate]);
+
+  return <></>;
 }
 
 export default Main;

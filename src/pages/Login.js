@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import Button from '../components/Button';
-// import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import Button from "../components/Button";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   text-align: center;
@@ -21,7 +22,7 @@ const Input = styled.input`
   max-width: 100%;
   padding: 11px 13px;
   background: #f9f9fa;
-  color: #9DC3E6;
+  color: #9dc3e6;
   margin-bottom: 0.9rem;
   border-radius: 4px;
   outline: 0;
@@ -31,43 +32,58 @@ const Input = styled.input`
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
   :focus,
   :hover {
-      box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
+}
 `;
 
 function Login() {
-  const [inputId, setInputId] = useState('')
-  const [inputPw, setInputPw] = useState('')
+  const [inputId, setInputId] = useState("");
+  const [inputPw, setInputPw] = useState("");
+  const { isAuthenticated, login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleInputId = (e) => {
-    setInputId(e.target.value)
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/nearstore");
+    }
+  }, [isAuthenticated]);
 
-  const handleInputPw = (e) => {
-    setInputPw(e.target.value)
-  }
+  const handleInputId = e => {
+    setInputId(e.target.value);
+  };
+
+  const handleInputPw = e => {
+    setInputPw(e.target.value);
+  };
 
   const onClickLogin = () => {
-    console.log('로그인 버튼 클릭!')
-  }
-
-  // useEffect(() => {
-  //     axios.get('/')
-  //     .then(res => console.log(res))
-  //     .catch()
-  // },
-  // [])
+    console.log("로그인 버튼 클릭!");
+    login();
+  };
 
   return (
-    <>
-      <Container>
-        <Title>Login</Title>
-        <Input type='text' placeholder='아이디' name='input_id' value={inputId} onChange={handleInputId} />
-        <Input type='password' placeholder='비밀번호' name='input_pw' value={inputPw} onChange={handleInputPw} />
-        <Button type='button' onClick={onClickLogin}>로그인</Button>
-      </Container>
-    </>
-  )
+    <Container>
+      <Title>Login</Title>
+      <Input
+        type="text"
+        placeholder="아이디"
+        name="input_id"
+        value={inputId}
+        onChange={handleInputId}
+      />
+      <Input
+        type="password"
+        placeholder="비밀번호"
+        name="input_pw"
+        value={inputPw}
+        onChange={handleInputPw}
+      />
+      <Button type="button" onClick={onClickLogin}>
+        로그인
+      </Button>
+    </Container>
+  );
 }
 
 export default Login;
