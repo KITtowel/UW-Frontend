@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { BsFillCalculatorFill } from "react-icons/bs";
+import { FaUserAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -11,14 +11,11 @@ function User() {
   const navigate = useNavigate();
 
   const UserBtn = styled.button`
-    :hover {
-      box-shadow: 3px 3px 1px 1px rgba(0, 0, 0, 0.3);
-    }
     background: #9dc3e6;
     width: 50px;
     height: 50px;
     border: none;
-    box-shadow: 3px 3px 1px 1px #ccc1cd;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
     border-radius: 50%;
     transition: box-shadow 0.3s;
     cursor: pointer;
@@ -49,7 +46,7 @@ function User() {
     border-radius: 50px;
     display: flex;
     align-items: center;
-    box-shadow: 4px 4px 1px 1px #ccc1cd;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
     justify-content: flex-end;
     transform: ${isCalcOpen ? "translateX(0)" : "translateX(200%)"};
     transition: transform 0.5s ease-in-out;
@@ -85,7 +82,7 @@ function User() {
   return (
     <>
       <UserBtn onClick={onClickCheck}>
-        <BsFillCalculatorFill />
+        <FaUserAlt />
       </UserBtn>
       <UserDiv ref={checkRef}>
         {isAuthenticated ? (

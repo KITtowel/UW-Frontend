@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Main from "./pages/Main";
+import Signup from "./pages/Signup";
 import NearStore from "./pages/NearStore";
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/nearstore" element={<NearStore />} />
       </Routes>
     </BrowserRouter>

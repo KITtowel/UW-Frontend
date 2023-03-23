@@ -12,6 +12,17 @@ const Container = styled.div`
   width: 100%;
   justify-content: center;
   align-items: center;
+  max-width: 28rem;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 2rem 2.5rem;
+  border: none;
+  outline: none;
+  border-radius: 0.25rem;
+  color: #121212;
+  background: #ffffff;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
 `;
 
 const Title = styled.h1`
@@ -20,8 +31,6 @@ const Title = styled.h1`
 `;
 
 const Input = styled.input`
-color: rgb(253, 249, 243);
-font-weight: 600;
   max-width: 100%;
   padding: 11px 13px;
   background: #f9f9fa;
@@ -72,7 +81,7 @@ function Login() {
 
   return (
     <Container>
-      <Title>Login</Title>
+      <Title>로그인</Title>
       <Input
         type="text"
         placeholder="아이디"

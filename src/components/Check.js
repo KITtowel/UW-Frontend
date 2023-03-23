@@ -7,14 +7,11 @@ function Check() {
   const [isCalcOpen, setIsCalcOpen] = useState(false);
 
   const CheckBtn = styled.button`
-    :hover {
-      box-shadow: 3px 3px 1px 1px rgba(0, 0, 0, 0.3);
-    }
     background: #9dc3e6;
     width: 50px;
     height: 50px;
     border: none;
-    box-shadow: 3px 3px 1px 1px #ccc1cd;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
     border-radius: 50%;
     transition: box-shadow 0.3s;
     cursor: pointer;
@@ -45,7 +42,7 @@ function Check() {
     border-radius: 50px;
     display: flex;
     align-items: center;
-    box-shadow: 4px 4px 1px 1px #ccc1cd;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
     justify-content: flex-end;
     transform: ${isCalcOpen ? "translateX(0)" : "translateX(200%)"};
     transition: transform 0.5s ease-in-out;
