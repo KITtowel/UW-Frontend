@@ -16,6 +16,8 @@ const SideBar = styled.div`
   text-align: center;
   flex: 1 1;
   border: 1px solid black;
+  height: 100vh;
+  overflow: auto;
 `;
 
 const SearchWrapper = styled.div`

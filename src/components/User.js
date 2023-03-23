@@ -78,7 +78,7 @@ function User() {
 
   const onClickLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
     isAuthenticated = false;
   };
 
