@@ -7,6 +7,50 @@ import KakaoLogin from "react-kakao-login";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
 
+const Ocean = styled.div`
+  background: #3b21ff;
+  height: 10%;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+`;
+
+const Wave = styled.div`
+  background: url(https://venkat369.github.io/development/wave.svg) repeat-x; 
+  position: absolute;
+  top: -198px;
+  width: 6400px;
+  height: 198px;
+  animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+
+  &:nth-of-type(2) {
+    top: -175px;
+    animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
+    opacity: 1;
+  }
+}
+
+@keyframes wave {
+  0% {
+    margin-left: 0;
+  }
+  100% {
+    margin-left: -1600px;
+  }
+}
+
+@keyframes swell {
+  0%, 100% {
+    transform: translate3d(0, -25px, 0);
+  }
+  50% {
+    transform: translate3d(0, 5px, 0);
+  }
+}
+`;
+
 const Container = styled.div`
   text-align: center;
   display: flex;
@@ -16,7 +60,7 @@ const Container = styled.div`
   align-items: center;
   max-width: 28rem;
   width: 100%;
-  margin: 2rem auto;
+  margin: 8rem auto;
   padding: 2rem 2.5rem;
   border: none;
   outline: none;
@@ -85,44 +129,50 @@ function Signup() {
   };
 
   return (
-    <Container>
-      <Title>회원가입</Title>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <Input
-            type="text"
-            placeholder="이름"
-            value={username}
-            onChange={handleUsernameChange}
-          />
-        </div>
-        <div>
-          <Input
-            type="password"
-            placeholder="비번"
-            value={password}
-            onChange={handlePasswordChange}
-          />
-        </div>
-        <div>
-          <Input
-            type="password"
-            placeholder="비번2"
-            value={password2}
-            onChange={handlePassword2Change}
-          />
-        </div>
-        <div>
-          <Input
-            type="email"
-            placeholder="이멜"
-            value={email}
-            onChange={handleEmailChange}
-          />
-        </div>
-        <Button type="submit">회원가입</Button>
-      </form>
-    </Container>
+    <>
+      <Ocean>
+        <Wave></Wave>
+        <Wave></Wave>
+      </Ocean>
+      <Container>
+        <Title>회원가입</Title>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <Input
+              type="text"
+              placeholder="이름"
+              value={username}
+              onChange={handleUsernameChange}
+            />
+          </div>
+          <div>
+            <Input
+              type="password"
+              placeholder="비번"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+          </div>
+          <div>
+            <Input
+              type="password"
+              placeholder="비번2"
+              value={password2}
+              onChange={handlePassword2Change}
+            />
+          </div>
+          <div>
+            <Input
+              type="email"
+              placeholder="이멜"
+              value={email}
+              onChange={handleEmailChange}
+            />
+          </div>
+          <Button type="submit">회원가입</Button>
+        </form>
+      </Container>
+    </>
   );
 }
 
