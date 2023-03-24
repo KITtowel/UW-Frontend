@@ -13,7 +13,9 @@ const GlobalStyle = createGlobalStyle`
 		box-sizing: border-box;
     font-family: 'Pretendard-Regular' !important;
 	}
-
+  html {
+    overflow-x: hidden;
+  }
 `;
 
 export default GlobalStyle;

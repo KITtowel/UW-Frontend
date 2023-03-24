@@ -5,16 +5,61 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Logo from "../assets/logo.png";
 
+const Ocean = styled.div`
+  background: #3b21ff;
+  height: 10%;
+  width: 100%;
+  position: absolute;
+  top: calc(100vh - 108px);
+  left: 0;
+  z-index: -1;
+`;
+
+const Wave = styled.div`
+  background: url(https://venkat369.github.io/development/wave.svg) repeat-x; 
+  position: absolute;
+  top: -198px;
+  width: 6400px;
+  height: 198px;
+  animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+
+  &:nth-of-type(2) {
+    top: -175px;
+    animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
+    opacity: 1;
+  }
+}
+
+@keyframes wave {
+  0% {
+    margin-left: 0;
+  }
+  100% {
+    margin-left: -1600px;
+  }
+}
+
+@keyframes swell {
+  0%, 100% {
+    transform: translate3d(0, -25px, 0);
+  }
+  50% {
+    transform: translate3d(0, 5px, 0);
+  }
+}
+`;
+
 const Wrapper1 = styled.div`
   display: flex;
   justify-content: center;
   height: 100vh;
-  background: #9dc3e6;
 `;
 
 const Wrapper2 = styled.div`
   display: flex;
   justify-content: center;
+  background: #3b21ff;
+  padding: 10% 0;
 `;
 
 const Choice = styled.div`
@@ -24,12 +69,13 @@ const Choice = styled.div`
   transition: all 0.3s ease-out;
   color: rgb(253, 249, 243);
   font-weight: 600;
-  background: #9dc3e6;
+  background: #24a1e8;
   width: 400px;
-  border-radius: 3px;
+  border-radius: 30px;
+  font-size: 30px;
   text-align: center;
   margin: 20px;
-  padding: 50px 30px;
+  padding: 150px 30px;
   display: inline-block;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
 `;
@@ -117,6 +163,10 @@ function Main() {
   return (
     <>
       <Wrapper1>
+        <Ocean>
+          <Wave></Wave>
+          <Wave></Wave>
+        </Ocean>
         <Img src={Logo} alt="로고"></Img>
       </Wrapper1>
       <Wrapper2>
