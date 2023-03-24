@@ -10,7 +10,7 @@ const Ocean = styled.div`
   height: 10%;
   width: 100%;
   position: absolute;
-  top: calc(100vh - 108px);
+  top: calc(100vh - 68px);
   left: 0;
   z-index: -1;
 `;
