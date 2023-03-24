@@ -5,6 +5,50 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import KakaoLogin from "react-kakao-login";
 
+const Ocean = styled.div`
+  background: #3b21ff;
+  height: 10%;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+`;
+
+const Wave = styled.div`
+  background: url(https://venkat369.github.io/development/wave.svg) repeat-x; 
+  position: absolute;
+  top: -198px;
+  width: 6400px;
+  height: 198px;
+  animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+
+  &:nth-of-type(2) {
+    top: -175px;
+    animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
+    opacity: 1;
+  }
+}
+
+@keyframes wave {
+  0% {
+    margin-left: 0;
+  }
+  100% {
+    margin-left: -1600px;
+  }
+}
+
+@keyframes swell {
+  0%, 100% {
+    transform: translate3d(0, -25px, 0);
+  }
+  50% {
+    transform: translate3d(0, 5px, 0);
+  }
+}
+`;
+
 const Container = styled.div`
   text-align: center;
   display: flex;
@@ -14,7 +58,7 @@ const Container = styled.div`
   align-items: center;
   max-width: 28rem;
   width: 100%;
-  margin: 2rem auto;
+  margin: 8rem auto;
   padding: 2rem 2.5rem;
   border: none;
   outline: none;
@@ -71,7 +115,6 @@ function Login() {
 
   const handleKakaoLogin = response => {
     console.log(response);
-    // TODO: Handle the Kakao login response here
   };
 
   const onClickLogin = () => {
@@ -80,36 +123,42 @@ function Login() {
   };
 
   return (
-    <Container>
-      <Title>로그인</Title>
-      <Input
-        type="text"
-        placeholder="아이디"
-        name="input_id"
-        value={inputId}
-        onChange={handleInputId}
-      />
-      <Input
-        type="password"
-        placeholder="비밀번호"
-        name="input_pw"
-        value={inputPw}
-        onChange={handleInputPw}
-      />
-      <KakaoLogin
-        token="3032e2541dc72d252ebcc1d74ba444c6"
-        onSuccess={handleKakaoLogin}
-        onFailure={console.error}
-        render={props => (
-          <Button type="button" onClick={props.onClick}>
-            카카오 로그인
-          </Button>
-        )}
-      />
-      <Button type="button" onClick={onClickLogin}>
-        로그인
-      </Button>
-    </Container>
+    <>
+      <Ocean>
+        <Wave></Wave>
+        <Wave></Wave>
+      </Ocean>
+      <Container>
+        <Title>로그인</Title>
+        <Input
+          type="text"
+          placeholder="아이디"
+          name="input_id"
+          value={inputId}
+          onChange={handleInputId}
+        />
+        <Input
+          type="password"
+          placeholder="비밀번호"
+          name="input_pw"
+          value={inputPw}
+          onChange={handleInputPw}
+        />
+        <KakaoLogin
+          token="3032e2541dc72d252ebcc1d74ba444c6"
+          onSuccess={handleKakaoLogin}
+          onFailure={console.error}
+          render={props => (
+            <Button type="button" onClick={props.onClick}>
+              카카오 로그인
+            </Button>
+          )}
+        />
+        <Button type="button" onClick={onClickLogin}>
+          로그인
+        </Button>
+      </Container>
+    </>
   );
 }
 
