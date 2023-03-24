@@ -3,11 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import Logo from "../assets/logo.png";
 
-const Wrapper = styled.div`
+const Wrapper1 = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 10%;
+  height: 100vh;
+  background: #9dc3e6;
+`;
+
+const Wrapper2 = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const Choice = styled.div`
@@ -71,6 +78,10 @@ const PageButton = styled.button`
   margin-left: 10px;
 `;
 
+const Img = styled.img`
+  margin: auto;
+`;
+
 function Main() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -105,14 +116,17 @@ function Main() {
 
   return (
     <>
-      <Wrapper>
+      <Wrapper1>
+        <Img src={Logo} alt="로고"></Img>
+      </Wrapper1>
+      <Wrapper2>
         <Link to="/login">
           <Choice>로그인</Choice>
         </Link>
         <Link to="/signup">
           <Choice>회원가입</Choice>
         </Link>
-      </Wrapper>
+      </Wrapper2>
       {popUpVisible && (
         <PopUpWrapper>
           <PopUpBox>
