@@ -86,10 +86,17 @@ function User() {
       </UserBtn>
       <UserDiv ref={checkRef}>
         {isAuthenticated ? (
-          <button onClick={onClickLogout}>로그아웃</button>
+          <button onClick={onClickLogout}>
+            <li>로그아웃</li>
+          </button>
         ) : (
-          <Link to="/login">로그인</Link>
+          <Link to="/login">
+            <li>로그인</li>
+          </Link>
         )}
+        <Link to="/mypage">
+          <li>마이페이지</li>
+        </Link>
       </UserDiv>
     </>
   );

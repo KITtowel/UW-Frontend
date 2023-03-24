@@ -16,6 +16,17 @@ const GlobalStyle = createGlobalStyle`
   html {
     overflow-x: hidden;
   }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 20px;
+  }
+  ::-webkit-scrollbar-track-piece {
+    background-color: white;
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: #9dc3e6;
+  }
 `;
 
 export default GlobalStyle;

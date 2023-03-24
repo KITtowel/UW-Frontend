@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import LogoBtn from "../components/LogoBtn";
 import Button from "../components/Button";
+import Input from "../components/Input";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import KakaoLogin from "react-kakao-login";
@@ -59,8 +61,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   max-width: 28rem;
-  width: 100%;
-  margin: 8rem auto;
+  margin: 8rem auto 0 auto;
   padding: 2rem 2.5rem;
   border: none;
   outline: none;
@@ -74,25 +75,6 @@ const Container = styled.div`
 const Title = styled.h1`
   font-size: 1.5em;
   margin: 15px 0;
-`;
-
-const Input = styled.input`
-  max-width: 100%;
-  padding: 11px 13px;
-  background: #f9f9fa;
-  color: #9dc3e6;
-  margin-bottom: 0.9rem;
-  border-radius: 4px;
-  outline: 0;
-  border: 1px solid rgba(245, 245, 245, 0.7);
-  font-size: 14px;
-  transition: all 0.3s ease-out;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
-  :focus,
-  :hover {
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
-  }
-}
 `;
 
 function Login() {
@@ -134,6 +116,7 @@ function Login() {
 
   return (
     <>
+      <LogoBtn />
       <Ocean>
         <Wave></Wave>
         <Wave></Wave>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "../components/Button";
+import LogoBtn from "../components/LogoBtn";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import KakaoLogin from "react-kakao-login";
@@ -59,8 +60,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   max-width: 28rem;
-  width: 100%;
-  margin: 8rem auto;
+  margin: 8rem auto 0 auto;
   padding: 2rem 2.5rem;
   border: none;
   outline: none;
@@ -130,6 +130,7 @@ function Signup() {
 
   return (
     <>
+      <LogoBtn />
       <Ocean>
         <Wave></Wave>
         <Wave></Wave>
