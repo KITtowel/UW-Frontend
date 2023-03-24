@@ -141,7 +141,7 @@ function Signup() {
           <div>
             <Input
               type="text"
-              placeholder="이름"
+              placeholder="아이디"
               value={username}
               onChange={handleUsernameChange}
             />
@@ -149,7 +149,7 @@ function Signup() {
           <div>
             <Input
               type="password"
-              placeholder="비번"
+              placeholder="비밀번호"
               value={password}
               onChange={handlePasswordChange}
             />
@@ -157,7 +157,7 @@ function Signup() {
           <div>
             <Input
               type="password"
-              placeholder="비번2"
+              placeholder="비밀번호 확인"
               value={password2}
               onChange={handlePassword2Change}
             />
@@ -165,7 +165,7 @@ function Signup() {
           <div>
             <Input
               type="email"
-              placeholder="이멜"
+              placeholder="이메일 주소"
               value={email}
               onChange={handleEmailChange}
             />
