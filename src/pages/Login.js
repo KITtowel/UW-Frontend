@@ -4,6 +4,8 @@ import Button from "../components/Button";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import KakaoLogin from "react-kakao-login";
+import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 const Ocean = styled.div`
   background: #3b21ff;
@@ -94,8 +96,9 @@ const Input = styled.input`
 `;
 
 function Login() {
-  const [inputId, setInputId] = useState("");
-  const [inputPw, setInputPw] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [token, setToken] = useState("");
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
 
@@ -105,21 +108,28 @@ function Login() {
     }
   }, [isAuthenticated]);
 
-  const handleInputId = e => {
-    setInputId(e.target.value);
+  const handleUsernameChange = event => {
+    setUsername(event.target.value);
   };
 
-  const handleInputPw = e => {
-    setInputPw(e.target.value);
+  const handlePasswordChange = event => {
+    setPassword(event.target.value);
   };
 
-  const handleKakaoLogin = response => {
-    console.log(response);
-  };
+  const handleSubmit = async event => {
+    event.preventDefault();
 
-  const onClickLogin = () => {
-    console.log("로그인 버튼 클릭!");
-    login();
+    try {
+      const response = await axios.post(`${API_BASE_URL}/users/login/`, {
+        username,
+        password,
+      });
+      const receivedToken = response.data.token;
+      setToken(receivedToken);
+      login();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -130,33 +140,30 @@ function Login() {
       </Ocean>
       <Container>
         <Title>로그인</Title>
-        <Input
-          type="text"
-          placeholder="아이디"
-          name="input_id"
-          value={inputId}
-          onChange={handleInputId}
-        />
-        <Input
-          type="password"
-          placeholder="비밀번호"
-          name="input_pw"
-          value={inputPw}
-          onChange={handleInputPw}
-        />
-        <KakaoLogin
-          token="3032e2541dc72d252ebcc1d74ba444c6"
-          onSuccess={handleKakaoLogin}
-          onFailure={console.error}
-          render={props => (
-            <Button type="button" onClick={props.onClick}>
-              카카오 로그인
-            </Button>
-          )}
-        />
-        <Button type="button" onClick={onClickLogin}>
-          로그인
-        </Button>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <Input
+              type="text"
+              placeholder="아이디"
+              id="username"
+              name="username"
+              value={username}
+              onChange={handleUsernameChange}
+            />
+          </div>
+          <div>
+            <Input
+              type="password"
+              id="password"
+              placeholder="비밀번호"
+              name="password"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+          </div>
+          <Button type="button">로그인</Button>
+          {token && <p>Received token: {token}</p>}
+        </form>
       </Container>
     </>
   );
