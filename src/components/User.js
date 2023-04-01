@@ -5,56 +5,55 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
+const UserBtn = styled.button`
+  background: #9dc3e6;
+  width: 50px;
+  height: 50px;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  transition: box-shadow 0.3s;
+  cursor: pointer;
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  color: white;
+  font-size: 25px;
+  padding: 13px;
+`;
+
+const UserDiv = styled.div`
+  li {
+    background: white;
+    display: inline;
+    list-style: none;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 50px;
+  }
+  * {
+    text-decoration: none;
+    color: black;
+  }
+  background: #9dc3e6;
+  padding: 0 10px;
+  height: 50px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+  justify-content: flex-end;
+  transform: ${(props) => props.isCalcOpen ? "translateX(0)" : "translateX(200%)"};
+  transition: transform 0.5s ease-in-out;
+  position: fixed;
+  top: 30px;
+  right: 30px;
+`;
+
 function User() {
   const [isCalcOpen, setIsCalcOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
-
-  const UserBtn = styled.button`
-    background: #9dc3e6;
-    width: 50px;
-    height: 50px;
-    border: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
-    border-radius: 50%;
-    transition: box-shadow 0.3s;
-    cursor: pointer;
-    position: fixed;
-    top: 30px;
-    right: 30px;
-    color: white;
-    font-size: 25px;
-    padding: 13px;
-  `;
-
-  const UserDiv = styled.div`
-    li {
-      background: white;
-      display: inline;
-      list-style: none;
-      margin: 5px;
-      padding: 10px;
-      border-radius: 50px;
-    }
-    * {
-      text-decoration: none;
-      color: black;
-    }
-    background: #9dc3e6;
-    padding: 0 10px;
-    height: 50px;
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
-    justify-content: flex-end;
-    transform: ${isCalcOpen ? "translateX(0)" : "translateX(200%)"};
-    transition: transform 0.5s ease-in-out;
-    position: fixed;
-    top: 30px;
-    right: 30px;
-  `;
-
   const checkRef = useRef();
 
   useEffect(() => {
@@ -84,7 +83,7 @@ function User() {
       <UserBtn onClick={onClickCheck}>
         <FaUserAlt />
       </UserBtn>
-      <UserDiv ref={checkRef}>
+      <UserDiv ref={checkRef} isCalcOpen={isCalcOpen}>
         {isAuthenticated ? (
           <button onClick={onClickLogout}>
             <li>로그아웃</li>

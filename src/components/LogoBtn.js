@@ -3,8 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Logo2 from "../assets/logo2.png";
 
-function LogoBtn() {
-  const LogoDiv = styled.button`
+const LogoDiv = styled.button`
     background-image: url(${Logo2});
     background-size: contain;
     background-position: center;
@@ -21,8 +20,10 @@ function LogoBtn() {
     color: white;
     font-size: 25px;
     padding: 13px;
-  `;
+`;
 
+function LogoBtn() {
+  
   return (
     <>
       <Link to="/">

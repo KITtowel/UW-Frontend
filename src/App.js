@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import Main from "./pages/Main";
 import Signup from "./pages/Signup";
 import Mypage from "./pages/Mypage";
-import NearStore from "./pages/NearStore";
+import { StoreMap } from "./pages";
 
 const App = () => {
   return (
@@ -15,7 +15,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/mypage" element={<Mypage />} />
-        <Route path="/nearstore" element={<NearStore />} />
+        <Route path="/storeMap" element={<StoreMap />} />
       </Routes>
     </BrowserRouter>
   );

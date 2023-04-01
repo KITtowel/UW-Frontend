@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 
 const AuthContext = createContext();
 
@@ -21,7 +21,8 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("isAuthenticated");
   };
 
-  const value = { isAuthenticated, login, logout };
+  // const value = { isAuthenticated, login, logout };
+  const value = useMemo(() => ({isAuthenticated, login, logout}), [isAuthenticated, login, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
