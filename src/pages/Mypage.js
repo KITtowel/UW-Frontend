@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Logo from "../assets/logo.png";
 import User from "../components/User";
-import LogoBtn from "../components/LogoBtn";
+import Select from "../components/Select";
 import { Link } from "react-router-dom";
 import Logo2 from "../assets/logo2.png";
 import Profile from "../assets/profile.png";
@@ -49,6 +49,10 @@ const Header = styled.div`
   align-items: center;
 `;
 
+const Center = styled.div`
+  text-align: center;
+`;
+
 const NavButton = styled.button`
   background: transparent;
   color: ${props => (props.selected ? "#24A1E8" : "#000000")};
@@ -60,9 +64,49 @@ const NavButton = styled.button`
   vertical-align: top;
 `;
 
-const EditButton = styled.button`
+const ConfirmButton = styled.button`
   display: inline-block;
   margin: 5px;
+  padding: 6px 30px;
+  color: #969696;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: #fff;
+  border: 1px solid;
+  border-radius: 5px;
+  outline: 0;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-out;
+  :hover {
+    background: #969696;
+    color: #fff;
+  }
+`;
+
+const CancleButton = styled.button`
+  display: inline-block;
+  margin: 30px 5px;
+  padding: 6px 30px;
+  color: #000;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: #fff;
+  border: 1px solid;
+  border-radius: 5px;
+  outline: 0;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-out;
+  :hover {
+    background: #000;
+    color: #fff;
+  }
+`;
+
+const EditButton = styled.button`
+  display: inline-block;
+  margin: 30px 5px;
   padding: 6px 30px;
   color: #636363;
   font-weight: 600;
@@ -108,6 +152,11 @@ const Container = styled.div`
   background: #ffffff;
 `;
 
+const Wrapper = styled.div`
+  padding: 50px;
+  text-align: center;
+`;
+
 const LogoIcon = styled.img`
   width: 50px;
   margin: 15px 50px;
@@ -121,11 +170,13 @@ const ProfilePicture = styled.img`
   object-fit: cover;
 `;
 
-const Select = styled.select`
-  float: left;
+const Input = styled.input`
+  display: block;
+  width: 300px;
   padding: 11px 13px;
   background: #f9f9fa;
-  margin: 3px;
+  color: #9dc3e6;
+  margin: 5px 3px;
   border-radius: 4px;
   outline: 0;
   border: 1px solid rgba(245, 245, 245, 0.7);
@@ -139,13 +190,13 @@ const Select = styled.select`
 }
 `;
 
-const Input = styled.input`
+const InputCenter = styled.input`
   display: block;
-  width: 300px;
+  width: 160px;
   padding: 11px 13px;
   background: #f9f9fa;
   color: #9dc3e6;
-  margin: 5px 3px;
+  margin: 5px auto 35px auto;
   border-radius: 4px;
   outline: 0;
   border: 1px solid rgba(245, 245, 245, 0.7);
@@ -181,6 +232,13 @@ const TableHeader = styled.th`
 const TableCell = styled.td`
   padding: 0.5rem;
   width: 70%;
+`;
+
+const Label = styled.label`
+  display: block;
+  color: #656565;
+  text-align: center;
+  margin: 10px;
 `;
 
 function MyPage() {
@@ -300,11 +358,29 @@ function MyPage() {
                 </TableRow>
               </tbody>
             </Table>
+            <Center>
+              <ConfirmButton>확인</ConfirmButton>
+              <CancleButton>취소</CancleButton>
+            </Center>
           </div>
         )}
         {activeTab === "likes" && <div></div>}
         {activeTab === "reviews" && <div>{/* 후기 목록 내용 */}</div>}
-        {activeTab === "withdrawal" && <div>{/* 회원 탈퇴 내용 */}</div>}
+        {activeTab === "withdrawal" && (
+          <Wrapper>
+            <Label for="">비밀번호 입력</Label>
+            <InputCenter></InputCenter>
+
+            <Label for="">탈퇴 사유</Label>
+            <Select>
+              <option value="">-- 탈퇴 사유 선택 -- </option>
+            </Select>
+            <Center>
+              <ConfirmButton>확인</ConfirmButton>
+              <CancleButton>취소</CancleButton>
+            </Center>
+          </Wrapper>
+        )}
       </Container>
     </>
   );
