@@ -25,6 +25,9 @@ const Logo = styled.button`
     border-radius: 50%;
     transition: box-shadow 0.3s;
     cursor: pointer;
+    :hover {
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.3), 0 1px 10px rgba(0, 0, 0, 0.1);
+    }
     margin-top: 10px;
 `;
 

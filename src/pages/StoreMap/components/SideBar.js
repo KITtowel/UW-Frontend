@@ -7,7 +7,7 @@ const Container = styled.div`
   position: fixed;
   background-color: white;
   text-align: center;
-  width: 300px;
+  width: 270px;
   height: 100vh;
   border-left: 1px solid #D9D9D9;
   border-right: 1px solid #D9D9D9;
@@ -15,13 +15,13 @@ const Container = styled.div`
   left: 80px;
   transition: 0.4s ease;
   z-index: 4;
-  transform: ${(props) => props.isOpen  ? "translateX(0px)" : "translateX(-299px)"};
+  transform: ${(props) => props.isOpen  ? "translateX(0px)" : "translateX(-269px)"};
 `;
 
 const SideButton = styled.button`
   position: fixed;
   padding: 0;
-  left: 299px;
+  left: 269px;
   top: 50%;
   width: 20px;
   height: 50px;
@@ -87,49 +87,48 @@ const Tag = styled.li`
   font-size: 0.8em;
   border-radius: 10px;
   border: 1px solid black;
-  &:hover {
-    cursor: pointer;
-  }
+  cursor: pointer;
 `;
 
 const StoreList = styled.ul`
-  /* height: calc(100vh - 200px); */
-  height: 100%;
-  overflow: auto;
+  height: calc(100vh - 115px);
+  overflow: scroll;
 `;
 
 const StoreItem = styled.li`
-  /* height: 70px; */
-  border-bottom: 1px solid black;
-  margin: 10px;
-  padding: 10px;
+  height: 80px;
+  border-bottom: 1px solid #D9D9D9;
+  /* margin: 10px; */
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 20px;
   display: flex;
-  /* justify-content: center; */
+  justify-content: center;
   align-items: center;
-`;
-
-const StoreIcon = styled.div`
-  text-align: center;
-  line-height: 45px;
-  width: 50px;
-  height: 50px;
-  /* margin-right: 10px; */
 `;
 
 const StoreInfo = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  padding-left: 10px;
+  gap: 5px;
 `;
 
-const StoreName = styled.h1``;
+const StoreName = styled.h1`
+  font-size: 1.3em;
+  margin-right: 3px;
+`;
 
 const StoreLate = styled.h2``;
+
+const StoreLoc = styled.h2``;
 
 const StoreTag = styled.h3`
   align-self: flex-end;
   color: grey;
-  font-size: 0.7em;
+  font-size: 1em;
 `;
 
 function SideBar() {
@@ -166,19 +165,20 @@ function SideBar() {
         {tagList.map((tag) => <Tag>{tag}</Tag>)}
       </TagList>
       <StoreList>
-        {Array.from({ length: 20 }).map((_, idx) => (
+        {Array.from({ length: 15 }).map((_, idx) => (
           <StoreItem>
-            <StoreIcon>{idx}</StoreIcon>
             <StoreInfo>
-              <div style={{ display: "flex", justifyContent: "center" }}>
+              <div style={{ display: "flex", justifyContent: "left" }}>
                 <StoreName>GS옥계점</StoreName>
                 <StoreTag>편의점</StoreTag>
               </div>
               <StoreLate>⭐️ 5.0 (100+)</StoreLate>
+              <StoreLoc>경북 구미시 옥계북로 39</StoreLoc>
             </StoreInfo>
           </StoreItem>
         ))}
       </StoreList>
+      <div style={{height: '100px', width: '100px'}}>ddasfdsafefagd</div>
     </Container>
   );
 }
