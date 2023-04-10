@@ -1,59 +1,127 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import LogoBtn from "../components/LogoBtn";
-import Button from "../components/Button";
-import Input from "../components/Input";
 import { useAuth } from "../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import KakaoLogin from "react-kakao-login";
 import axios from "axios";
 import { API_BASE_URL } from "../config";
+import { RiUser6Line, RiLockLine } from "react-icons/ri";
+import { SiKakaotalk, SiNaver } from "react-icons/si";
+import { BsCheckCircleFill, BsCheckCircle } from "react-icons/bs";
+import Logo2 from "../assets/logo2.png";
+import Kakao from "../assets/kakao.png";
+import Naver from "../assets/naver.png";
 
-const Ocean = styled.div`
-  background: #3b21ff;
-  height: 10%;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  z-index: -1;
+const Button = styled.button`
+  padding: 11px 130px;
+  color: rgb(253, 249, 243);
+  font-weight: 600;
+  text-transform: uppercase;
+  background: #9dc3e6;
+  border: none;
+  border-radius: 50px;
+  outline: 0;
+  cursor: pointer;
+  margin-top: 0.6rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-out;
+  :hover {
+    background: #2e75b6;
+  }
 `;
 
-const Wave = styled.div`
-  background: url(https://venkat369.github.io/development/wave.svg) repeat-x; 
+const Check = styled.div`
+  font-size: 13px;
+  text-align: left;
+  margin: 10px 0;
+  color: #636363;
+`;
+
+const Icon = styled.span`
+  vertical-align: middle;
+  margin: 0 10px 0 0;
+  color: #636363;
+`;
+
+const KakaoIcon = styled.div`
+  font-size: 50px;
+  display: inline-block;
+  margin: 30px 15px;
+  text-align: right;
+  color: #ffe810;
+`;
+
+const NaverIcon = styled.div`
+  font-size: 50px;
+  display: inline-block;
+  margin: 30px 15px;
+  text-align: left;
+  color: #03bf19;
+`;
+
+const Logo = styled.img`
+  width: 100px;
+  display: block;
+  margin: 20px auto;
+`;
+
+const InputIconTop = styled.div`
   position: absolute;
-  top: -198px;
-  width: 6400px;
-  height: 198px;
-  animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+  top: calc(50% - 90px);
+  left: 85px;
+  transform: translateY(-45%);
+`;
 
-  &:nth-of-type(2) {
-    top: -175px;
-    animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
-    opacity: 1;
+const InputIconBottom = styled.div`
+  position: absolute;
+  top: calc(50% - 55px);
+  left: 85px;
+  transform: translateY(-45%);
+`;
+
+const InputTop = styled.input`
+  width: 100%;
+  padding: 11px 13px 11px 35px;
+  background: #f9f9fa;
+  color: #9dc3e6;
+  border-radius: 4px 4px 0 0;
+  outline: 0;
+  border: 1px solid rgba(245, 245, 245, 0.7);
+  font-size: 14px;
+  transition: all 0.3s ease-out;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
+  :focus,
+  :hover {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
 }
+`;
 
-@keyframes wave {
-  0% {
-    margin-left: 0;
-  }
-  100% {
-    margin-left: -1600px;
+const InputBottom = styled.input`
+width: 100%;
+padding: 11px 13px 11px 35px;
+  background: #f9f9fa;
+  color: #9dc3e6;
+  border-radius: 0 0 4px 4px;
+  outline: 0;
+  border: 1px solid rgba(245, 245, 245, 0.7);
+  font-size: 14px;
+  transition: all 0.3s ease-out;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
+  :focus,
+  :hover {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
 }
+`;
 
-@keyframes swell {
-  0%, 100% {
-    transform: translate3d(0, -25px, 0);
-  }
-  50% {
-    transform: translate3d(0, 5px, 0);
-  }
-}
+const None = styled.input`
+  display: none;
 `;
 
 const Container = styled.div`
+  position: relative;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -61,7 +129,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   max-width: 28rem;
-  margin: 8rem auto 0 auto;
+  margin: 60px auto;
   padding: 2rem 2.5rem;
   border: none;
   outline: none;
@@ -77,9 +145,18 @@ const Title = styled.h1`
   margin: 15px 0;
 `;
 
+const Bottom = styled.div`
+  * {
+    color: #000;
+    text-decoration: none;
+    margin: 0 10px;
+  }
+`;
+
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
   const [token, setToken] = useState("");
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
@@ -89,6 +166,10 @@ function Login() {
       navigate("/nearstore");
     }
   }, [isAuthenticated]);
+
+  const handleChecked = e => {
+    setIsChecked(e.target.checked);
+  };
 
   const handleUsernameChange = event => {
     setUsername(event.target.value);
@@ -116,16 +197,17 @@ function Login() {
 
   return (
     <>
-      <LogoBtn />
-      <Ocean>
-        <Wave></Wave>
-        <Wave></Wave>
-      </Ocean>
+      <Link to="/">
+        <Logo src={Logo2} />
+      </Link>
       <Container>
         <Title>로그인</Title>
         <form onSubmit={handleSubmit}>
           <div>
-            <Input
+            <InputIconTop>
+              <RiUser6Line />
+            </InputIconTop>
+            <InputTop
               type="text"
               placeholder="아이디"
               id="username"
@@ -135,7 +217,10 @@ function Login() {
             />
           </div>
           <div>
-            <Input
+            <InputIconBottom>
+              <RiLockLine />
+            </InputIconBottom>
+            <InputBottom
               type="password"
               id="password"
               placeholder="비밀번호"
@@ -144,8 +229,34 @@ function Login() {
               onChange={handlePasswordChange}
             />
           </div>
+          <Check>
+            <form>
+              <label>
+                <Icon>
+                  {isChecked ? <BsCheckCircleFill /> : <BsCheckCircle />}
+                </Icon>
+                <None
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={handleChecked}
+                />
+                로그인 상태 유지
+              </label>
+            </form>
+          </Check>
           <Button type="button">로그인</Button>
-          {token && <p>Received token: {token}</p>}
+          <div>
+            <NaverIcon>
+              <SiNaver />
+            </NaverIcon>
+            <KakaoIcon>
+              <SiKakaotalk />
+            </KakaoIcon>
+          </div>
+          <Bottom>
+            <Link to="">아이디 찾기</Link> | <Link to="">비밀번호 찾기</Link> |{" "}
+            <Link to="">회원가입</Link>
+          </Bottom>
         </form>
       </Container>
     </>
