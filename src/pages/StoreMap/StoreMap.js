@@ -1,20 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import Check from "../../components/Check";
-import User from "../../components/User";
 import { useAuth } from "../../contexts/AuthContext";
 // import { useNavigate } from "react-router-dom";
-import { SideBar } from "./components";
-import KakaoMap from "./components/KakaoMap";
+import { InfoBar, KakaoMap, SideBar } from "./components";
 
 const Container = styled.div`
-  /* display: flex; */
-`;
-
-const Map = styled.div`
-  width: 500px;
-  height: 500px;
-  border: 1px solid black;
+  display: flex;
 `;
 
 const NearStore = () => {
@@ -28,11 +19,9 @@ const NearStore = () => {
 
   return (
     <Container>
-      <User />
-      <Check />
+      <InfoBar />
       <SideBar />
       <KakaoMap />
-
     </Container>
   );
 };

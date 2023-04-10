@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react';
+import styled from 'styled-components';
 
 const { kakao } = window;
+
+const Map = styled.div`
+  width: 100vw;
+  height: 100vh;
+`
 
 function KakaoMap(props) {
   useEffect(() => {
@@ -13,10 +19,11 @@ function KakaoMap(props) {
   }, []);
 
   return (
-    <div id="map" style={{
-      width: '100vw',
-      height: '100vh'
-    }}></div>
+    // <div id="map" style={{
+    //   width: '1000px',
+    //   height: '100vh'
+    // }}></div>
+    <Map id='map'/>
   );
 }
 

@@ -3,21 +3,19 @@ import styled from 'styled-components';
 import { BsSearch } from "react-icons/bs";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io"
 
-const Wrapper = styled.div`
+const Container = styled.div`
   position: fixed;
-  /* display: flex; */
-  /* flex-direction: column; */
   background-color: white;
   text-align: center;
   width: 300px;
-  border: 1px solid black;
-  top: 0;
-  bottom: 0;
-  left: 0;
   height: 100vh;
+  border-left: 1px solid #D9D9D9;
+  border-right: 1px solid #D9D9D9;
+  box-shadow: 0 0 5px 0 rgba(0,0,0,.2), 5px 0 15px 0 rgba(0,0,0,.1);
+  left: 80px;
   transition: 0.4s ease;
-  z-index: 99;
-  transform: ${(props) => props.isOpen  ? "translateX(0px)" : "translateX(-300px)"};
+  z-index: 4;
+  transform: ${(props) => props.isOpen  ? "translateX(0px)" : "translateX(-299px)"};
 `;
 
 const SideButton = styled.button`
@@ -28,7 +26,7 @@ const SideButton = styled.button`
   width: 20px;
   height: 50px;
   z-index: 99;
-  border: 0.5px solid black;
+  border: 0.5px solid #D9D9D9;
   border-left: 0;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
@@ -95,11 +93,13 @@ const Tag = styled.li`
 `;
 
 const StoreList = styled.ul`
+  /* height: calc(100vh - 200px); */
   height: 100%;
   overflow: auto;
 `;
 
 const StoreItem = styled.li`
+  /* height: 70px; */
   border-bottom: 1px solid black;
   margin: 10px;
   padding: 10px;
@@ -135,6 +135,8 @@ const StoreTag = styled.h3`
 function SideBar() {
   const [isOpen, setIsOpen] = useState(true);
 
+  const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
+
   const handleOpen = () => {
     if (isOpen) {
       setIsOpen(false);
@@ -144,7 +146,7 @@ function SideBar() {
   }
 
   return (
-    <Wrapper isOpen={isOpen} >
+    <Container isOpen={isOpen} >
       <SideButton onClick={handleOpen}>
         <ArrowIcon>
           {isOpen ? <IoIosArrowBack /> : <IoIosArrowForward />}
@@ -161,17 +163,12 @@ function SideBar() {
         />
       </SearchWrapper>
       <TagList>
-        <Tag>전체</Tag>
-        <Tag>한식</Tag>
-        <Tag>중식</Tag>
-        <Tag>일식</Tag>
-        <Tag>양식</Tag>
-        <Tag>편의점</Tag>
+        {tagList.map((tag) => <Tag>{tag}</Tag>)}
       </TagList>
       <StoreList>
-        {Array.from({ length: 100 }).map(() => (
+        {Array.from({ length: 20 }).map((_, idx) => (
           <StoreItem>
-            <StoreIcon>Icon</StoreIcon>
+            <StoreIcon>{idx}</StoreIcon>
             <StoreInfo>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 <StoreName>GS옥계점</StoreName>
@@ -182,7 +179,7 @@ function SideBar() {
           </StoreItem>
         ))}
       </StoreList>
-    </Wrapper>
+    </Container>
   );
 }
 
