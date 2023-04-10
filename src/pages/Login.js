@@ -68,14 +68,14 @@ const Logo = styled.img`
 
 const InputIconTop = styled.div`
   position: absolute;
-  top: calc(50% - 90px);
+  top: calc(50% - 100px);
   left: 85px;
   transform: translateY(-45%);
 `;
 
 const InputIconBottom = styled.div`
   position: absolute;
-  top: calc(50% - 55px);
+  top: calc(50% - 60px);
   left: 85px;
   transform: translateY(-45%);
 `;
