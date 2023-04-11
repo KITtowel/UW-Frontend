@@ -6,8 +6,8 @@ import Select from "../components/Select";
 import { Link } from "react-router-dom";
 import Logo2 from "../assets/logo2.png";
 import Profile from "../assets/profile.png";
-import { FiThumbsUp } from "react-icons/fi";
-import { FaStar, FaThumbsUp } from "react-icons/fa";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { FaStar } from "react-icons/fa";
 import { RiThumbUpFill, RiThumbUpLine } from "react-icons/ri";
 import { MdOutlineLocationOn } from "react-icons/md";
 
@@ -246,7 +246,7 @@ const Label = styled.label`
   margin: 10px;
 `;
 
-const Likes = styled.div`
+const List = styled.div`
   padding: 30px;
   max-width: 700px;
   margin: auto;
@@ -274,6 +274,7 @@ function MyPage() {
       rating: 5.0,
       address: "경상북도 구미시 산호대로 747",
       liked: false,
+      review: "친절해요.",
     },
     {
       id: 2,
@@ -282,6 +283,7 @@ function MyPage() {
       rating: 4.2,
       address: "경상북도 구미시 옥계동 산호대로25안길 1",
       liked: false,
+      review: "친절해요.",
     },
     {
       id: 3,
@@ -290,6 +292,7 @@ function MyPage() {
       rating: 4.8,
       address: "경상북도 구미시 산호대로24길 9-12",
       liked: false,
+      review: "친절해요.",
     },
     {
       id: 4,
@@ -298,6 +301,7 @@ function MyPage() {
       rating: 3.9,
       address: "경상북도 구미시 산호대로27길 13-17",
       liked: false,
+      review: "친절해요.",
     },
     {
       id: 5,
@@ -306,6 +310,7 @@ function MyPage() {
       rating: 4.1,
       address: "경상북도 구미시 옥계동 산호대로27길 17",
       liked: false,
+      review: "친절해요.",
     },
   ]);
 
@@ -439,7 +444,7 @@ function MyPage() {
         {activeTab === "likes" && (
           <div>
             {data.map(item => (
-              <Likes key={item.id}>
+              <List key={item.id}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <h2 style={{ marginRight: "1rem" }}>{item.name}</h2>
                   <h3 style={{ marginRight: "1rem", color: "#666" }}>
@@ -479,11 +484,35 @@ function MyPage() {
                   <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
                   <p>{item.address}</p>
                 </div>
-              </Likes>
+              </List>
             ))}
           </div>
         )}
-        {activeTab === "reviews" && <div>{/* 후기 목록 내용 */}</div>}
+        {activeTab === "reviews" && (
+          <div>
+            {data.map(item => (
+              <List key={item.id}>
+                <div style={{}}>
+                  <div style={{ position: "absolute", right: "30%" }}>
+                    <FiEdit style={{ marginRight: "0.5rem" }} />
+                    <FiTrash2 />
+                  </div>
+                  <h2 style={{ display: "block" }}>{item.name}</h2>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      color: "#666",
+                    }}>
+                    <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
+                    <p>{item.address}</p>
+                  </div>
+                </div>
+                <p>{item.review}</p>
+              </List>
+            ))}
+          </div>
+        )}
         {activeTab === "withdrawal" && (
           <Wrapper>
             <Label for="">비밀번호 입력</Label>
