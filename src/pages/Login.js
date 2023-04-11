@@ -254,8 +254,9 @@ function Login() {
             </KakaoIcon>
           </div>
           <Bottom>
-            <Link to="">아이디 찾기</Link> | <Link to="">비밀번호 찾기</Link> |{" "}
-            <Link to="">회원가입</Link>
+            <Link to="/findid">아이디 찾기</Link> |{" "}
+            <Link to="/findpw">비밀번호 찾기</Link> |
+            <Link to="/signup">회원가입</Link>
           </Bottom>
         </form>
       </Container>
