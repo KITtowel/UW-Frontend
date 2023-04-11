@@ -6,6 +6,10 @@ import Select from "../components/Select";
 import { Link } from "react-router-dom";
 import Logo2 from "../assets/logo2.png";
 import Profile from "../assets/profile.png";
+import { FiThumbsUp } from "react-icons/fi";
+import { FaStar, FaThumbsUp } from "react-icons/fa";
+import { RiThumbUpFill, RiThumbUpLine } from "react-icons/ri";
+import { MdOutlineLocationOn } from "react-icons/md";
 
 const cityOptions = {
   경상북도: [
@@ -38,6 +42,7 @@ const cityOptions = {
 };
 
 const Header = styled.div`
+  z-index: 999;
   position: fixed;
   top: 0;
   left: 10%;
@@ -147,7 +152,7 @@ const DeleteButton = styled.button`
 const Container = styled.div`
   text-align: left;
   width: 80%;
-  margin: 80px auto 0;
+  margin: 80px auto;
   border-bottom: 1px solid #969696;
   background: #ffffff;
 `;
@@ -241,6 +246,17 @@ const Label = styled.label`
   margin: 10px;
 `;
 
+const Likes = styled.div`
+  padding: 30px;
+  max-width: 700px;
+  margin: auto;
+  border-bottom: 1px solid #d9d9d9;
+  line-height: 2;
+  * {
+    vertical-align: middle;
+  }
+`;
+
 function MyPage() {
   const [userData, setUserData] = useState({
     profilePicture: "",
@@ -249,6 +265,62 @@ function MyPage() {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [activeTab, setActiveTab] = useState("myinfo");
+
+  const [data, setData] = useState([
+    {
+      id: 1,
+      name: "GS25 구미옥계대로점",
+      category: "편의점",
+      rating: 5.0,
+      address: "경상북도 구미시 산호대로 747",
+      liked: false,
+    },
+    {
+      id: 2,
+      name: "GS25 옥계희망점",
+      category: "편의점",
+      rating: 4.2,
+      address: "경상북도 구미시 옥계동 산호대로25안길 1",
+      liked: false,
+    },
+    {
+      id: 3,
+      name: "GS25 옥계센타점",
+      category: "편의점",
+      rating: 4.8,
+      address: "경상북도 구미시 산호대로24길 9-12",
+      liked: false,
+    },
+    {
+      id: 4,
+      name: "GS25 구미옥계행운점",
+      category: "편의점",
+      rating: 3.9,
+      address: "경상북도 구미시 산호대로27길 13-17",
+      liked: false,
+    },
+    {
+      id: 5,
+      name: "GS25 구미산호점",
+      category: "편의점",
+      rating: 4.1,
+      address: "경상북도 구미시 옥계동 산호대로27길 17",
+      liked: false,
+    },
+  ]);
+
+  const handleLike = id => {
+    const newData = data.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          liked: !item.liked,
+        };
+      }
+      return item;
+    });
+    setData(newData);
+  };
 
   const handleProvinceChange = e => {
     setSelectedProvince(e.target.value);
@@ -364,7 +436,53 @@ function MyPage() {
             </Center>
           </div>
         )}
-        {activeTab === "likes" && <div></div>}
+        {activeTab === "likes" && (
+          <div>
+            {data.map(item => (
+              <Likes key={item.id}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <h2 style={{ marginRight: "1rem" }}>{item.name}</h2>
+                  <h3 style={{ marginRight: "1rem", color: "#666" }}>
+                    {item.category}
+                  </h3>
+                  {item.liked ? (
+                    <RiThumbUpLine
+                      style={{
+                        color: "#24A1E8",
+                        position: "absolute",
+                        right: "30%",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleLike(item.id)}
+                    />
+                  ) : (
+                    <RiThumbUpFill
+                      style={{
+                        color: "#666",
+                        position: "absolute",
+                        right: "30%",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleLike(item.id)}
+                    />
+                  )}
+                </div>
+                <p style={{ color: "#666" }}>
+                  <FaStar color="#F7CA46" size={15} /> {item.rating} / 5
+                </p>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    color: "#666",
+                  }}>
+                  <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
+                  <p>{item.address}</p>
+                </div>
+              </Likes>
+            ))}
+          </div>
+        )}
         {activeTab === "reviews" && <div>{/* 후기 목록 내용 */}</div>}
         {activeTab === "withdrawal" && (
           <Wrapper>
