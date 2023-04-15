@@ -21,7 +21,7 @@ const NearStore = () => {
     <Container>
       <InfoBar />
       <SideBar />
-      <KakaoMap />
+      <KakaoMap markerPositions={[]} size={[400, 400]}/>
     </Container>
   );
 };

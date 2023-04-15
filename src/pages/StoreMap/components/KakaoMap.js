@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
+/* global kakao */
 
-const { kakao } = window;
+import React, { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
 
 const Map = styled.div`
   width: 100vw;
@@ -9,22 +9,40 @@ const Map = styled.div`
 `
 
 function KakaoMap(props) {
-  useEffect(() => {
-    const container = document.getElementById("map");
-    const options = {
-      center: new kakao.maps.LatLng(33.450701, 126.570667),
-      level: 3,
-    }
-    const map = new window.kakao.maps.Map(container, options);
-  }, []);
+  const { markerPositions, size } = props;
+  const [kakaoMap, setKakaoMap] = useState(null);
+  const [, setMarkers] = useState([]);
 
-  return (
-    // <div id="map" style={{
-    //   width: '1000px',
-    //   height: '100vh'
-    // }}></div>
-    <Map id='map'/>
-  );
+  const container = useRef();
+  
+
+  useEffect(() => {
+    const options = {
+      center: new kakao.maps.LatLng(37.50802, 127.062835),
+      level: 3
+    };
+    const map = new kakao.maps.Map(container.current, options);
+    setKakaoMap(map);
+  }, [container]);
+
+  useEffect(() => {
+    if (kakaoMap === null) {
+      return;
+    }
+    // save center position
+    const center = kakaoMap.getCenter();
+
+    // change viewport size
+    container.current.style.width = `${100}vw`;
+    container.current.style.height = `${100}vh`;
+
+    // relayout and...
+    kakaoMap.relayout();
+    // restore
+    kakaoMap.setCenter(center);
+  }, [kakaoMap]);
+
+  return <div id="container" ref={container} />;
 }
 
 export default KakaoMap;
