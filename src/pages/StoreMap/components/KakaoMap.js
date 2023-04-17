@@ -9,12 +9,9 @@ const Map = styled.div`
 `
 
 function KakaoMap(props) {
-  const { markerPositions, size } = props;
   const [kakaoMap, setKakaoMap] = useState(null);
-  const [, setMarkers] = useState([]);
-
   const container = useRef();
-  
+
   useEffect(() => {
     const options = {
       center: new kakao.maps.LatLng(37.50802, 127.062835),
@@ -36,7 +33,7 @@ function KakaoMap(props) {
               message = '<div style="padding:5px;">여기에 계신가요?!</div>'; // 인포윈도우에 표시될 내용입니다
           
           // 마커와 인포윈도우를 표시합니다
-          displayMarker(locPosition, message);
+          displayCurrentMarker(locPosition, message);
               
         });
       
@@ -45,10 +42,10 @@ function KakaoMap(props) {
         var locPosition = new kakao.maps.LatLng(33.450701, 126.570667),    
             message = 'geolocation을 사용할수 없어요..'
             
-        displayMarker(locPosition, message);
+        displayCurrentMarker(locPosition, message);
     }
 
-    function displayMarker(locPosition, message) {
+    function displayCurrentMarker(locPosition, message) {
 
       // 마커를 생성합니다
       var marker = new kakao.maps.Marker({  
@@ -71,8 +68,6 @@ function KakaoMap(props) {
       // 지도 중심좌표를 접속위치로 변경합니다
       map.setCenter(locPosition);      
     } 
-
-
     setKakaoMap(map);
   }, [container]);
 
