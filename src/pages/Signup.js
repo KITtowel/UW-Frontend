@@ -109,25 +109,16 @@ const Input = styled.input`
 `;
 
 function Signup() {
-  const [id, setId] = useState("");
+  const [nickname, setNickname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [email, setEmail] = useState("");
-  const [selectedProvince, setSelectedProvince] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
+  const [location, setLocation] = useState("");
+  const [location2, setLocation2] = useState("");
 
-  const handleProvinceChange = e => {
-    setSelectedProvince(e.target.value);
-    setSelectedCity("");
-  };
-
-  const handleCityChange = e => {
-    setSelectedCity(e.target.value);
-  };
-
-  const handleIdChange = e => {
-    setId(e.target.value);
+  const handleNicknameChange = e => {
+    setNickname(e.target.value);
   };
 
   const handleUsernameChange = e => {
@@ -146,14 +137,25 @@ function Signup() {
     setEmail(e.target.value);
   };
 
+  const handleLocationChange = e => {
+    setLocation(e.target.value);
+    setLocation2("");
+  };
+
+  const handleLocation2Change = e => {
+    setLocation2(e.target.value);
+  };
+
   const handleSubmit = async e => {
     e.preventDefault();
     const response = await axios.post(`${API_BASE_URL}/users/register/`, {
+      nickname: nickname,
       username: username,
-      id: id,
       password: password,
       password2: password2,
       email: email,
+      location: location,
+      location2: location2,
     });
     console.log(response);
   };
@@ -163,11 +165,15 @@ function Signup() {
       <Link to="/">
         <Logo src={Logo2} />
       </Link>
-      <Container>
-        <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
+        <Container>
           <div>
             <Label>닉네임</Label>
-            <Input type="text" value={id} onChange={handleIdChange} />
+            <Input
+              type="text"
+              value={nickname}
+              onChange={handleNicknameChange}
+            />
           </div>
           <div>
             <Label>아이디</Label>
@@ -204,35 +210,35 @@ function Signup() {
           </div>
           <div>
             <Label>현재 거주 지역</Label>
-            <Select id="province" onChange={handleProvinceChange}>
-              <option value="">도 선택</option>
-              {Object.keys(cityOptions).map(province => (
-                <option key={province} value={province}>
-                  {province}
+            <Select id="province" onChange={handleLocationChange}>
+              <option value="">시/도 선택</option>
+              {Object.keys(cityOptions).map(location => (
+                <option key={location} value={location}>
+                  {location}
                 </option>
               ))}
             </Select>
-            <Select id="city">
+            <Select id="city" onChange={handleLocation2Change}>
               <option value="">시/군/구 선택</option>
-              {selectedProvince === ""
+              {location === ""
                 ? Object.values(cityOptions)
                     .flat()
-                    .map(city => (
-                      <option key={city} value={city}>
-                        {city}
+                    .map(location2 => (
+                      <option key={location2} value={location2}>
+                        {location2}
                       </option>
                     ))
-                : cityOptions[selectedProvince].map(city => (
-                    <option key={city} value={city}>
-                      {city}
+                : cityOptions[location].map(location2 => (
+                    <option key={location2} value={location2}>
+                      {location2}
                     </option>
                   ))}
             </Select>
           </div>
-        </form>
-      </Container>
+        </Container>
 
-      <Button type="submit">가입하기</Button>
+        <Button type="submit">가입하기</Button>
+      </form>
     </>
   );
 }
