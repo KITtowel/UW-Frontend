@@ -181,12 +181,14 @@ function Login() {
 
   const handleSubmit = async event => {
     event.preventDefault();
+    console.log("버튼 눌림");
 
     try {
       const response = await axios.post(`${API_BASE_URL}/users/login/`, {
         username,
         password,
       });
+      console.log(response);
       const receivedToken = response.data.token;
       setToken(receivedToken);
       login();
