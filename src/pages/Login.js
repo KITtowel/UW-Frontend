@@ -161,7 +161,7 @@ function Login() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/nearstore");
+      navigate("/");
     }
   }, [isAuthenticated]);
 
@@ -202,7 +202,7 @@ function Login() {
       </Link>
       <Container>
         <Title>로그인</Title>
-        <form onSubmit={handleSubmit}>
+        <form>
           <div>
             <InputIconTop>
               <RiUser6Line />
@@ -244,7 +244,7 @@ function Login() {
               </label>
             </form>
           </Check>
-          <Button type="button">로그인</Button>
+          <Button type="button" onClick={handleSubmit}>로그인</Button>
           <div>
             <NaverIcon>
               <SiNaver />
