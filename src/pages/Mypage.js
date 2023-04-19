@@ -10,6 +10,7 @@ import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import { RiThumbUpFill, RiThumbUpLine } from "react-icons/ri";
 import { MdOutlineLocationOn } from "react-icons/md";
+import { Pagination } from "../components";
 
 const cityOptions = {
   경상북도: [
@@ -192,7 +193,6 @@ const Input = styled.input`
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
-}
 `;
 
 const InputCenter = styled.input`
@@ -212,7 +212,6 @@ const InputCenter = styled.input`
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
-}
 `;
 
 const Table = styled.table`
@@ -258,6 +257,7 @@ const List = styled.div`
 `;
 
 function MyPage() {
+  const [page, setPage] = useState(1);
   const [userData, setUserData] = useState({
     profilePicture: "",
     nickname: "",
@@ -486,6 +486,7 @@ function MyPage() {
                 </div>
               </List>
             ))}
+            <Pagination total={100} limit={15} page={page} setPage={setPage} />
           </div>
         )}
         {activeTab === "reviews" && (

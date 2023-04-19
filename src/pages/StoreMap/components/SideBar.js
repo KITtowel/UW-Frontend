@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BsSearch } from "react-icons/bs";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io"
+import { Pagination } from '../../../components';
 
 const Container = styled.div`
   position: fixed;
@@ -133,6 +134,7 @@ const StoreTag = styled.h3`
 
 function SideBar() {
   const [isOpen, setIsOpen] = useState(true);
+  const [page, setPage] = useState(1);
 
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
 
@@ -177,8 +179,8 @@ function SideBar() {
             </StoreInfo>
           </StoreItem>
         ))}
+        <Pagination total={30} limit={15} page={page} setPage={setPage}/>
       </StoreList>
-      <div style={{height: '100px', width: '100px'}}>ddasfdsafefagd</div>
     </Container>
   );
 }

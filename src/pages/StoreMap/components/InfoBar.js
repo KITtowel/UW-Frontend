@@ -48,7 +48,9 @@ function InfoBar(props) {
         <Logo />
       </Link>
       <Icon />
-      <Icon />
+      <Link to='/mypage'>
+        <Icon />
+      </Link>
     </Container>
   );
 }
