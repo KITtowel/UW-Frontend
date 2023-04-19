@@ -2,23 +2,30 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { MdGpsFixed } from 'react-icons/md'
 
-const Map = styled.div`
-  width: 100vw;
-  height: 100vh;
+const CurPosBtn = styled.button`
+  position: absolute;
+  right: 3px;
+  top: 230px;
+  width: 32px;
+  height: 32px;
+  line-height: 35px;
+  font-size: 18px;
+  background-color: rgb(255, 255, 255);;
+  z-index: 9999;
+  border-radius: 3px;
+  border: 0;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 2px 0px;
+  color: rgb(51, 150, 255);
+  cursor: pointer;
 `
 
 function KakaoMap(props) {
   const [kakaoMap, setKakaoMap] = useState(null);
   const container = useRef();
 
-  useEffect(() => {
-    const options = {
-      center: new kakao.maps.LatLng(37.50802, 127.062835),
-      level: 3
-    };
-    const map = new kakao.maps.Map(container.current, options);
-
+  function getCurrentPosition(map) {
     // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
     if (navigator.geolocation) {
         
@@ -67,7 +74,22 @@ function KakaoMap(props) {
         
         // 지도 중심좌표를 접속위치로 변경합니다
         map.setCenter(locPosition);      
-    } 
+    }   
+  }
+
+  useEffect(() => {
+    const options = {
+      center: new kakao.maps.LatLng(37.50802, 127.062835),
+      level: 3
+    };
+    let map = new kakao.maps.Map(container.current, options);
+    getCurrentPosition(map);
+
+    // map에 컨트롤 추가(확대/축소, 일반/스카이뷰 전환
+    let mapTypeControl = new kakao.maps.MapTypeControl();
+    map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+    let zoomControl = new kakao.maps.ZoomControl();
+    map.addControl(zoomControl, kakao.maps.ControlPosition.Right);
     setKakaoMap(map);
   }, [container]);
 
@@ -88,7 +110,15 @@ function KakaoMap(props) {
     kakaoMap.setCenter(center);
   }, [kakaoMap]);
 
-  return <div id="container" ref={container} />;
+  return (
+    <>
+      <div id="container" ref={container} />
+      <CurPosBtn onClick={() => getCurrentPosition(kakaoMap)}>
+        <MdGpsFixed />
+      </CurPosBtn>
+    </>
+    
+  );
 }
 
 export default KakaoMap;
