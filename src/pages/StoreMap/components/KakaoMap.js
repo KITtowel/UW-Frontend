@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { MdGpsFixed } from 'react-icons/md'
-import { Map } from 'react-kakao-maps-sdk';
+import { Map, MapMarker, MapTypeControl, ZoomControl } from 'react-kakao-maps-sdk';
 
 const CurPosBtn = styled.button`
   position: absolute;
@@ -24,7 +24,19 @@ const CurPosBtn = styled.button`
 
 function KakaoMap(props) {
   // const [kakaoMap, setKakaoMap] = useState(null);
-  // const [locPosition, setLocPosition] = useState(new kakao.maps.LatLng(37.50802, 127.062835));
+  // const [locPosition, setLocPosition] = useState((37.50802, 127.062835));
+  const [curPos, setCurPos] = useState({lat: 33.450701, lng: 126.570667});
+  const [randValue, setRandValue] = useState(0.000001);
+  const [state, setState] = useState({
+    center: {
+      lat: 33.450701,
+      lng: 126.570667,
+    },
+    errMsg: null,
+    isLoading: true,
+    isPanto: true,
+    level: 2,
+  })
 
   // const container = useRef();
 
@@ -59,6 +71,57 @@ function KakaoMap(props) {
         
   //   }
   // }
+
+  //현재 위치의 좌표를 설정함
+  useEffect(() => {
+    if (navigator.geolocation) {
+      // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setState((prev) => ({
+            ...prev,
+            center: {
+              lat: position.coords.latitude, // 위도
+              lng: position.coords.longitude, // 경도
+            },
+            isLoading: false,
+          }));
+          setCurPos({
+            lat: position.coords.latitude, // 위도
+            lng: position.coords.longitude, // 경도
+          });
+        },
+        (err) => {
+          setState((prev) => ({
+            ...prev,
+            errMsg: err.message,
+            isLoading: false,
+          }))
+        }
+      )
+    } else {
+      // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정
+      setState((prev) => ({
+        ...prev,
+        errMsg: "geolocation을 사용할수 없어요..",
+        isLoading: false,
+      }))
+    }
+  }, [])
+
+  //현재 위치 값으로 map중앙을 설정 이동하는 함수
+  const setCenterToCurPos = () => {
+    setRandValue((prev) => prev === 0.000001 ? -0.000001 : 0.000001);
+    setState((prev) => ({
+      ...prev,
+      center: {
+        lat: curPos.lat + randValue,
+        lng: curPos.lng + randValue
+      },
+      level: 2
+    }))}
+  
+
 
   // useEffect(() => {
   //   const options = {
@@ -113,15 +176,25 @@ function KakaoMap(props) {
     <>
       {/* <div id="container" ref={container} /> */}
       <Map
-        center={{ lat: 36.2683, lng: 127.6358 }}
-        style={{width: "100vw", height: "100vh"}}
-        level={3}
+        center={state.center} //map 중앙값 설정
+        style={{width: "100vw", height: "100vh"}} //map 사이즈 설정
+        level={state.level} //map 확대 레벨 설정
+        isPanto={state.isPanto}
       >
+        <ZoomControl position={kakao.maps.ControlPosition.RIGHT} />
+        <MapTypeControl position={kakao.maps.ControlPosition.TOPRIGHT} />
+        {!state.isLoading && (
+          <MapMarker
+            position={state.center}
+          >
 
+          </MapMarker>
+        )}
       </Map>
-      {/* <CurPosBtn onClick={() => getCurPos(kakaoMap, false)}>
+      {/* <CurPosBtn onClick={() => getCurPos(kakaoMap, false)}> */}
+      <CurPosBtn onClick={setCenterToCurPos} >
         <MdGpsFixed />
-      </CurPosBtn> */}
+      </CurPosBtn>
     </>
     
   );
