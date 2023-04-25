@@ -85,9 +85,12 @@ function FindId() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/send_email/`, {
-        email: e.target.email.value,
-      });
+      const response = await axios.post(
+        `${API_BASE_URL}/users/username_find/`,
+        {
+          email: e.target.email.value,
+        }
+      );
 
       if (response.data.success) {
         alert("이메일이 성공적으로 전송되었습니다.");
