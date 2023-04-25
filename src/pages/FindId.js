@@ -81,6 +81,25 @@ const Title = styled.h1`
 `;
 
 function FindId() {
+  async function handleEmailSubmit(e) {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(`${API_BASE_URL}/send_email/`, {
+        email: e.target.email.value,
+      });
+
+      if (response.data.success) {
+        alert("이메일이 성공적으로 전송되었습니다.");
+      } else {
+        alert("이메일 전송에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
+    }
+  }
+
   return (
     <>
       <Link to="/">
@@ -88,15 +107,12 @@ function FindId() {
       </Link>
       <Container>
         <Title>아이디 찾기</Title>
-        <form>
-          <div>
-            <Label>닉네임</Label>
-            <Input type="text" />
-          </div>
+        <form onSubmit={handleEmailSubmit}>
           <div>
             <Label htmlFor="email">이메일</Label>
             <Input
               type="email"
+              name="email"
               style={{ display: "inline", width: "75%", marginRight: "10px" }}
             />
             <Button
@@ -108,17 +124,11 @@ function FindId() {
                 borderRadius: "3px",
                 margin: "0",
               }}>
-              인증
+              확인
             </Button>
-          </div>
-          <div>
-            <Label>인증번호 숫자 6자리</Label>
-            <Input type="password" />
           </div>
         </form>
       </Container>
-
-      <Button type="submit">확인</Button>
     </>
   );
 }
