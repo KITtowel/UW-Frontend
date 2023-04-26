@@ -5,7 +5,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import KakaoLogin from "react-kakao-login";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
 import { RiUser6Line, RiLockLine } from "react-icons/ri";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { BsCheckCircleFill, BsCheckCircle } from "react-icons/bs";
@@ -160,7 +159,7 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated === true) {
       navigate("/");
     }
   }, [isAuthenticated]);
@@ -180,19 +179,20 @@ function Login() {
   const handleSubmit = async event => {
     event.preventDefault();
     console.log("버튼 눌림");
+    login();
 
-    try {
-      const response = await axios.post(`${API_BASE_URL}/users/login/`, {
-        username,
-        password,
-      });
-      console.log(response);
-      const receivedToken = response.data.token;
-      setToken(receivedToken);
-      login();
-    } catch (error) {
-      console.error(error);
-    }
+    // try {
+    //   const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/login/`, {
+    //     username,
+    //     password,
+    //   });
+    //   console.log(response);
+    //   const receivedToken = response.data.token;
+    //   setToken(receivedToken);
+    //   login();
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
   return (

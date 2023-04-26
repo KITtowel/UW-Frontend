@@ -5,7 +5,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import KakaoLogin from "react-kakao-login";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
 import Logo2 from "../assets/logo2.png";
 
 const cityOptions = {
@@ -105,7 +104,6 @@ const Input = styled.input`
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
-}
 `;
 
 function Signup() {
@@ -148,7 +146,7 @@ function Signup() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const response = await axios.post(`${API_BASE_URL}/users/register/`, {
+    const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/register/`, {
       nickname: nickname,
       username: username,
       password: password,

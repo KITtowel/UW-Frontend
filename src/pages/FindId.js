@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
 import Logo2 from "../assets/logo2.png";
 
 const Container = styled.div`
@@ -86,7 +85,7 @@ function FindId() {
 
     try {
       const response = await axios.post(
-        `${API_BASE_URL}/users/username_find/`,
+        `${process.env.REACT_APP_API_BASE_URL}/users/username_find/`,
         {
           email: e.target.email.value,
         }

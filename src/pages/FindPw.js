@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
 import Logo2 from "../assets/logo2.png";
 
 const Container = styled.div`
@@ -73,7 +72,6 @@ const Input = styled.input`
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
-}
 `;
 
 const Title = styled.h1`
