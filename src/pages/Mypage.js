@@ -354,7 +354,7 @@ function MyPage() {
 
   const handleSubmit = async () => {
     try {
-      await axios.put(`${API_BASE_URL}/users/profile/{user}/`, {
+      await axios.put(`${process.env.REACT_APP_API_BASE_URL}/users/profile/13/`, {
         nickname,
         location,
         location2,
@@ -387,7 +387,7 @@ function MyPage() {
     async function fetchUserData() {
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/users/profile/{user}/`
+          `${process.env.REACT_APP_API_BASE_URL}/users/profile/13/`
         );
 
         if (response.data.success) {
