@@ -255,6 +255,8 @@ function MyPage() {
   const [location, setLocation] = useState("");
   const [location2, setLocation2] = useState("");
   const [image, setImage] = useState(profilePicture);
+  const [password, setPassword] = useState("");
+  const [reason, setReason] = useState("");
 
   const [data, setData] = useState([
     {
@@ -342,6 +344,14 @@ function MyPage() {
     setLocation2(e.target.value);
   };
 
+  const handlePasswordChange = e => {
+    setPassword(e.target.value);
+  };
+
+  const handleReasonChange = e => {
+    setReason(e.target.value);
+  };
+
   const handleSubmit = async () => {
     try {
       await axios.put(`${API_BASE_URL}/users/profile/{user}/`, {
@@ -349,6 +359,16 @@ function MyPage() {
         location,
         location2,
         image,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSubmit4 = async () => {
+    try {
+      await axios.delete(`${API_BASE_URL}/users/profile/{user}/`, {
+        data: { password, reason },
       });
     } catch (error) {
       console.error(error);
@@ -557,16 +577,24 @@ function MyPage() {
         )}
         {activeTab === "withdrawal" && (
           <Wrapper>
-            <Label for="">비밀번호 입력</Label>
-            <InputCenter></InputCenter>
+            <Label htmlFor="password">비밀번호 입력</Label>
+            <InputCenter
+              type="password"
+              id="password"
+              value={password}
+              onChange={handlePasswordChange}
+            />
 
-            <Label for="">탈퇴 사유</Label>
-            <Select>
-              <option value="">-- 탈퇴 사유 선택 -- </option>
+            <Label htmlFor="reason">탈퇴 사유</Label>
+            <Select id="reason" value={reason} onChange={handleReasonChange}>
+              <option value="">-- 탈퇴 사유 선택 --</option>
+              <option value="reason1">이유 1</option>
+              <option value="reason2">이유 2</option>
+              <option value="reason3">이유 3</option>
             </Select>
             <Center>
-              <ConfirmButton>확인</ConfirmButton>
-              <CancleButton>취소</CancleButton>
+              <ConfirmButton onClick={handleSubmit4}>확인</ConfirmButton>
+              <CancleButton onClick={handleCancel}>취소</CancleButton>
             </Center>
           </Wrapper>
         )}
