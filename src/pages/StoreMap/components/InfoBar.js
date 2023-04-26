@@ -1,9 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo2 from "../../../assets/logo2.png";
+import { BsPersonFill } from 'react-icons/bs';
+import { AiFillCreditCard } from 'react-icons/ai'
+import Button from '../../../components/Button';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,18 +44,49 @@ const Icon = styled.button`
   width: 60px;
   height: 60px;
   border: 1px solid black;
+  font-size: 40px;
+  text-align: center;
+  line-height: 65px;
+`
+
+const Btn = styled(Button)`
+  position: absolute;
+  bottom: 15px;
+  font-size: 12px;
+  padding: 7px 12px;
+  background-color: ${props => props.isAuthenticated === true && '#f08684'};
+  :hover {
+      background: ${props => props.isAuthenticated === true && '#ff6965'};;
+  }
 `
 
 function InfoBar(props) {
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+
   return (
     <Container>
       <Link to='/'>
         <Logo />
       </Link>
-      <Icon />
-      <Link to='/mypage'>
-        <Icon />
-      </Link>
+      <Icon>
+        <AiFillCreditCard />
+      </Icon>
+      {
+        isAuthenticated && (
+          <Link to='/mypage'>
+            <Icon>
+              <BsPersonFill />
+            </Icon>
+          </Link>
+        )
+      }
+      
+      {
+        isAuthenticated === true ?
+        <Btn isAuthenticated={isAuthenticated} onClick={logout}>로그아웃</Btn> :
+        <Btn isAuthenticated={isAuthenticated} onClick={() => navigate('/login')}>로그인</Btn>
+      }
     </Container>
   );
 }
