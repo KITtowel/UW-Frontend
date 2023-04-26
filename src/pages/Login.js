@@ -5,7 +5,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import KakaoLogin from "react-kakao-login";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
 import { RiUser6Line, RiLockLine } from "react-icons/ri";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { BsCheckCircleFill, BsCheckCircle } from "react-icons/bs";
@@ -183,7 +182,7 @@ function Login() {
     login();
 
     // try {
-    //   const response = await axios.post(`${API_BASE_URL}/users/login/`, {
+    //   const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/login/`, {
     //     username,
     //     password,
     //   });
