@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { MdGpsFixed } from 'react-icons/md'
 import { Map, MapMarker, MapTypeControl, MarkerClusterer, ZoomControl } from 'react-kakao-maps-sdk';
+import axios from 'axios';
 
 const CurPosBtn = styled.button`
   position: absolute;
@@ -91,11 +92,32 @@ function KakaoMap(props) {
     setIsCenter(true);
   }
 
+
+  const handleSubmit = async event => {
+    // event.preventDefault();
+    
+    const res = await axios.post(`http://${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
+      'latitude': parseFloat(curPos.lat),
+      'longitude': parseFloat(curPos.lng)
+    });
+    setPosition(res.data.results);
+    console.log(res.data.results);
+  };
+
   // 가맹점 정보를 받아옴
   useEffect(() => {
-    fetch("/")
-      .then((res) => res.json())
-      .then((data) => setPosition(data));
+    // fetch("/")
+    //   .then((res) => res.json())
+    //   .then((data) => setPosition(data));
+
+    // const res = axios.get(`http://${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
+    //   "latitude": curPos.lat,
+    //   "longitude": curPos.lng
+    // });
+    handleSubmit();
+    // console.log(res);
+
+    
   }, []);
 
   //지도의 중심이 현재위치인지를 판단
@@ -134,10 +156,10 @@ function KakaoMap(props) {
         >
           {position.map((pos) => (
             <MapMarker
-              key={`${pos.lat} - ${pos.lng}`}
+              key={`${pos.latitude} - ${pos.longitude}`}
               position={{
-                lat: pos.lat,
-                lng: pos.lng,
+                lat: String(pos.latitude),
+                lng: String(pos.longitude),
               }}
             />
           ))}

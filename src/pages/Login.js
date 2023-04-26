@@ -179,20 +179,20 @@ function Login() {
   const handleSubmit = async event => {
     event.preventDefault();
     console.log("버튼 눌림");
-    login();
+    // login();
 
-    // try {
-    //   const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/login/`, {
-    //     username,
-    //     password,
-    //   });
-    //   console.log(response);
-    //   const receivedToken = response.data.token;
-    //   setToken(receivedToken);
-    //   login();
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/login/`, {
+        username,
+        password,
+      });
+      console.log(response);
+      const receivedToken = response.data.token;
+      setToken(receivedToken);
+      login();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
