@@ -12,7 +12,6 @@ import { RiThumbUpFill, RiThumbUpLine } from "react-icons/ri";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { Pagination } from "../components";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
 
 const cityOptions = {
   경상북도: [
@@ -367,7 +366,7 @@ function MyPage() {
 
   const handleSubmit4 = async () => {
     try {
-      await axios.delete(`${API_BASE_URL}/users/profile/{user}/`, {
+      await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/users/profile/{user}/`, {
         data: { password, reason },
       });
     } catch (error) {
