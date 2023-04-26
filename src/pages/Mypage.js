@@ -3,14 +3,16 @@ import styled from "styled-components";
 import Logo from "../assets/logo.png";
 import User from "../components/User";
 import Select from "../components/Select";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo2 from "../assets/logo2.png";
-import Profile from "../assets/profile.png";
+import DefaultProfilePicture from "../assets/profile.png";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import { RiThumbUpFill, RiThumbUpLine } from "react-icons/ri";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { Pagination } from "../components";
+import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 const cityOptions = {
   경상북도: [
@@ -112,7 +114,7 @@ const CancleButton = styled.button`
 
 const EditButton = styled.button`
   display: inline-block;
-  margin: 30px 5px;
+  margin: 20px 35px;
   padding: 6px 30px;
   color: #636363;
   font-weight: 600;
@@ -126,26 +128,6 @@ const EditButton = styled.button`
   transition: all 0.3s ease-out;
   :hover {
     background: #636363;
-    color: #fff;
-  }
-`;
-
-const DeleteButton = styled.button`
-  display: inline-block;
-  margin: 5px;
-  padding: 6px 30px;
-  color: #ff0000;
-  font-weight: 600;
-  text-transform: uppercase;
-  background: #fff;
-  border: 1px solid;
-  border-radius: 5px;
-  outline: 0;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-out;
-  :hover {
-    background: #ff0000;
     color: #fff;
   }
 `;
@@ -257,14 +239,22 @@ const List = styled.div`
 `;
 
 function MyPage() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [userData, setUserData] = useState({
-    profilePicture: "",
     nickname: "",
+    location: "",
+    location2: "",
+    image: "",
   });
+  const [profilePicture, setProfilePicture] = useState(DefaultProfilePicture);
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [activeTab, setActiveTab] = useState("myinfo");
+  const [nickname, setNickname] = useState(userData.nickname);
+  const [location, setLocation] = useState("");
+  const [location2, setLocation2] = useState("");
+  const [image, setImage] = useState(profilePicture);
 
   const [data, setData] = useState([
     {
@@ -314,6 +304,10 @@ function MyPage() {
     },
   ]);
 
+  const handleCancel = () => {
+    navigate(-1);
+  };
+
   const handleLike = id => {
     const newData = data.map(item => {
       if (item.id === id) {
@@ -332,6 +326,35 @@ function MyPage() {
     setSelectedCity("");
   };
 
+  const handleImageChange = e => {
+    setImage(URL.createObjectURL(e.target.files[0]));
+  };
+
+  const handleNicknameChange = e => {
+    setNickname(e.target.value);
+  };
+
+  const handleLocationChange = e => {
+    setLocation(e.target.value);
+  };
+
+  const handleLocation2Change = e => {
+    setLocation2(e.target.value);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await axios.put(`${API_BASE_URL}/users/profile/{user}/`, {
+        nickname,
+        location,
+        location2,
+        image,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleCityChange = e => {
     setSelectedCity(e.target.value);
   };
@@ -341,10 +364,26 @@ function MyPage() {
   };
 
   useEffect(() => {
-    setUserData({
-      profilePicture: Profile,
-      nickname: "uw",
-    });
+    async function fetchUserData() {
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/users/profile/{user}/`
+        );
+
+        if (response.data.success) {
+          const { nickname, location, location2, image } = response.data;
+          setUserData({ nickname, location, location2, image });
+          setProfilePicture(image || DefaultProfilePicture);
+        } else {
+          alert("사용자 데이터를 가져오는데 실패했습니다.");
+        }
+      } catch (error) {
+        console.error(error);
+        alert("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
+      }
+    }
+
+    fetchUserData();
   }, []);
 
   return (
@@ -382,23 +421,34 @@ function MyPage() {
                 <TableRow>
                   <TableHeader>프로필 사진</TableHeader>
                   <TableCell>
-                    <ProfilePicture src={userData.profilePicture} />
+                    <ProfilePicture src={image} />
                     <div>
-                      <EditButton>수정</EditButton>
-                      <DeleteButton>삭제</DeleteButton>
+                      <label htmlFor="imageInput">
+                        <EditButton as="span">이미지 선택</EditButton>
+                      </label>
+                      <input
+                        type="file"
+                        id="imageInput"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        style={{ display: "none" }}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableHeader>닉네임</TableHeader>
                   <TableCell>
-                    <Input placeholder={userData.nickname}></Input>
+                    <Input
+                      placeholder={userData.nickname}
+                      value={nickname}
+                      onChange={handleNicknameChange}></Input>
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableHeader>현재 거주 지역</TableHeader>
                   <TableCell>
-                    <Select id="province" onChange={handleProvinceChange}>
+                    <Select id="province" onChange={handleLocationChange}>
                       <option value="">도 선택</option>
                       {Object.keys(cityOptions).map(province => (
                         <option key={province} value={province}>
@@ -406,7 +456,7 @@ function MyPage() {
                         </option>
                       ))}
                     </Select>
-                    <Select id="city">
+                    <Select id="city" onChange={handleLocation2Change}>
                       <option value="">시/군/구 선택</option>
                       {selectedProvince === ""
                         ? Object.values(cityOptions)
@@ -424,20 +474,11 @@ function MyPage() {
                     </Select>
                   </TableCell>
                 </TableRow>
-                <TableRow>
-                  <TableHeader>비밀번호 변경</TableHeader>
-                  <TableCell>
-                    <Input placeholder="현재 비밀번호"></Input>
-                    <Input placeholder="새 비밀번호"></Input>
-                    <Input placeholder="새 비밀번호 확인"></Input>
-                  </TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
               </tbody>
             </Table>
             <Center>
-              <ConfirmButton>확인</ConfirmButton>
-              <CancleButton>취소</CancleButton>
+              <ConfirmButton onClick={handleSubmit}>확인</ConfirmButton>
+              <CancleButton onClick={handleCancel}>취소</CancleButton>
             </Center>
           </div>
         )}
