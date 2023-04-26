@@ -114,6 +114,7 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [location2, setLocation2] = useState("");
+  const navigate = useNavigate();
 
   const handleNicknameChange = e => {
     setNickname(e.target.value);
@@ -146,16 +147,18 @@ function Signup() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/register/`, {
-      nickname: nickname,
-      username: username,
-      password: password,
-      password2: password2,
-      email: email,
-      location: location,
-      location2: location2,
-    });
-    console.log(response);
+    navigate("/");
+
+    // const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/register/`, {
+    //   nickname: nickname,
+    //   username: username,
+    //   password: password,
+    //   password2: password2,
+    //   email: email,
+    //   location: location,
+    //   location2: location2,
+    // });
+    // console.log(response);
   };
 
   return (
