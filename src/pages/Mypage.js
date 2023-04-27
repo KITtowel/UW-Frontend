@@ -253,6 +253,7 @@ function MyPage() {
     location2: "",
     image: "",
   });
+  const [isImageChanged, setIsImageChanged] = useState(false);
   const [profilePicture, setProfilePicture] = useState(DefaultProfilePicture);
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
@@ -271,7 +272,22 @@ function MyPage() {
 
   // 기본
   const handleTabClick = tab => {
+    resetInputFields();
+    setProfilePicture(userData.image || DefaultProfilePicture);
     setActiveTab(tab);
+  };
+
+  const resetInputFields = () => {
+    setOldPassword("");
+    setNewPassword("");
+    setNewPasswordConfirm("");
+    setProfilePicture(userData.image || DefaultProfilePicture);
+    setNickname("");
+    setSelectedProvince("");
+    setIsChanged(false);
+    setPassword("");
+    setReason("");
+    setShowOtherInput(false);
   };
 
   // 후기 목록
@@ -345,8 +361,13 @@ function MyPage() {
     setSelectedProvince(e.target.value);
     setSelectedCity("");
   };
-  const handleImageChange = e => {
-    setImage(URL.createObjectURL(e.target.files[0]));
+  const handleImageChange = async e => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const imageURL = URL.createObjectURL(file);
+      setProfilePicture(imageURL);
+      setIsImageChanged(true);
+    }
   };
   const handleNicknameChange = e => {
     setNickname(e.target.value);
@@ -456,16 +477,13 @@ function MyPage() {
       userData.nickname !== nickname ||
       userData.location !== location ||
       userData.location2 !== location2 ||
-      profilePicture !== image ||
-      oldPassword.length > 0 ||
-      newPassword.length > 0 ||
-      newPasswordConfirm.length > 0
+      isImageChanged
     ) {
       setIsChanged(true);
     } else {
       setIsChanged(false);
     }
-  }, [userData, nickname, location, location2, image]);
+  }, [userData, nickname, location, location2, isImageChanged]);
 
   useEffect(() => {
     if (
@@ -495,27 +513,27 @@ function MyPage() {
         </Link>
         <NavButton
           selected={activeTab === "myinfo"}
-          onClick={() => setActiveTab("myinfo")}>
+          onClick={() => handleTabClick("myinfo", resetInputFields)}>
           내 정보
         </NavButton>
         <NavButton
           selected={activeTab === "likes"}
-          onClick={() => setActiveTab("likes")}>
+          onClick={() => handleTabClick("likes", resetInputFields)}>
           좋아요 목록
         </NavButton>
         <NavButton
           selected={activeTab === "reviews"}
-          onClick={() => setActiveTab("reviews")}>
+          onClick={() => handleTabClick("reviews", resetInputFields)}>
           후기 목록
         </NavButton>
         <NavButton
           selected={activeTab === "changepw"}
-          onClick={() => setActiveTab("changepw")}>
+          onClick={() => handleTabClick("changepw", resetInputFields)}>
           비밀번호 변경
         </NavButton>
         <NavButton
           selected={activeTab === "withdrawal"}
-          onClick={() => setActiveTab("withdrawal")}>
+          onClick={() => handleTabClick("withdrawal", resetInputFields)}>
           회원 탈퇴
         </NavButton>
       </Header>
@@ -527,7 +545,7 @@ function MyPage() {
                 <TableRow>
                   <TableHeader>프로필 사진</TableHeader>
                   <TableCell>
-                    <ProfilePicture src={image} />
+                    <ProfilePicture src={profilePicture} />
                     <div>
                       <label htmlFor="imageInput">
                         <EditButton as="span">이미지 선택</EditButton>
