@@ -267,6 +267,7 @@ function MyPage() {
   // 회원 탈퇴
   const [password, setPassword] = useState("");
   const [reason, setReason] = useState("");
+  const [showOtherInput, setShowOtherInput] = useState(false);
 
   // 기본
   const handleTabClick = tab => {
@@ -368,14 +369,6 @@ function MyPage() {
     setNewPasswordConfirm(e.target.value);
   };
 
-  // 회원 탈퇴
-  const handlePasswordChange = e => {
-    setPassword(e.target.value);
-  };
-  const handleReasonChange = e => {
-    setReason(e.target.value);
-  };
-
   // 내 정보
   const handleSubmit1 = async () => {
     try {
@@ -423,6 +416,17 @@ function MyPage() {
       console.error(error);
     }
   };
+  const handlePasswordChange = e => {
+    setPassword(e.target.value);
+  };
+  const handleReasonChange = e => {
+    setReason(e.target.value);
+    if (e.target.value === "other") {
+      setShowOtherInput(true);
+    } else {
+      setShowOtherInput(false);
+    }
+  };
 
   useEffect(() => {
     async function fetchUserData() {
@@ -455,26 +459,33 @@ function MyPage() {
       profilePicture !== image ||
       oldPassword.length > 0 ||
       newPassword.length > 0 ||
-      newPasswordConfirm.length > 0 ||
-      password.length > 0 ||
-      reason !== ""
+      newPasswordConfirm.length > 0
     ) {
       setIsChanged(true);
     } else {
       setIsChanged(false);
     }
-  }, [
-    userData,
-    nickname,
-    location,
-    location2,
-    image,
-    oldPassword,
-    newPassword,
-    newPasswordConfirm,
-    password,
-    reason,
-  ]);
+  }, [userData, nickname, location, location2, image]);
+
+  useEffect(() => {
+    if (
+      oldPassword.length > 0 &&
+      newPassword.length > 0 &&
+      newPasswordConfirm.length > 0
+    ) {
+      setIsChanged(true);
+    } else {
+      setIsChanged(false);
+    }
+  }, [oldPassword, newPassword, newPasswordConfirm]);
+
+  useEffect(() => {
+    if (password.length > 0 && reason !== "") {
+      setIsChanged(true);
+    } else {
+      setIsChanged(false);
+    }
+  }, [password, reason]);
 
   return (
     <>
@@ -703,7 +714,6 @@ function MyPage() {
               value={password}
               onChange={handlePasswordChange}
             />
-
             <Label htmlFor="reason">탈퇴 사유</Label>
             <Select
               style={{ width: "220px" }}
@@ -711,10 +721,25 @@ function MyPage() {
               value={reason}
               onChange={handleReasonChange}>
               <option value="">-- 탈퇴 사유 선택 --</option>
-              <option value="reason1">이유 1</option>
-              <option value="reason2">이유 2</option>
-              <option value="reason3">이유 3</option>
+              <option value="no_longer_needed">
+                서비스를 더 이상 사용하지 않음
+              </option>
+              <option value="privacy_concerns">개인정보 관련 우려</option>
+              <option value="difficulty_of_use">사용하기 어려움</option>
+              <option value="found_alternative">다른 서비스로 이동</option>
+              <option value="technical_issues">기술적 문제</option>
+              <option value="other">기타 (직접 입력)</option>
             </Select>
+            {showOtherInput && (
+              <>
+                <Label htmlFor="otherReason">기타 사유 입력</Label>
+                <InputCenter
+                  type="text"
+                  id="otherReason"
+                  placeholder="탈퇴 사유를 직접 입력해주세요."
+                />
+              </>
+            )}
             <Center>
               {isChanged ? (
                 <>
