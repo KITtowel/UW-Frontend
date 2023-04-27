@@ -80,26 +80,57 @@ const Title = styled.h1`
 `;
 
 function FindPw() {
+  async function handleEmailSubmit(e) {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/users/password_reset/`,
+        {
+          email: e.target.email.value,
+        }
+      );
+
+      if (response.data.success) {
+        alert("이메일이 성공적으로 전송되었습니다.");
+      } else {
+        alert("이메일 전송에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
+    }
+  }
+
   return (
     <>
       <Link to="/">
         <Logo src={Logo2} />
       </Link>
       <Container>
-        <Title>비밀번호 찾기</Title>
-        <form>
-          <div>
-            <Label>아이디</Label>
-            <Input type="text" />
-          </div>
+        <Title>비밀번호 재설정</Title>
+        <form onSubmit={handleEmailSubmit}>
           <div>
             <Label htmlFor="email">이메일</Label>
-            <Input type="email" />
+            <Input
+              type="email"
+              name="email"
+              style={{ display: "inline", width: "75%", marginRight: "10px" }}
+            />
+            <Button
+              type="submit"
+              style={{
+                display: "inline",
+                width: "20%",
+                padding: "13px 0",
+                borderRadius: "3px",
+                margin: "0",
+              }}>
+              확인
+            </Button>
           </div>
         </form>
       </Container>
-
-      <Button type="submit">확인</Button>
     </>
   );
 }

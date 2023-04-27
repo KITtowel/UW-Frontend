@@ -12,6 +12,7 @@ import { RiThumbUpFill, RiThumbUpLine } from "react-icons/ri";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { Pagination } from "../components";
 import axios from "axios";
+import { API_BASE_URL } from "../config";
 
 const cityOptions = {
   경상북도: [
@@ -71,7 +72,7 @@ const NavButton = styled.button`
   vertical-align: top;
 `;
 
-const ConfirmButton = styled.button`
+const DisableButton = styled.button`
   display: inline-block;
   margin: 5px;
   padding: 6px 30px;
@@ -86,12 +87,11 @@ const ConfirmButton = styled.button`
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-out;
   :hover {
-    background: #969696;
-    color: #fff;
+    cursor: not-allowed;
   }
 `;
 
-const CancleButton = styled.button`
+const AbleButton = styled.button`
   display: inline-block;
   margin: 30px 5px;
   padding: 6px 30px;
@@ -178,11 +178,11 @@ const Input = styled.input`
 
 const InputCenter = styled.input`
   display: block;
-  width: 160px;
+  width: 220px;
   padding: 11px 13px;
   background: #f9f9fa;
   color: #9dc3e6;
-  margin: 5px auto 35px auto;
+  margin: 5px auto 25px auto;
   border-radius: 4px;
   outline: 0;
   border: 1px solid rgba(245, 245, 245, 0.7);
@@ -238,8 +238,15 @@ const List = styled.div`
 `;
 
 function MyPage() {
+  // 기본
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
+  const [isChanged, setIsChanged] = useState(false);
+  const [activeTab, setActiveTab] = useState("myinfo");
+  const handleCancel = () => {
+    navigate(-1);
+  };
+  // 내 정보
   const [userData, setUserData] = useState({
     nickname: "",
     location: "",
@@ -249,14 +256,24 @@ function MyPage() {
   const [profilePicture, setProfilePicture] = useState(DefaultProfilePicture);
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
-  const [activeTab, setActiveTab] = useState("myinfo");
   const [nickname, setNickname] = useState(userData.nickname);
   const [location, setLocation] = useState("");
   const [location2, setLocation2] = useState("");
   const [image, setImage] = useState(profilePicture);
+  // 비밀번호 변경
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
+  // 회원 탈퇴
   const [password, setPassword] = useState("");
   const [reason, setReason] = useState("");
 
+  // 기본
+  const handleTabClick = tab => {
+    setActiveTab(tab);
+  };
+
+  // 후기 목록
   const [data, setData] = useState([
     {
       id: 1,
@@ -305,10 +322,7 @@ function MyPage() {
     },
   ]);
 
-  const handleCancel = () => {
-    navigate(-1);
-  };
-
+  // 좋아요 목록
   const handleLike = id => {
     const newData = data.map(item => {
       if (item.id === id) {
@@ -322,38 +336,50 @@ function MyPage() {
     setData(newData);
   };
 
+  // 내 정보
+  const handleCityChange = e => {
+    setSelectedCity(e.target.value);
+  };
   const handleProvinceChange = e => {
     setSelectedProvince(e.target.value);
     setSelectedCity("");
   };
-
   const handleImageChange = e => {
     setImage(URL.createObjectURL(e.target.files[0]));
   };
-
   const handleNicknameChange = e => {
     setNickname(e.target.value);
   };
-
   const handleLocationChange = e => {
     setLocation(e.target.value);
   };
-
   const handleLocation2Change = e => {
     setLocation2(e.target.value);
   };
 
+  //비밀번호 변경
+  const handleOldPasswordChange = e => {
+    setOldPassword(e.target.value);
+  };
+  const handleNewPasswordChange = e => {
+    setNewPassword(e.target.value);
+  };
+  const handleNewPasswordConfirmChange = e => {
+    setNewPasswordConfirm(e.target.value);
+  };
+
+  // 회원 탈퇴
   const handlePasswordChange = e => {
     setPassword(e.target.value);
   };
-
   const handleReasonChange = e => {
     setReason(e.target.value);
   };
 
-  const handleSubmit = async () => {
+  // 내 정보
+  const handleSubmit1 = async () => {
     try {
-      await axios.put(`${process.env.REACT_APP_API_BASE_URL}/users/profile/13/`, {
+      await axios.put(`${API_BASE_URL}/users/profile/{user}/`, {
         nickname,
         location,
         location2,
@@ -364,9 +390,33 @@ function MyPage() {
     }
   };
 
-  const handleSubmit4 = async () => {
+  // 비밀번호 변경
+  const handleSubmit2 = async () => {
     try {
-      await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/users/profile/{user}/`, {
+      const response = await axios.patch(
+        `${API_BASE_URL}/users/password_change/`,
+        {
+          old_password: oldPassword,
+          new_password: newPassword,
+          new_password_confirm: newPasswordConfirm,
+        }
+      );
+
+      if (response.data.success) {
+        console.log("비밀번호가 성공적으로 변경되었습니다.");
+      } else {
+        console.log("비밀번호 변경에 실패했습니다.");
+      }
+    } catch (error) {
+      console.error(error);
+      console.log("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  // 회원 탈퇴
+  const handleSubmit3 = async () => {
+    try {
+      await axios.delete(`${API_BASE_URL}/users/profile/{user}/`, {
         data: { password, reason },
       });
     } catch (error) {
@@ -374,19 +424,11 @@ function MyPage() {
     }
   };
 
-  const handleCityChange = e => {
-    setSelectedCity(e.target.value);
-  };
-
-  const handleTabClick = tab => {
-    setActiveTab(tab);
-  };
-
   useEffect(() => {
     async function fetchUserData() {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_BASE_URL}/users/profile/13/`
+          `${API_BASE_URL}/users/profile/{user}/`
         );
 
         if (response.data.success) {
@@ -394,16 +436,45 @@ function MyPage() {
           setUserData({ nickname, location, location2, image });
           setProfilePicture(image || DefaultProfilePicture);
         } else {
-          alert("사용자 데이터를 가져오는데 실패했습니다.");
+          console.log("사용자 데이터를 가져오는데 실패했습니다.");
         }
       } catch (error) {
         console.error(error);
-        alert("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
+        console.log("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
       }
     }
 
     fetchUserData();
   }, []);
+
+  useEffect(() => {
+    if (
+      userData.nickname !== nickname ||
+      userData.location !== location ||
+      userData.location2 !== location2 ||
+      profilePicture !== image ||
+      oldPassword.length > 0 ||
+      newPassword.length > 0 ||
+      newPasswordConfirm.length > 0 ||
+      password.length > 0 ||
+      reason !== ""
+    ) {
+      setIsChanged(true);
+    } else {
+      setIsChanged(false);
+    }
+  }, [
+    userData,
+    nickname,
+    location,
+    location2,
+    image,
+    oldPassword,
+    newPassword,
+    newPasswordConfirm,
+    password,
+    reason,
+  ]);
 
   return (
     <>
@@ -425,6 +496,11 @@ function MyPage() {
           selected={activeTab === "reviews"}
           onClick={() => setActiveTab("reviews")}>
           후기 목록
+        </NavButton>
+        <NavButton
+          selected={activeTab === "changepw"}
+          onClick={() => setActiveTab("changepw")}>
+          비밀번호 변경
         </NavButton>
         <NavButton
           selected={activeTab === "withdrawal"}
@@ -468,7 +544,7 @@ function MyPage() {
                   <TableHeader>현재 거주 지역</TableHeader>
                   <TableCell>
                     <Select id="province" onChange={handleLocationChange}>
-                      <option value="">도 선택</option>
+                      <option value="">시/도 선택</option>
                       {Object.keys(cityOptions).map(province => (
                         <option key={province} value={province}>
                           {province}
@@ -496,8 +572,17 @@ function MyPage() {
               </tbody>
             </Table>
             <Center>
-              <ConfirmButton onClick={handleSubmit}>확인</ConfirmButton>
-              <CancleButton onClick={handleCancel}>취소</CancleButton>
+              {isChanged ? (
+                <>
+                  <AbleButton onClick={handleSubmit1}>확인</AbleButton>
+                  <AbleButton onClick={handleCancel}>취소</AbleButton>
+                </>
+              ) : (
+                <>
+                  <DisableButton disabled>확인</DisableButton>
+                  <AbleButton onClick={handleCancel}>취소</AbleButton>
+                </>
+              )}
             </Center>
           </div>
         )}
@@ -574,6 +659,41 @@ function MyPage() {
             ))}
           </div>
         )}
+        {activeTab === "changepw" && (
+          <Wrapper>
+            <InputCenter
+              type="password"
+              placeholder="현재 비밀번호"
+              value={oldPassword}
+              onChange={handleOldPasswordChange}
+            />
+            <InputCenter
+              type="password"
+              placeholder="변경 비밀번호"
+              value={newPassword}
+              onChange={handleNewPasswordChange}
+            />
+            <InputCenter
+              type="password"
+              placeholder="변경 비밀번호 재입력"
+              value={newPasswordConfirm}
+              onChange={handleNewPasswordConfirmChange}
+            />
+            <Center>
+              {isChanged ? (
+                <>
+                  <AbleButton onClick={handleSubmit2}>확인</AbleButton>
+                  <AbleButton onClick={handleCancel}>취소</AbleButton>
+                </>
+              ) : (
+                <>
+                  <DisableButton disabled>확인</DisableButton>
+                  <AbleButton onClick={handleCancel}>취소</AbleButton>
+                </>
+              )}
+            </Center>
+          </Wrapper>
+        )}
         {activeTab === "withdrawal" && (
           <Wrapper>
             <Label htmlFor="password">비밀번호 입력</Label>
@@ -585,15 +705,28 @@ function MyPage() {
             />
 
             <Label htmlFor="reason">탈퇴 사유</Label>
-            <Select id="reason" value={reason} onChange={handleReasonChange}>
+            <Select
+              style={{ width: "220px" }}
+              id="reason"
+              value={reason}
+              onChange={handleReasonChange}>
               <option value="">-- 탈퇴 사유 선택 --</option>
               <option value="reason1">이유 1</option>
               <option value="reason2">이유 2</option>
               <option value="reason3">이유 3</option>
             </Select>
             <Center>
-              <ConfirmButton onClick={handleSubmit4}>확인</ConfirmButton>
-              <CancleButton onClick={handleCancel}>취소</CancleButton>
+              {isChanged ? (
+                <>
+                  <AbleButton onClick={handleSubmit3}>확인</AbleButton>
+                  <AbleButton onClick={handleCancel}>취소</AbleButton>
+                </>
+              ) : (
+                <>
+                  <DisableButton disabled>확인</DisableButton>
+                  <AbleButton onClick={handleCancel}>취소</AbleButton>
+                </>
+              )}
             </Center>
           </Wrapper>
         )}
