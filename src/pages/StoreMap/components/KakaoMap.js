@@ -38,6 +38,8 @@ function KakaoMap(props) {
     isLoading: true,
     isPanto: true,
     level: 2,
+    sw: null,
+    ne: null,
   })
 
   //현재 위치의 좌표를 설정함
@@ -640,13 +642,17 @@ function KakaoMap(props) {
 
   return (
     <>
-      {/* <div id="container" ref={container} /> */}
       <Map
         center={state.center} //map 중앙값 설정
         style={{width: "100vw", height: "100vh"}} //map 사이즈 설정
         level={state.level} //map 확대 레벨 설정
         isPanto={state.isPanto}
         onCenterChanged={(map) => getIsCenter(map.getCenter().getLat(), map.getCenter().getLng())} //지도의 중심이 현재 위치인지를 판단
+        onBoundsChanged={(map) => setState((prev) => ({
+            ...prev,
+            sw: map.getBounds().getSouthWest().toString(),
+            ne: map.getBounds().getNorthEast().toString(),
+          }))}
       >
         <ZoomControl position={kakao.maps.ControlPosition.RIGHT} />
         <MapTypeControl position={kakao.maps.ControlPosition.TOPRIGHT} />
