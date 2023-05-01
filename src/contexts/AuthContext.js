@@ -1,28 +1,42 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
-export function useAuth() {
+export const useAuth = () => {
   return useContext(AuthContext);
-}
+};
 
-export function AuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.getItem("isAuthenticated") || false
-  );
+export const AuthProvider = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState(null);
 
-  const login = () => {
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");
+    const rememberMe = localStorage.getItem("rememberMe");
+    if (storedToken && rememberMe === "true") {
+      setToken(storedToken);
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const login = token => {
+    setToken(token);
     setIsAuthenticated(true);
-    localStorage.setItem("isAuthenticated", true);
+    if (localStorage.getItem("rememberMe") === "true") {
+      localStorage.setItem("authToken", token);
+    }
   };
 
   const logout = () => {
     setIsAuthenticated(false);
-    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("token");
   };
 
-  // const value = { isAuthenticated, login, logout };
-  const value = useMemo(() => ({isAuthenticated, login, logout}), [isAuthenticated, login, logout]);
+  const value = {
+    isAuthenticated,
+    login,
+    logout,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
+};

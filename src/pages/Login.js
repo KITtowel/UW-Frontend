@@ -97,8 +97,8 @@ const InputTop = styled.input`
 `;
 
 const InputBottom = styled.input`
-width: 100%;
-padding: 11px 13px 11px 35px;
+  width: 100%;
+  padding: 11px 13px 11px 35px;
   background: #f9f9fa;
   color: #9dc3e6;
   border-radius: 0 0 4px 4px;
@@ -166,6 +166,12 @@ function Login() {
 
   const handleChecked = e => {
     setIsChecked(e.target.checked);
+    console.log("체크");
+    if (e.target.checked) {
+      localStorage.setItem("rememberMe", "true");
+    } else {
+      localStorage.removeItem("rememberMe");
+    }
   };
 
   const handleUsernameChange = event => {
@@ -179,20 +185,21 @@ function Login() {
   const handleSubmit = async event => {
     event.preventDefault();
     console.log("버튼 눌림");
-    login();
 
-    // try {
-    //   const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/login/`, {
-    //     username,
-    //     password,
-    //   });
-    //   console.log(response);
-    //   const receivedToken = response.data.token;
-    //   setToken(receivedToken);
-    //   login();
-    // } catch (error) {
-    //   console.error(error);
-    // }
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/users/login/`,
+        {
+          username,
+          password,
+        }
+      );
+      console.log(response);
+      const receivedToken = response.data.token;
+      login(receivedToken);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -244,7 +251,9 @@ function Login() {
               </label>
             </form>
           </Check>
-          <Button type="button" onClick={handleSubmit}>로그인</Button>
+          <Button type="button" onClick={handleSubmit}>
+            로그인
+          </Button>
           <div>
             <NaverIcon>
               <SiNaver />
