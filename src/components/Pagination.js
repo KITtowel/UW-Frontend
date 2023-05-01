@@ -6,7 +6,7 @@ const Nav = styled.nav`
   justify-content: center;
   align-items: center;
   gap: 4px;
-  margin: 16px;
+  margin: 10px;
 `;
 
 const Button = styled.button`

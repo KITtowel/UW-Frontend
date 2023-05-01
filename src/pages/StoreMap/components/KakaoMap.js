@@ -126,7 +126,7 @@ function KakaoMap(props) {
   const getIsCenter = (moveLat, moveLng) => {
     let tempLat = Math.abs(curPos.lat - moveLat);
     let tempLng = Math.abs(curPos.lng - moveLng);
-    if(tempLat > 0.000005 || tempLng > 0.000005) {
+    if(tempLat > 0.00005 || tempLng > 0.00005) {
       setIsCenter(false);
     } else {
       setIsCenter(true);

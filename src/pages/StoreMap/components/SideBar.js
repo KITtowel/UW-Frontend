@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { BsSearch } from "react-icons/bs";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io"
 import { Pagination } from '../../../components';
+import DetailStore from './DetailStore';
 
 const Container = styled.div`
   position: fixed;
@@ -16,13 +17,13 @@ const Container = styled.div`
   left: 80px;
   transition: 0.4s ease;
   z-index: 4;
-  transform: ${(props) => props.isOpen  ? "translateX(0px)" : "translateX(-269px)"};
+  transform: ${(props) => props.isOpen  ? "translateX(0px)" : props.isDetailOpen ? "translateX(-619px)" : "translateX(-269px)"};
 `;
 
 const SideButton = styled.button`
   position: fixed;
   padding: 0;
-  left: 269px;
+  left: ${(props) => props.isDetailOpen ? '619px' : '269px'};
   top: 50%;
   width: 20px;
   height: 50px;
@@ -78,7 +79,7 @@ const TagList = styled.ul`
   justify-content: center;
   flex-wrap: wrap;
   padding-bottom: 10px;
-  border-bottom: 1px solid black;
+  border-bottom: 1.5px solid #aeaeae;
 `;
 
 const Tag = styled.li`
@@ -92,20 +93,22 @@ const Tag = styled.li`
 `;
 
 const StoreList = styled.ul`
-  height: calc(100vh - 115px);
-  overflow: scroll;
+  height: calc(100vh - 190px);
+  overflow: auto;
+  border-bottom: 1.5px solid #aeaeae;
 `;
 
 const StoreItem = styled.li`
   height: 80px;
   border-bottom: 1px solid #D9D9D9;
-  /* margin: 10px; */
-  margin-left: 10px;
-  margin-right: 10px;
   padding: 20px;
+  padding-left: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
+  :hover {
+    background-color: #D9D9D9;
+  }
 `;
 
 const StoreInfo = styled.div`
@@ -113,8 +116,7 @@ const StoreInfo = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-left: 10px;
-  gap: 5px;
+  gap: 7px;
 `;
 
 const StoreName = styled.h1`
@@ -122,9 +124,13 @@ const StoreName = styled.h1`
   margin-right: 3px;
 `;
 
-const StoreLate = styled.h2``;
+const StoreLate = styled.h2`
+  font-size: 0.95em;
+`;
 
-const StoreLoc = styled.h2``;
+const StoreLoc = styled.h2`
+  font-size: 0.9em;
+`;
 
 const StoreTag = styled.h3`
   align-self: flex-end;
@@ -135,6 +141,7 @@ const StoreTag = styled.h3`
 function SideBar() {
   const [isOpen, setIsOpen] = useState(true);
   const [page, setPage] = useState(1);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
 
@@ -146,13 +153,19 @@ function SideBar() {
     }
   }
 
+  const getDetailPage = () => {
+    setIsDetailOpen((prev) => !prev);
+
+  }
+
   return (
-    <Container isOpen={isOpen} >
-      <SideButton onClick={handleOpen}>
+    <Container isOpen={isOpen} isDetailOpen={isDetailOpen}>
+      <SideButton onClick={handleOpen} isDetailOpen={isDetailOpen}>
         <ArrowIcon>
           {isOpen ? <IoIosArrowBack /> : <IoIosArrowForward />}
         </ArrowIcon>
       </SideButton>
+      {isDetailOpen && <DetailStore />}
       <SearchWrapper>
         <SearchIcon>
           <BsSearch />
@@ -164,23 +177,23 @@ function SideBar() {
         />
       </SearchWrapper>
       <TagList>
-        {tagList.map((tag) => <Tag>{tag}</Tag>)}
+        {tagList.map((tag) => <Tag key={tag.toString()}>{tag}</Tag>)}
       </TagList>
       <StoreList>
         {Array.from({ length: 15 }).map((_, idx) => (
-          <StoreItem>
+          <StoreItem key={idx} onClick={getDetailPage}>
             <StoreInfo>
               <div style={{ display: "flex", justifyContent: "left" }}>
                 <StoreName>GS옥계점</StoreName>
                 <StoreTag>편의점</StoreTag>
               </div>
-              <StoreLate>⭐️ 5.0 (100+)</StoreLate>
               <StoreLoc>경북 구미시 옥계북로 39</StoreLoc>
+              <StoreLate>⭐️ 5.0 (리뷰 100)</StoreLate>
             </StoreInfo>
           </StoreItem>
         ))}
-        <Pagination total={30} limit={15} page={page} setPage={setPage}/>
       </StoreList>
+      <Pagination total={30} limit={15} page={page} setPage={setPage} />
     </Container>
   );
 }

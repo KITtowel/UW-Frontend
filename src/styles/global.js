@@ -3,6 +3,11 @@ import reset from "styled-reset";
 
 const GlobalStyle = createGlobalStyle`
 	${reset};
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
   @font-face {
     font-family: 'Pretendard-Regular';
     src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
