@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Logo from "../assets/logo.png";
 import User from "../components/User";
 import Select from "../components/Select";
+import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import Logo2 from "../assets/logo2.png";
 import DefaultProfilePicture from "../assets/profile.png";
@@ -239,7 +240,13 @@ const List = styled.div`
 
 function MyPage() {
   // 기본
+  const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuthenticated !== true) {
+      navigate("/");
+    }
+  }, [isAuthenticated]);
   const [page, setPage] = useState(1);
   const [isChanged, setIsChanged] = useState(false);
   const [activeTab, setActiveTab] = useState("myinfo");

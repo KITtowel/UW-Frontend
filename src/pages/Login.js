@@ -3,7 +3,6 @@ import styled from "styled-components";
 import LogoBtn from "../components/LogoBtn";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import KakaoLogin from "react-kakao-login";
 import axios from "axios";
 import { RiUser6Line, RiLockLine } from "react-icons/ri";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
@@ -11,6 +10,8 @@ import { BsCheckCircleFill, BsCheckCircle } from "react-icons/bs";
 import Logo2 from "../assets/logo2.png";
 import Kakao from "../assets/kakao.png";
 import Naver from "../assets/naver.png";
+import KakaoLogin from "react-kakao-login";
+import NaverLogin from "react-naver-login";
 
 const Button = styled.button`
   padding: 11px 130px;
@@ -43,21 +44,35 @@ const Icon = styled.span`
   color: #636363;
 `;
 
-const KakaoIcon = styled.div`
-  font-size: 50px;
-  display: inline-block;
-  margin: 30px 15px;
-  text-align: right;
-  color: #ffe810;
-`;
+const KakaoIcon = ({ onClick }) => (
+  <div
+    style={{
+      fontSize: "50px",
+      display: "inline-block",
+      margin: "30px 15px",
+      textAlign: "right",
+      color: "#ffe810",
+      cursor: "pointer",
+    }}
+    onClick={onClick}>
+    <img src={Kakao} width="60px" />
+  </div>
+);
 
-const NaverIcon = styled.div`
-  font-size: 50px;
-  display: inline-block;
-  margin: 30px 15px;
-  text-align: left;
-  color: #03bf19;
-`;
+const NaverIcon = ({ onClick }) => (
+  <div
+    style={{
+      fontSize: "50px",
+      display: "inline-block",
+      margin: "30px 15px",
+      textAlign: "left",
+      color: "#03bf19",
+      cursor: "pointer",
+    }}
+    onClick={onClick}>
+    <img src={Naver} width="60px" />
+  </div>
+);
 
 const Logo = styled.img`
   width: 100px;
@@ -67,14 +82,14 @@ const Logo = styled.img`
 
 const InputIconTop = styled.div`
   position: absolute;
-  top: calc(50% - 100px);
+  top: calc(50% - 105px);
   left: 85px;
   transform: translateY(-45%);
 `;
 
 const InputIconBottom = styled.div`
   position: absolute;
-  top: calc(50% - 60px);
+  top: calc(50% - 65px);
   left: 85px;
   transform: translateY(-45%);
 `;
@@ -182,6 +197,38 @@ function Login() {
     setPassword(event.target.value);
   };
 
+  const handleNaverLogin = async naverUser => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/users/login/naver`,
+        {
+          naverUser,
+        }
+      );
+      const receivedToken = response.data.token;
+      setToken(receivedToken);
+      login();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleKakaoLogin = async response => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/users/login/kakao`,
+        {
+          response,
+        }
+      );
+      const receivedToken = response.data.token;
+      setToken(receivedToken);
+      login();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleSubmit = async event => {
     event.preventDefault();
     console.log("버튼 눌림");
@@ -255,12 +302,20 @@ function Login() {
             로그인
           </Button>
           <div>
-            <NaverIcon>
-              <SiNaver />
-            </NaverIcon>
-            <KakaoIcon>
-              <SiKakaotalk />
-            </KakaoIcon>
+            <NaverLogin
+              clientId="UQKWCQnjAl4O9UKKnuCW"
+              callbackUrl="{}"
+              onSuccess={handleNaverLogin}
+              onFailure={error => console.error(error)}
+              render={({ onClick }) => <NaverIcon onClick={onClick} />}
+            />
+            <KakaoLogin
+              token="40d14ddbb06cd1b64fabd08d69c9c951"
+              onSuccess={handleKakaoLogin}
+              onFail={console.error}
+              onLogout={console.info}
+              render={({ onClick }) => <KakaoIcon onClick={onClick} />}
+            />
           </div>
           <Bottom>
             <Link to="/findid">아이디 찾기</Link> |{" "}

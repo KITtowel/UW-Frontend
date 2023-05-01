@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Select from "../components/Select";
 import { useAuth } from "../contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import NaverLogin from "react-naver-login";
 import KakaoLogin from "react-kakao-login";
 import axios from "axios";
 import Logo2 from "../assets/logo2.png";
@@ -75,6 +76,37 @@ const Button = styled.button`
   }
 `;
 
+const Hr = styled.div`
+  position: relative;
+  color: rgba(0, 0, 0, 0.35);
+  font-size: 12px;
+  margin: 38px 0px;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 500%;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.35);
+    height: 1px;
+    font-size: 0px;
+    line-height: 0px;
+    margin: 0px 140px;
+  }
+
+  &::before {
+    left: 0;
+    transform: translate(-100%, -50%);
+  }
+
+  &::after {
+    right: 0;
+    transform: translate(100%, -50%);
+  }
+`;
+
 const Logo = styled.img`
   width: 100px;
   display: block;
@@ -106,7 +138,22 @@ const Input = styled.input`
   }
 `;
 
+const NaverButton = styled(Button)`
+  background-color: #1ec800;
+  margin: 10px;
+`;
+
+const KakaoButton = styled(Button)`
+  background-color: #ffeb00;
+  color: #000;
+  margin: 10px;
+`;
+
 function Signup() {
+  const locate = useLocation();
+  const navigate = useNavigate();
+
+  const [userData, setUserData] = useState(null);
   const [nickname, setNickname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -114,7 +161,14 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [location2, setLocation2] = useState("");
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (locate.state && locate.state.userData) {
+      setUserData(locate.state.userData);
+      setNickname(locate.state.userData.nickname);
+      setEmail(locate.state.userData.email);
+    }
+  }, [locate.state]);
 
   const handleNicknameChange = e => {
     setNickname(e.target.value);
@@ -168,6 +222,24 @@ function Signup() {
       </Link>
       <form onSubmit={handleSubmit}>
         <Container>
+          <NaverLogin
+            clientId="UQKWCQnjAl4O9UKKnuCW"
+            callbackUrl="{}"
+            render={props => (
+              <NaverButton onClick={props.onClick}>
+                네이버로 회원가입
+              </NaverButton>
+            )}
+          />
+          <KakaoLogin
+            token="40d14ddbb06cd1b64fabd08d69c9c951"
+            render={props => (
+              <KakaoButton onClick={props.onClick}>
+                카카오로 회원가입
+              </KakaoButton>
+            )}
+          />
+          <Hr>또는</Hr>
           <div>
             <Label>닉네임</Label>
             <Input
