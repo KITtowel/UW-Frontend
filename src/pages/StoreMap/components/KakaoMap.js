@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { MdGpsFixed } from 'react-icons/md'
 import { Map, MapMarker, MapTypeControl, MarkerClusterer, ZoomControl } from 'react-kakao-maps-sdk';
 import axios from 'axios';
+import { Current } from '../../../assets/marker';
 
 const CurPosBtn = styled.button`
   position: absolute;
@@ -26,7 +27,7 @@ const CurPosBtn = styled.button`
 
 function KakaoMap(props) {
   const [position, setPosition] = useState([]);
-  const [curPos, setCurPos] = useState({lat: 33.450701, lng: 126.570667});
+  const [curPos, setCurPos] = useState({ lat: 33.450701, lng: 126.570667 });
   const [randValue, setRandValue] = useState(0.000001);
   const [isCenter, setIsCenter] = useState(false);
   const [state, setState] = useState({
@@ -89,7 +90,6 @@ function KakaoMap(props) {
         lat: curPos.lat + randValue,
         lng: curPos.lng + randValue
       },
-      level: 2
     }));
     setIsCenter(true);
   }
@@ -97,7 +97,7 @@ function KakaoMap(props) {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    
+
     const res = await axios.post(`http://${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
       'latitude': parseFloat(curPos.lat),
       'longitude': parseFloat(curPos.lng)
@@ -119,14 +119,14 @@ function KakaoMap(props) {
     // handleSubmit();
     // console.log(res);
 
-    
+
   }, []);
 
   //지도의 중심이 현재위치인지를 판단
   const getIsCenter = (moveLat, moveLng) => {
     let tempLat = Math.abs(curPos.lat - moveLat);
     let tempLng = Math.abs(curPos.lng - moveLng);
-    if(tempLat > 0.00005 || tempLng > 0.00005) {
+    if (tempLat > 0.00005 || tempLng > 0.00005) {
       setIsCenter(false);
     } else {
       setIsCenter(true);
@@ -142,21 +142,31 @@ function KakaoMap(props) {
     <>
       <Map
         center={state.center} //map 중앙값 설정
-        style={{width: "100vw", height: "100vh"}} //map 사이즈 설정
+        style={{ width: "100vw", height: "100vh" }} //map 사이즈 설정
         level={state.level} //map 확대 레벨 설정
         isPanto={state.isPanto}
         onCenterChanged={(map) => getIsCenter(map.getCenter().getLat(), map.getCenter().getLng())} //지도의 중심이 현재 위치인지를 판단
         onBoundsChanged={(map) => setState((prev) => ({
-            ...prev,
-            sw: map.getBounds().getSouthWest().toString(),
-            ne: map.getBounds().getNorthEast().toString(),
-          }))}
+          ...prev,
+          sw: map.getBounds().getSouthWest().toString(),
+          ne: map.getBounds().getNorthEast().toString(),
+        }))}
       >
         <ZoomControl position={kakao.maps.ControlPosition.RIGHT} />
         <MapTypeControl position={kakao.maps.ControlPosition.TOPRIGHT} />
         {!state.isLoading && (
           <MapMarker
             position={state.center}
+            image={{
+              src: Current,
+              size: { wiidth: 48, height: 48 },
+              options: {
+                offset: {
+                  x: 30,
+                  y: 40
+                }
+              }
+            }}
           >
 
           </MapMarker>
@@ -175,6 +185,18 @@ function KakaoMap(props) {
                 lat: String(pos.lat),
                 lng: String(pos.lng)
               }}
+              clickable={true}
+              onClick={() => console.log('hi')}
+              image={{
+                src: Current,
+                size: { wiidth: 48, height: 48 },
+                options: {
+                  offset: {
+                    x: 30,
+                    y: 40
+                  }
+                }
+              }}
             />
           ))}
         </MarkerClusterer>
@@ -183,7 +205,7 @@ function KakaoMap(props) {
         <MdGpsFixed />
       </CurPosBtn>
     </>
-    
+
   );
 }
 

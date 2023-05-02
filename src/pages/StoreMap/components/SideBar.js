@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BsSearch } from "react-icons/bs";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io"
+import { IoIosArrowBack, IoIosArrowForward, IoIosClose } from "react-icons/io";
 import { Pagination } from '../../../components';
 import DetailStore from './DetailStore';
 
@@ -33,7 +33,15 @@ const SideButton = styled.button`
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   background-color: white;
+  cursor: pointer;
 `;
+
+const CloseDetailBtn = styled(SideButton)`
+  left: 619px;
+  top: 3%;
+  width: 45px;
+  height: 45px;
+`
 
 const ArrowIcon = styled.div`
   width: 100%;
@@ -42,6 +50,10 @@ const ArrowIcon = styled.div`
   text-align: center;
   line-height: 55px;
 `
+
+const CloseIcon = styled(ArrowIcon)`
+  font-size: 30px;
+`;
 
 const SearchWrapper = styled.div`
   position: relative;
@@ -124,7 +136,7 @@ const StoreName = styled.h1`
   margin-right: 3px;
 `;
 
-const StoreLate = styled.h2`
+const StoreRate = styled.h2`
   font-size: 0.95em;
 `;
 
@@ -158,6 +170,10 @@ function SideBar() {
 
   }
 
+  const closeDetailPage = () => {
+    setIsDetailOpen(false);
+  }
+
   return (
     <Container isOpen={isOpen} isDetailOpen={isDetailOpen}>
       <SideButton onClick={handleOpen} isDetailOpen={isDetailOpen}>
@@ -166,6 +182,12 @@ function SideBar() {
         </ArrowIcon>
       </SideButton>
       {isDetailOpen && <DetailStore />}
+      {isDetailOpen && isOpen &&
+      <CloseDetailBtn>
+        <CloseIcon onClick={closeDetailPage}>
+          <IoIosClose />
+        </CloseIcon>
+      </CloseDetailBtn>}
       <SearchWrapper>
         <SearchIcon>
           <BsSearch />
@@ -188,7 +210,7 @@ function SideBar() {
                 <StoreTag>편의점</StoreTag>
               </div>
               <StoreLoc>경북 구미시 옥계북로 39</StoreLoc>
-              <StoreLate>⭐️ 5.0 (리뷰 100)</StoreLate>
+              <StoreRate>⭐️ 5.0 (리뷰 100)</StoreRate>
             </StoreInfo>
           </StoreItem>
         ))}
