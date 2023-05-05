@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useAuth } from "../../contexts/AuthContext";
 // import { useNavigate } from "react-router-dom";
@@ -17,11 +17,25 @@ const NearStore = () => {
     // return null;
   }
 
+  const [detailPageInfo, setDetailPageInfo] = useState(null);
+
+  const getStoreDetail = (id) => {
+    console.log(id);
+    setDetailPageInfo(id);
+  }
+
   return (
     <Container>
       <InfoBar />
-      <SideBar />
-      <KakaoMap />
+      <SideBar
+        detailPageInfo={detailPageInfo}
+        setDetailPageInfo={setDetailPageInfo}
+        getStoreDetail={getStoreDetail}
+      />
+      <KakaoMap
+        detailPageInfo={detailPageInfo}
+        getStoreDetail={getStoreDetail}
+      />
     </Container>
   );
 };

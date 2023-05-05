@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Logo from "../assets/logo.png";
-import User from "../components/User";
+// import Logo from "../assets/logo.png";
+// import User from "../components/User";
 import Select from "../components/Select";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
@@ -243,7 +243,7 @@ function MyPage() {
   const navigate = useNavigate();
   useEffect(() => {
     if (isAuthenticated !== true) {
-      navigate("/");
+      // navigate("/");
     }
   }, [isAuthenticated]);
   const [page, setPage] = useState(1);

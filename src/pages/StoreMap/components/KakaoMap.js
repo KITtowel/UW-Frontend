@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { MdGpsFixed } from 'react-icons/md'
 import { Map, MapMarker, MapTypeControl, MarkerClusterer, ZoomControl } from 'react-kakao-maps-sdk';
 import axios from 'axios';
-import { Current } from '../../../assets/marker';
+import { Current, Marker1, Marker2 } from '../../../assets/marker';
 
 const CurPosBtn = styled.button`
   position: absolute;
@@ -20,12 +20,11 @@ const CurPosBtn = styled.button`
   border-radius: 3px;
   border: 0;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 2px 0px;
-  /* color: rgb(51, 150, 255); */
   color: ${(props) => props.isCenter ? 'rgb(51, 150, 255)' : 'rgb(204, 204, 204)'};
   cursor: pointer;
 `;
 
-function KakaoMap(props) {
+function KakaoMap({detailPageInfo, getStoreDetail}) {
   const [position, setPosition] = useState([]);
   const [curPos, setCurPos] = useState({ lat: 33.450701, lng: 126.570667 });
   const [randValue, setRandValue] = useState(0.000001);
@@ -136,6 +135,7 @@ function KakaoMap(props) {
   useEffect(() => {
     console.log(state.ne);
     console.log(state.sw);
+    console.log(state.center);
   }, [state])
 
   return (
@@ -175,7 +175,7 @@ function KakaoMap(props) {
           averageCenter={true}
           minLevel={3}
         >
-          {position.map((pos) => (
+          {position.map((pos, idx) => (
             <MapMarker
               // key={`${pos.latitude} - ${pos.longitude}`}
               key={`${pos.lat} - ${pos.lng}`}
@@ -186,9 +186,9 @@ function KakaoMap(props) {
                 lng: String(pos.lng)
               }}
               clickable={true}
-              onClick={() => console.log('hi')}
+              onClick={() => getStoreDetail(idx)}
               image={{
-                src: Current,
+                src: detailPageInfo && detailPageInfo === idx ? Marker2 : Marker1,
                 size: { wiidth: 48, height: 48 },
                 options: {
                   offset: {

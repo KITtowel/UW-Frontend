@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { BsSearch } from "react-icons/bs";
 import { IoIosArrowBack, IoIosArrowForward, IoIosClose } from "react-icons/io";
+import { AiTwotoneStar } from "react-icons/ai";
+import { MdLocationOn } from "react-icons/md";
 import { Pagination } from '../../../components';
 import DetailStore from './DetailStore';
 
@@ -17,13 +19,13 @@ const Container = styled.div`
   left: 80px;
   transition: 0.4s ease;
   z-index: 4;
-  transform: ${(props) => props.isOpen  ? "translateX(0px)" : props.isDetailOpen ? "translateX(-619px)" : "translateX(-269px)"};
+  transform: ${(props) => props.isOpen  ? "translateX(0px)" : props.detailPageInfo ? "translateX(-619px)" : "translateX(-269px)"};
 `;
 
 const SideButton = styled.button`
   position: fixed;
   padding: 0;
-  left: ${(props) => props.isDetailOpen ? '619px' : '269px'};
+  left: ${(props) => props.detailPageInfo ? '619px' : '269px'};
   top: 50%;
   width: 20px;
   height: 50px;
@@ -130,6 +132,16 @@ const StoreInfo = styled.div`
   gap: 7px;
 `;
 
+const StoreHeader = styled.div`
+  display: flex;
+  justify-content: left;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none;
+`;
+
 const StoreName = styled.h1`
   font-size: 1.25em;
   margin-right: 3px;
@@ -137,11 +149,24 @@ const StoreName = styled.h1`
 
 const StoreRate = styled.h2`
   font-size: 0.95em;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none;
+  display: flex;
 `;
 
 const StoreLoc = styled.h2`
+  display: flex;
   font-size: 0.9em;
 `;
+
+const LocationIcon = styled(MdLocationOn)`
+  font-size: 1em;
+  margin-right: 2px;
+  color: #ef877d;
+`
 
 const StoreTag = styled.h3`
   align-self: flex-end;
@@ -149,10 +174,15 @@ const StoreTag = styled.h3`
   font-size: 0.97em;
 `;
 
-function SideBar() {
+const Star = styled(AiTwotoneStar)`
+  color: #24A1E8;
+  font-size: 0.95em;
+  margin-right: 2px;
+`;
+
+function SideBar({detailPageInfo, setDetailPageInfo, getStoreDetail}) {
   const [isOpen, setIsOpen] = useState(true);
   const [page, setPage] = useState(1);
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
 
@@ -164,24 +194,19 @@ function SideBar() {
     }
   }
 
-  const getDetailPage = () => {
-    setIsDetailOpen((prev) => !prev);
-
-  }
-
   const closeDetailPage = () => {
-    setIsDetailOpen(false);
+    setDetailPageInfo(null);
   }
 
   return (
-    <Container isOpen={isOpen} isDetailOpen={isDetailOpen}>
-      <SideButton onClick={handleOpen} isDetailOpen={isDetailOpen}>
+    <Container isOpen={isOpen} detailPageInfo={detailPageInfo}>
+      <SideButton onClick={handleOpen} detailPageInfo={detailPageInfo}>
         <ArrowIcon>
           {isOpen ? <IoIosArrowBack /> : <IoIosArrowForward />}
         </ArrowIcon>
       </SideButton>
-      {isDetailOpen && <DetailStore />}
-      {isDetailOpen && isOpen &&
+      {detailPageInfo && <DetailStore />}
+      {detailPageInfo && isOpen &&
       <CloseDetailBtn>
         <CloseIcon onClick={closeDetailPage}>
           <IoIosClose />
@@ -202,14 +227,14 @@ function SideBar() {
       </TagList>
       <StoreList>
         {Array.from({ length: 15 }).map((_, idx) => (
-          <StoreItem key={idx} onClick={getDetailPage}>
+          <StoreItem key={idx}>
             <StoreInfo>
-              <div style={{ display: "flex", justifyContent: "left" }}>
+              <StoreHeader onClick={() => getStoreDetail(105)}>
                 <StoreName>GS옥계점</StoreName>
                 <StoreTag>편의점</StoreTag>
-              </div>
-              <StoreLoc>경북 구미시 옥계북로 39</StoreLoc>
-              <StoreRate>⭐️ 5.0 (리뷰 100)</StoreRate>
+              </StoreHeader>
+              <StoreLoc><LocationIcon />경북 구미시 옥계북로 39</StoreLoc>
+              <StoreRate onClick={() => getStoreDetail(105)}><Star /> 5.0 (리뷰 100)</StoreRate>
             </StoreInfo>
           </StoreItem>
         ))}

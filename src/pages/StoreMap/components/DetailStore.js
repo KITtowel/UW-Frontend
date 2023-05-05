@@ -1,9 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
 import { HiOutlinePencilAlt } from 'react-icons/hi';
-import { AiOutlineAlert } from 'react-icons/ai';
+import { AiOutlineLike, AiFillLike, AiOutlineAlert, AiTwotoneStar } from 'react-icons/ai';
+import { MdLocationOn } from "react-icons/md";
 import { Pagination } from '../../../components';
+
+const LocationIcon = styled(MdLocationOn)`
+  font-size: 1.3em;
+  margin-right: 2px;
+  margin-top: -4px;
+  color: #ef877d;
+`
+const Star = styled(AiTwotoneStar)`
+  color: #24A1E8;
+  font-size: 1em;
+  margin-right: 2px;
+`;
 
 const Container = styled.div`
   position: fixed;
@@ -37,16 +49,18 @@ const StoreInfo = styled.div`
 `;
 
 const Name = styled.h1`
-  font-size: 1.6em;
+  font-size: 1.8em;
   margin-right: 3px;
 `;
 
 const Rate = styled.h2`
+  display: flex;
   font-size: 0.95em;
   margin-bottom: 15px;
 `;
 
 const Loc = styled.h2`
+  display: flex;
   font-size: 0.9em;
   margin: 13px 0 5px 0;
 `;
@@ -130,12 +144,11 @@ const ReviewLists = styled.div`
 `;
 
 const ReviewItem = styled.div`
-
+  border-bottom: 1px solid #D9D9D9;
 `;
 
 const ReviewContent = styled.p`
   padding: 3px 15px 10px 15px;
-  border-bottom: 1px solid #D9D9D9;
   text-align: left;
 `;
 
@@ -158,14 +171,20 @@ const ReviewProfile = styled.img`
 
 const ReviewID = styled.div`
   text-align: left;
-  margin-bottom: 7px;
+  margin-bottom: 5px;
 `;
 
 const ReviewDate = styled.div`
   text-align: left;
   font-size: 0.9em;
+  padding-left: 15px;
+  margin-bottom: 10px;
   color: #aeaeae;
 `;
+
+const ReviewRate = styled.div`
+  text-align: left;
+`
 
 const ReviewReport = styled.div`
   display: flex;
@@ -202,9 +221,9 @@ function DetailStore(props) {
   }
 
   useEffect(() => {
-    menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 106);
+    menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 105);
     const handleResize = () => {
-      menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 106);
+      menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 105);
     };
     window.addEventListener('resize', handleResize);
 
@@ -220,8 +239,8 @@ function DetailStore(props) {
           <Name>GS옥계점</Name>
           <Tag>편의점</Tag>
         </StoreInfo>
-        <Loc>경북 구미시 옥계북로 39</Loc>
-        <Rate>⭐️5.0 (리뷰 100개)</Rate>
+        <Loc><LocationIcon /> 경북 구미시 옥계북로 39</Loc>
+        <Rate><Star /> 5.0 (리뷰 100개)</Rate>
         <LikeIcon isLike={isLike} onClick={handleLikeBtn}>
           {isLike ? <AiFillLike /> : <AiOutlineLike />}
         </LikeIcon>
@@ -265,7 +284,11 @@ function DetailStore(props) {
                 <ReviewProfile src='https://itcm.co.kr/files/attach/images/813/669/168/006/bd6bf95e10a24e98df6a7000339c36a9.png' />
                 <div>
                   <ReviewID>pigeonTwo</ReviewID>
-                  <ReviewDate>23/01/01</ReviewDate>
+                  <ReviewRate>
+                    {Array.from({ length: 4 }).map(() => (
+                      <Star />
+                    ))}
+                  </ReviewRate>
                 </div>
                 <ReviewReport>
                   <AiOutlineAlert style={{ marginRight: '3px', color: '#ef877d' }} />
@@ -276,6 +299,7 @@ function DetailStore(props) {
               <ReviewContent>
                 별빛 가온누리 포도 바나나 사과 가온누리 여우별 나래 옅구름 옅구름 도르레 별빛 사과 그루잠 아리아 나래 가온누리 다솜 소록소록 아슬라 아련 그루잠 달볓 안녕 다솜 늘품 다솜 감사합니다 소솜 바나나 사과 도담도담 아슬라 노트북 함초롱하다 나래 미리내 노트북 컴퓨터 나래 바람꽃 별빛 별하 별하 별빛 여우비 나비잠 그루잠 나래 감사합니다.
               </ReviewContent>
+              <ReviewDate>2023-01-01</ReviewDate>
             </ReviewItem>
           ))}
         </ReviewLists>
