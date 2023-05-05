@@ -136,6 +136,7 @@ const ReviewItem = styled.div`
 const ReviewContent = styled.p`
   padding: 3px 15px 10px 15px;
   border-bottom: 1px solid #D9D9D9;
+  text-align: left;
 `;
 
 const ReviewUserInfo = styled.div`
@@ -149,9 +150,10 @@ const ReviewUserInfo = styled.div`
 const ReviewProfile = styled.img`
   width: 45px;
   height: 45px;
-  border-radius: 100%;
-  border: 1px solid black;
+  border: 0.3px solid rgba(var(--place-color-bg18), 1);
   margin-right: 10px;
+  border-radius: 50%;
+  box-shadow: 1px 1px 6px 0 rgba(0,0,0,.1);
 `;
 
 const ReviewID = styled.div`
@@ -162,6 +164,7 @@ const ReviewID = styled.div`
 const ReviewDate = styled.div`
   text-align: left;
   font-size: 0.9em;
+  color: #aeaeae;
 `;
 
 const ReviewReport = styled.div`
@@ -265,8 +268,8 @@ function DetailStore(props) {
                   <ReviewDate>23/01/01</ReviewDate>
                 </div>
                 <ReviewReport>
-                  <AiOutlineAlert style={{ marginRight: '3px' }} />
-                  <div style={{ fontSize: '0.8em' }}>리뷰 신고</div>
+                  <AiOutlineAlert style={{ marginRight: '3px', color: '#ef877d' }} />
+                  <div style={{ fontSize: '0.8em', color: '#D9D9D9' }}>리뷰 신고</div>
                 </ReviewReport>
 
               </ReviewUserInfo>

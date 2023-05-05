@@ -113,8 +113,7 @@ const StoreList = styled.ul`
 const StoreItem = styled.li`
   height: 80px;
   border-bottom: 1px solid #D9D9D9;
-  padding: 20px;
-  padding-left: 25px;
+  padding: 45px 0 45px 25px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -132,7 +131,7 @@ const StoreInfo = styled.div`
 `;
 
 const StoreName = styled.h1`
-  font-size: 1.3em;
+  font-size: 1.25em;
   margin-right: 3px;
 `;
 
@@ -147,7 +146,7 @@ const StoreLoc = styled.h2`
 const StoreTag = styled.h3`
   align-self: flex-end;
   color: grey;
-  font-size: 1em;
+  font-size: 0.97em;
 `;
 
 function SideBar() {

@@ -43,11 +43,16 @@ const Icon = styled.button`
   border-radius: 50%;
   width: 60px;
   height: 60px;
-  border: 1px solid black;
+  border: 0.3px solid rgba(var(--place-color-bg18), 1);
   font-size: 40px;
+  transition: box-shadow 0.3s;
   text-align: center;
-  line-height: 65px;
-`
+  line-height: 70px;
+  color: #24A1E8;
+  :hover {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3), 0 1px 10px rgba(0, 0, 0, 0.1);
+  }
+`;
 
 const Btn = styled(Button)`
   position: absolute;
@@ -69,7 +74,7 @@ function InfoBar(props) {
       <Link to='/'>
         <Logo />
       </Link>
-      <Icon>
+      <Icon title="잔액 조회">
         <AiFillCreditCard />
       </Icon>
       {
