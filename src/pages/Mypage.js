@@ -13,7 +13,6 @@ import { RiThumbUpFill, RiThumbUpLine } from "react-icons/ri";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { Pagination } from "../components";
 import axios from "axios";
-import { API_BASE_URL } from "../config";
 
 const cityOptions = {
   경상북도: [
@@ -400,7 +399,7 @@ function MyPage() {
   // 내 정보
   const handleSubmit1 = async () => {
     try {
-      await axios.put(`${API_BASE_URL}/users/profile/{user}/`, {
+      await axios.put(`${process.env.REACT_APP_API_BASE_URL}/users/profile/{user}/`, {
         nickname,
         location,
         location2,
@@ -415,7 +414,7 @@ function MyPage() {
   const handleSubmit2 = async () => {
     try {
       const response = await axios.patch(
-        `${API_BASE_URL}/users/password_change/`,
+        `${process.env.REACT_APP_API_BASE_URL}/users/password_change/`,
         {
           old_password: oldPassword,
           new_password: newPassword,
@@ -437,7 +436,7 @@ function MyPage() {
   // 회원 탈퇴
   const handleSubmit3 = async () => {
     try {
-      await axios.delete(`${API_BASE_URL}/users/profile/{user}/`, {
+      await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/users/profile/{user}/`, {
         data: { password, reason },
       });
     } catch (error) {
@@ -460,7 +459,7 @@ function MyPage() {
     async function fetchUserData() {
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/users/profile/{user}/`
+          `${process.env.REACT_APP_API_BASE_URL}/users/profile/{user}/`
         );
 
         if (response.data.success) {
