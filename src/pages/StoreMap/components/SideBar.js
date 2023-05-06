@@ -115,7 +115,7 @@ const StoreList = styled.ul`
 const StoreItem = styled.li`
   height: 80px;
   border-bottom: 1px solid #D9D9D9;
-  padding: 45px 0 45px 25px;
+  padding: 45px 0 45px 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -143,8 +143,12 @@ const StoreHeader = styled.div`
 `;
 
 const StoreName = styled.h1`
-  font-size: 1.25em;
+  font-size: 1.2em;
   margin-right: 3px;
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const StoreRate = styled.h2`
@@ -171,7 +175,7 @@ const LocationIcon = styled(MdLocationOn)`
 const StoreTag = styled.h3`
   align-self: flex-end;
   color: grey;
-  font-size: 0.97em;
+  font-size: 0.9em;
 `;
 
 const Star = styled(AiTwotoneStar)`
@@ -180,7 +184,7 @@ const Star = styled(AiTwotoneStar)`
   margin-right: 2px;
 `;
 
-function SideBar({detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, setIsOpen}) {
+function SideBar({storeList, detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, setIsOpen}) {
   // const [isOpen, setIsOpen] = useState(true);
   const [page, setPage] = useState(1);
 
@@ -205,7 +209,7 @@ function SideBar({detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, set
           {isOpen ? <IoIosArrowBack /> : <IoIosArrowForward />}
         </ArrowIcon>
       </SideButton>
-      {detailPageInfo && <DetailStore />}
+      {detailPageInfo && <DetailStore detailPageInfo={detailPageInfo}/>}
       {detailPageInfo && isOpen &&
       <CloseDetailBtn>
         <CloseIcon onClick={closeDetailPage}>
@@ -226,15 +230,15 @@ function SideBar({detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, set
         {tagList.map((tag) => <Tag key={tag.toString()}>{tag}</Tag>)}
       </TagList>
       <StoreList>
-        {Array.from({ length: 15 }).map((_, idx) => (
+        {storeList.map((store, idx) => (
           <StoreItem key={idx}>
             <StoreInfo>
-              <StoreHeader onClick={() => getStoreDetail(105)}>
-                <StoreName>GS옥계점</StoreName>
-                <StoreTag>편의점</StoreTag>
+              <StoreHeader onClick={() => getStoreDetail(store.store_id)}>
+                <StoreName>{store.store_name}</StoreName>
+                <StoreTag>{store.category}</StoreTag>
               </StoreHeader>
-              <StoreLoc><LocationIcon />경북 구미시 옥계북로 39</StoreLoc>
-              <StoreRate onClick={() => getStoreDetail(105)}><Star /> 5.0 (리뷰 100)</StoreRate>
+              <StoreLoc><LocationIcon />{store.store_address}</StoreLoc>
+              <StoreRate onClick={() => getStoreDetail(store.store_id)}><Star /> {`${store.rating_mean} (리뷰 100)`}</StoreRate>
             </StoreInfo>
           </StoreItem>
         ))}

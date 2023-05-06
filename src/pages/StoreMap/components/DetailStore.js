@@ -49,8 +49,9 @@ const StoreInfo = styled.div`
 `;
 
 const Name = styled.h1`
-  font-size: 1.8em;
+  font-size: 1.5em;
   margin-right: 3px;
+  max-width: 280px;
 `;
 
 const Rate = styled.h2`
@@ -122,6 +123,9 @@ const MenuName = styled.div`
   height: auto;
   z-index: 1000;
   padding-right: 5px;
+  max-width: 245px;
+  text-align: left;
+  /* white-space: nowrap; */
 `;
 
 const MenuCost = styled.div`
@@ -208,8 +212,8 @@ const Contour = styled.div`
   color: #D9D9D9; 
 `;
 
-function DetailStore(props) {
-  const [isLike, setIsLike] = useState(false);
+function DetailStore({detailPageInfo}) {
+  const [isLike, setIsLike] = useState(detailPageInfo.liked_by_user);
   const [page, setPage] = useState(1);
   const [reviewHeight, setReviewHeight] = useState(100);
 
@@ -236,11 +240,11 @@ function DetailStore(props) {
     <Container>
       <StoreHeader ref={headerRef}>
         <StoreInfo>
-          <Name>GS옥계점</Name>
-          <Tag>편의점</Tag>
+          <Name>{detailPageInfo.store_name}</Name>
+          <Tag>{detailPageInfo.category}</Tag>
         </StoreInfo>
-        <Loc><LocationIcon /> 경북 구미시 옥계북로 39</Loc>
-        <Rate><Star /> 5.0 (리뷰 100개)</Rate>
+        <Loc><LocationIcon /> {detailPageInfo.store_address}</Loc>
+        <Rate><Star /> {detailPageInfo.rating_mean} (리뷰 100개)</Rate>
         <LikeIcon isLike={isLike} onClick={handleLikeBtn}>
           {isLike ? <AiFillLike /> : <AiOutlineLike />}
         </LikeIcon>
@@ -250,22 +254,15 @@ function DetailStore(props) {
         <Title>대표 메뉴</Title>
         <Contour />
         <Menu>
-          <MenuItem>
-            <MenuName>파인트 아이스크림</MenuName>
-            <MenuCost>8,900 원</MenuCost>
-          </MenuItem>
-          <MenuItem>
-            <MenuName>파인트 아이스크림32</MenuName>
-            <MenuCost>8,900 원</MenuCost>
-          </MenuItem>
-          <MenuItem>
-            <MenuName>파인트 아이스크림2</MenuName>
-            <MenuCost>18,900 원</MenuCost>
-          </MenuItem>
-          <MenuItem>
-            <MenuName>파인트 아이스크림</MenuName>
-            <MenuCost>8,900 원</MenuCost>
-          </MenuItem>
+          {detailPageInfo.menu.split(", ").map((me) => {
+            let m = me.split(" ")
+            return(
+              <MenuItem>
+                <MenuName>{m.splice(0, m.length-1).join(" ")}</MenuName>
+                <MenuCost>{m[0]}</MenuCost>
+              </MenuItem>
+            )
+          })}
         </Menu>
       </StoreMenu>
       <StoreReview>

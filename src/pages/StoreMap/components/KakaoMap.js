@@ -24,15 +24,14 @@ const CurPosBtn = styled.button`
   cursor: pointer;
 `;
 
-function KakaoMap({detailPageInfo, getStoreDetail}) {
-  const [position, setPosition] = useState([]);
-  const [curPos, setCurPos] = useState({ lat: 33.450701, lng: 126.570667 });
+function KakaoMap({storeList, setStoreList, detailPageInfo, getStoreDetail}) {
+  const [curPos, setCurPos] = useState({ lat: 35.854795175382435, lng: 128.54823034227059 });
   const [randValue, setRandValue] = useState(0.000001);
   const [isCenter, setIsCenter] = useState(false);
   const [state, setState] = useState({
     center: {
-      lat: 33.450701,
-      lng: 126.570667,
+      lat: 35.854795175382435,
+      lng: 128.54823034227059,
     },
     errMsg: null,
     isLoading: true,
@@ -44,40 +43,40 @@ function KakaoMap({detailPageInfo, getStoreDetail}) {
 
   //현재 위치의 좌표를 설정함
   useEffect(() => {
-    if (navigator.geolocation) {
-      // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setState((prev) => ({
-            ...prev,
-            center: {
-              lat: position.coords.latitude, // 위도
-              lng: position.coords.longitude, // 경도
-            },
-            isLoading: false,
-          }));
-          setCurPos({
-            lat: position.coords.latitude, // 위도
-            lng: position.coords.longitude, // 경도
-          });
-          setIsCenter(true);
-        },
-        (err) => {
-          setState((prev) => ({
-            ...prev,
-            errMsg: err.message,
-            isLoading: false,
-          }))
-        }
-      )
-    } else {
-      // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정
-      setState((prev) => ({
-        ...prev,
-        errMsg: "geolocation을 사용할수 없어요..",
-        isLoading: false,
-      }))
-    }
+    // if (navigator.geolocation) {
+    //   // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+    //   navigator.geolocation.getCurrentPosition(
+    //     (position) => {
+    //       setState((prev) => ({
+    //         ...prev,
+    //         center: {
+    //           lat: position.coords.latitude, // 위도
+    //           lng: position.coords.longitude, // 경도
+    //         },
+    //         isLoading: false,
+    //       }));
+    //       setCurPos({
+    //         lat: position.coords.latitude, // 위도
+    //         lng: position.coords.longitude, // 경도
+    //       });
+    //       setIsCenter(true);
+    //     },
+    //     (err) => {
+    //       setState((prev) => ({
+    //         ...prev,
+    //         errMsg: err.message,
+    //         isLoading: false,
+    //       }))
+    //     }
+    //   )
+    // } else {
+    //   // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정
+    //   setState((prev) => ({
+    //     ...prev,
+    //     errMsg: "geolocation을 사용할수 없어요..",
+    //     isLoading: false,
+    //   }))
+    // }
   }, [])
 
   //현재 위치 값으로 map중앙을 설정 이동하는 함수
@@ -94,31 +93,37 @@ function KakaoMap({detailPageInfo, getStoreDetail}) {
   }
 
 
-  const handleSubmit = async event => {
-    event.preventDefault();
-
-    const res = await axios.post(`http://${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
-      'latitude': parseFloat(curPos.lat),
-      'longitude': parseFloat(curPos.lng)
-    });
-    setPosition(res.data.results);
-    console.log(res.data.results);
+  const handleSubmit = async () => {
+    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
+      "latitude": "35.854795175382435",
+      "longitude": "128.54823034227059",
+      "ne_latitude": "35.8561730745944",
+      "ne_longitude": "128.55388048938067",
+      "sw_latitude": "35.852855245666376",
+      "sw_longitude": "128.54211566322016"
+    })
+    let items = res.data.results;
+    console.log(res);
+    let totalPages = Math.ceil(res.data.count / 10);
+    if (totalPages > 1) {
+      for (let i = 2; i <= totalPages; i++) {
+        const nextRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/?page=${i}`, {
+          "latitude": "35.854795175382435",
+          "longitude": "128.54823034227059",
+          "ne_latitude": "35.8561730745944",
+          "ne_longitude": "128.55388048938067",
+          "sw_latitude": "35.852855245666376",
+          "sw_longitude": "128.54211566322016"
+        });
+        items = items.concat(nextRes.data.results);
+      }
+    }
+    setStoreList(items);
   };
 
   // 가맹점 정보를 받아옴
   useEffect(() => {
-    fetch("/")
-      .then((res) => res.json())
-      .then((data) => setPosition(data));
-
-    // const res = axios.get(`http://${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
-    //   "latitude": curPos.lat,
-    //   "longitude": curPos.lng
-    // });
-    // handleSubmit();
-    // console.log(res);
-
-
+    handleSubmit();
   }, []);
 
   //지도의 중심이 현재위치인지를 판단
@@ -133,9 +138,9 @@ function KakaoMap({detailPageInfo, getStoreDetail}) {
   }
 
   useEffect(() => {
-    console.log(state.ne);
-    console.log(state.sw);
-    console.log(state.center);
+    // console.log(state.ne);
+    // console.log(state.sw);
+    // console.log(state.center);
   }, [state])
 
   return (
@@ -175,20 +180,17 @@ function KakaoMap({detailPageInfo, getStoreDetail}) {
           averageCenter={true}
           minLevel={3}
         >
-          {position.map((pos, idx) => (
+          {storeList.map((store) => (
             <MapMarker
-              // key={`${pos.latitude} - ${pos.longitude}`}
-              key={`${pos.lat} - ${pos.lng}`}
+              key={store.store_id}
               position={{
-                // lat: String(pos.latitude),
-                // lng: String(pos.lng),
-                lat: String(pos.lat),
-                lng: String(pos.lng)
+                lat: String(store.latitude),
+                lng: String(store.longitude)
               }}
               clickable={true}
-              onClick={() => getStoreDetail(idx)}
+              onClick={() => getStoreDetail(store.store_id)}
               image={{
-                src: detailPageInfo && detailPageInfo === idx ? Marker2 : Marker1,
+                src: detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Marker2 : Marker1,
                 size: { wiidth: 48, height: 48 },
                 options: {
                   offset: {
