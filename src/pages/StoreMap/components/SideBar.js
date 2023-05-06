@@ -180,8 +180,8 @@ const Star = styled(AiTwotoneStar)`
   margin-right: 2px;
 `;
 
-function SideBar({detailPageInfo, setDetailPageInfo, getStoreDetail}) {
-  const [isOpen, setIsOpen] = useState(true);
+function SideBar({detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, setIsOpen}) {
+  // const [isOpen, setIsOpen] = useState(true);
   const [page, setPage] = useState(1);
 
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];

@@ -18,9 +18,11 @@ const NearStore = () => {
   }
 
   const [detailPageInfo, setDetailPageInfo] = useState(null);
+  const [isOpen, setIsOpen] = useState(true);
 
   const getStoreDetail = (id) => {
     console.log(id);
+    setIsOpen(true);
     setDetailPageInfo(id);
   }
 
@@ -28,6 +30,8 @@ const NearStore = () => {
     <Container>
       <InfoBar />
       <SideBar
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
         detailPageInfo={detailPageInfo}
         setDetailPageInfo={setDetailPageInfo}
         getStoreDetail={getStoreDetail}
