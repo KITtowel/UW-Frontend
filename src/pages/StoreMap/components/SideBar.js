@@ -59,22 +59,35 @@ const CloseIcon = styled(ArrowIcon)`
 
 const SearchWrapper = styled.div`
   position: relative;
+  display: flex;
   padding: 10px;
   width: 100%;
 `;
 
+const SearchSelect = styled.select`
+  background: #f9f9fa;
+  border-radius: 4px 0 0 4px;
+  border: 1px solid rgba(245, 245, 245, 0.7);
+  border-right: 0;
+  /* box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1); */
+  :hover {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
+  }
+`
+
 const SearchInput = styled.input`
   width: 100%;
-  padding-left: 25px;
+  padding-right: 25px;
   height: 25px;
   background: #f9f9fa;
   color: #9dc3e6;
-  border-radius: 4px;
-  outline: 0;
+  border-radius: 0 4px 4px 0;
   border: 1px solid rgba(245, 245, 245, 0.7);
+  border-left: 0;
   font-size: 14px;
   transition: all 0.3s ease-out;
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1); */
+  /* box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); */
   :focus,
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
@@ -83,8 +96,9 @@ const SearchInput = styled.input`
 
 const SearchIcon = styled.div`
   position: absolute;
+  font-size: 0.9em;
   top: 50%;
-  left: 15px;
+  right: 15px;
   transform: translateY(-45%);
 `;
 
@@ -217,6 +231,10 @@ function SideBar({storeList, detailPageInfo, setDetailPageInfo, getStoreDetail, 
         </CloseIcon>
       </CloseDetailBtn>}
       <SearchWrapper>
+        <SearchSelect>
+          <option label="가맹점" value="store" selected="selected" />
+          <option label="메뉴" value="menu" />
+        </SearchSelect>
         <SearchIcon>
           <BsSearch />
         </SearchIcon>

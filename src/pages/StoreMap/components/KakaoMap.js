@@ -34,7 +34,7 @@ function KakaoMap({storeList, setStoreList, detailPageInfo, getStoreDetail}) {
       lng: 128.54823034227059,
     },
     errMsg: null,
-    isLoading: true,
+    isLoading: false,
     isPanto: true,
     level: 2,
     sw: null,
