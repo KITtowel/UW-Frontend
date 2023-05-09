@@ -104,7 +104,7 @@ function KakaoMap({storeList, setStoreList, detailPageInfo, getStoreDetail}) {
     })
     let items = res.data.results;
     console.log(res);
-    let totalPages = Math.ceil(res.data.count / 10);
+    let totalPages = Math.ceil(res.data.count / 20);
     if (totalPages > 1) {
       for (let i = 2; i <= totalPages; i++) {
         const nextRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/?page=${i}`, {
