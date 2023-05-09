@@ -232,7 +232,7 @@ function SideBar({storeList, detailPageInfo, setDetailPageInfo, getStoreDetail, 
       </CloseDetailBtn>}
       <SearchWrapper>
         <SearchSelect>
-          <option label="가맹점" value="store" selected="selected" />
+          <option label="가맹점" value="store" />
           <option label="메뉴" value="menu" />
         </SearchSelect>
         <SearchIcon>
