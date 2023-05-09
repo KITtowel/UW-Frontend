@@ -170,6 +170,7 @@ function Login() {
   const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
   const [token, setToken] = useState("");
+  const [userId, setUserId] = useState("");
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
 
@@ -206,7 +207,8 @@ function Login() {
         }
       );
       const receivedToken = response.data.token;
-      setToken(receivedToken);
+      const receivedUserId = response.data.user_id;
+      setUserId(receivedUserId);
       login();
     } catch (error) {
       console.error(error);
@@ -222,7 +224,8 @@ function Login() {
         }
       );
       const receivedToken = response.data.token;
-      setToken(receivedToken);
+      const receivedUserId = response.data.user_id;
+      setUserId(receivedUserId);
       login();
     } catch (error) {
       console.error(error);
@@ -231,7 +234,6 @@ function Login() {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    console.log("버튼 눌림");
 
     try {
       const response = await axios.post(
@@ -241,8 +243,12 @@ function Login() {
           password,
         }
       );
-      console.log(response);
       const receivedToken = response.data.token;
+      const receivedUserId = response.data.user_id;
+
+      localStorage.setItem("token", receivedToken);
+      localStorage.setItem("userId", receivedUserId);
+
       login(receivedToken);
     } catch (error) {
       console.error(error);
