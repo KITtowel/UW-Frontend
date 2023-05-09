@@ -82,7 +82,7 @@ const LikeIcon = styled.div`
 `;
 
 const LikeText = styled.h3`
-
+  margin-bottom: 5px;
 `;
 
 const StoreMenu = styled(StoreHeader)`
@@ -141,10 +141,18 @@ const StoreReview = styled(StoreHeader)`
   padding: 0;
 `;
 
+const NoReview = styled.div`
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const ReviewLists = styled.div`
   overflow: auto;
   border-bottom: 1.5px solid #aeaeae;
   height: ${(props) => `${props.reviewHeight}px`};
+  width: 100%;
 `;
 
 const ReviewItem = styled.div`
@@ -225,9 +233,9 @@ function DetailStore({detailPageInfo}) {
   }
 
   useEffect(() => {
-    menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 105);
+    menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 50);
     const handleResize = () => {
-      menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 105);
+      menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 50);
     };
     window.addEventListener('resize', handleResize);
 
@@ -244,17 +252,18 @@ function DetailStore({detailPageInfo}) {
           <Tag>{detailPageInfo.category}</Tag>
         </StoreInfo>
         <Loc><LocationIcon /> {detailPageInfo.store_address}</Loc>
-        <Rate><Star /> {detailPageInfo.rating_mean} (리뷰 100개)</Rate>
+        <Rate><Star /> {detailPageInfo.rating_mean} (리뷰 {detailPageInfo.reviews_count}개)</Rate>
         <LikeIcon isLike={isLike} onClick={handleLikeBtn}>
           {isLike ? <AiFillLike /> : <AiOutlineLike />}
         </LikeIcon>
         <LikeText>{isLike ? '내 맛집 목록에서 빼기' : '내 맛집 목록에 담기'}</LikeText>
+        <LikeText>{detailPageInfo.likes_count}명이 이 가게를 좋아해요!</LikeText>
       </StoreHeader>
       <StoreMenu ref={menuRef}>
         <Title>대표 메뉴</Title>
         <Contour />
         <Menu>
-          {detailPageInfo.menu.split(", ").map((me) => {
+          {detailPageInfo.menu ? detailPageInfo.menu.split(", ").map((me) => {
             let m = me.split(" ")
             return(
               <MenuItem>
@@ -262,7 +271,7 @@ function DetailStore({detailPageInfo}) {
                 <MenuCost>{m[0]}</MenuCost>
               </MenuItem>
             )
-          })}
+          }) : <div>대표 메뉴 정보가 없어요.</div>}
         </Menu>
       </StoreMenu>
       <StoreReview>
@@ -275,14 +284,14 @@ function DetailStore({detailPageInfo}) {
         </div>
         <Contour />
         <ReviewLists reviewHeight={reviewHeight}>
-          {Array.from({ length: 15 }).map(() => (
+          {detailPageInfo.reviews.length > 0 ? detailPageInfo.reviews.map((review) => (
             <ReviewItem>
               <ReviewUserInfo>
-                <ReviewProfile src='https://itcm.co.kr/files/attach/images/813/669/168/006/bd6bf95e10a24e98df6a7000339c36a9.png' />
+                <ReviewProfile src={review.profile.image} />
                 <div>
-                  <ReviewID>pigeonTwo</ReviewID>
+                  <ReviewID>{review.profile.nickname}</ReviewID>
                   <ReviewRate>
-                    {Array.from({ length: 4 }).map(() => (
+                    {Array.from({ length: review.rating }).map(() => (
                       <Star />
                     ))}
                   </ReviewRate>
@@ -294,13 +303,13 @@ function DetailStore({detailPageInfo}) {
 
               </ReviewUserInfo>
               <ReviewContent>
-                별빛 가온누리 포도 바나나 사과 가온누리 여우별 나래 옅구름 옅구름 도르레 별빛 사과 그루잠 아리아 나래 가온누리 다솜 소록소록 아슬라 아련 그루잠 달볓 안녕 다솜 늘품 다솜 감사합니다 소솜 바나나 사과 도담도담 아슬라 노트북 함초롱하다 나래 미리내 노트북 컴퓨터 나래 바람꽃 별빛 별하 별하 별빛 여우비 나비잠 그루잠 나래 감사합니다.
+                {review.content}
               </ReviewContent>
-              <ReviewDate>2023-01-01</ReviewDate>
+              <ReviewDate>{review.published_data.substr(0, 10)}</ReviewDate>
             </ReviewItem>
-          ))}
+          )) : <NoReview>리뷰가 아직 없어요.</NoReview>}
         </ReviewLists>
-        <Pagination total={30} limit={15} page={page} setPage={setPage} />
+        {/* <Pagination total={30} limit={15} page={page} setPage={setPage} /> */}
       </StoreReview>
     </Container>
   );

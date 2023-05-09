@@ -14,11 +14,10 @@ const Button = styled.button`
   border-radius: 8px;
   padding: 8px;
   margin: 0;
-  /* background: #24A1E8; */
   color: #24A1E8;
   font-size: 1rem;
 
-  &:hover {
+  &:hover:not([disabled]) {
     background: #24A1E8;
     color: white;
     cursor: pointer;
@@ -26,9 +25,7 @@ const Button = styled.button`
   }
 
   &[disabled] {
-    /* background: grey; */
-    cursor: revert;
-    transform: revert;
+    cursor: not-allowed;
   }
 
   &[aria-current] {

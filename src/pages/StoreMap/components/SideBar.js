@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { BsSearch } from "react-icons/bs";
 import { IoIosArrowBack, IoIosArrowForward, IoIosClose } from "react-icons/io";
@@ -6,6 +6,7 @@ import { AiTwotoneStar } from "react-icons/ai";
 import { MdLocationOn } from "react-icons/md";
 import { Pagination } from '../../../components';
 import DetailStore from './DetailStore';
+import axios from 'axios';
 
 const Container = styled.div`
   position: fixed;
@@ -198,9 +199,10 @@ const Star = styled(AiTwotoneStar)`
   margin-right: 2px;
 `;
 
-function SideBar({storeList, detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, setIsOpen}) {
+function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, setIsOpen}) {
   // const [isOpen, setIsOpen] = useState(true);
   const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(1);
 
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
 
@@ -215,6 +217,25 @@ function SideBar({storeList, detailPageInfo, setDetailPageInfo, getStoreDetail, 
   const closeDetailPage = () => {
     setDetailPageInfo(null);
   }
+
+  useEffect(() => {
+    storeList.results && setTotal(storeList.count);
+  }, [storeList])
+
+  useEffect(() => {
+    async function getStoreList()  {
+      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/?page=${page}`, {
+        "latitude": state.center.lat,
+        "longitude": state.center.lng,
+        "ne_latitude": state.neLat,
+        "ne_longitude": state.neLng,
+        "sw_latitude": state.swLat,
+        "sw_longitude": state.swLng
+      })
+      setStoreList(listRes.data);
+    }
+    getStoreList();
+  }, [page])
 
   return (
     <Container isOpen={isOpen} detailPageInfo={detailPageInfo}>
@@ -248,7 +269,7 @@ function SideBar({storeList, detailPageInfo, setDetailPageInfo, getStoreDetail, 
         {tagList.map((tag) => <Tag key={tag.toString()}>{tag}</Tag>)}
       </TagList>
       <StoreList>
-        {storeList.map((store, idx) => (
+        {storeList.results && storeList.results.map((store, idx) => (
           <StoreItem key={idx}>
             <StoreInfo>
               <StoreHeader onClick={() => getStoreDetail(store.store_id)}>
@@ -256,12 +277,12 @@ function SideBar({storeList, detailPageInfo, setDetailPageInfo, getStoreDetail, 
                 <StoreTag>{store.category}</StoreTag>
               </StoreHeader>
               <StoreLoc><LocationIcon />{store.store_address}</StoreLoc>
-              <StoreRate onClick={() => getStoreDetail(store.store_id)}><Star /> {`${store.rating_mean} (리뷰 100)`}</StoreRate>
+              <StoreRate onClick={() => getStoreDetail(store.store_id)}><Star /> {`${store.rating_mean} (리뷰 ${store.reviews_count} 개)`}</StoreRate>
             </StoreInfo>
           </StoreItem>
         ))}
       </StoreList>
-      <Pagination total={30} limit={15} page={page} setPage={setPage} />
+      <Pagination total={total} limit={20} page={page} setPage={setPage} />
     </Container>
   );
 }

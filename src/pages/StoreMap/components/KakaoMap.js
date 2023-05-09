@@ -24,22 +24,11 @@ const CurPosBtn = styled.button`
   cursor: pointer;
 `;
 
-function KakaoMap({storeList, setStoreList, detailPageInfo, getStoreDetail}) {
+function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail}) {
+  const [markerList, setMarkerList] = useState([]);
   const [curPos, setCurPos] = useState({ lat: 35.854795175382435, lng: 128.54823034227059 });
   const [randValue, setRandValue] = useState(0.000001);
   const [isCenter, setIsCenter] = useState(false);
-  const [state, setState] = useState({
-    center: {
-      lat: 35.854795175382435,
-      lng: 128.54823034227059,
-    },
-    errMsg: null,
-    isLoading: false,
-    isPanto: true,
-    level: 2,
-    sw: null,
-    ne: null,
-  })
 
   //현재 위치의 좌표를 설정함
   useEffect(() => {
@@ -92,56 +81,43 @@ function KakaoMap({storeList, setStoreList, detailPageInfo, getStoreDetail}) {
     setIsCenter(true);
   }
 
-
-  const handleSubmit = async () => {
-    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
-      "latitude": "35.854795175382435",
-      "longitude": "128.54823034227059",
-      "ne_latitude": "35.8561730745944",
-      "ne_longitude": "128.55388048938067",
-      "sw_latitude": "35.852855245666376",
-      "sw_longitude": "128.54211566322016"
-    })
-    let items = res.data.results;
-    console.log(res);
-    let totalPages = Math.ceil(res.data.count / 20);
-    if (totalPages > 1) {
-      for (let i = 2; i <= totalPages; i++) {
-        const nextRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/?page=${i}`, {
-          "latitude": "35.854795175382435",
-          "longitude": "128.54823034227059",
-          "ne_latitude": "35.8561730745944",
-          "ne_longitude": "128.55388048938067",
-          "sw_latitude": "35.852855245666376",
-          "sw_longitude": "128.54211566322016"
-        });
-        items = items.concat(nextRes.data.results);
-      }
-    }
-    setStoreList(items);
-  };
-
   // 가맹점 정보를 받아옴
   useEffect(() => {
-    handleSubmit();
-  }, []);
+    console.log('hihi');
+    async function getStoreMakerList()  {
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/map_mark/`, {
+        "latitude": state.center.lat,
+        "longitude": state.center.lng,
+        "ne_latitude": state.neLat,
+        "ne_longitude": state.neLng,
+        "sw_latitude": state.swLat,
+        "sw_longitude": state.swLng
+      })
+      setMarkerList(res.data.data);
+      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
+        "latitude": state.center.lat,
+        "longitude": state.center.lng,
+        "ne_latitude": state.neLat,
+        "ne_longitude": state.neLng,
+        "sw_latitude": state.swLat,
+        "sw_longitude": state.swLng
+      })
+      console.log(listRes.data);
+      setStoreList(listRes.data);
+    }
+    state.level <= 2 && getStoreMakerList();
+  }, [state, isCenter]);
 
   //지도의 중심이 현재위치인지를 판단
   const getIsCenter = (moveLat, moveLng) => {
     let tempLat = Math.abs(curPos.lat - moveLat);
     let tempLng = Math.abs(curPos.lng - moveLng);
-    if (tempLat > 0.00005 || tempLng > 0.00005) {
+    if (tempLat > 0.00001 || tempLng > 0.00001) {
       setIsCenter(false);
     } else {
       setIsCenter(true);
     }
   }
-
-  useEffect(() => {
-    // console.log(state.ne);
-    // console.log(state.sw);
-    // console.log(state.center);
-  }, [state])
 
   return (
     <>
@@ -153,13 +129,20 @@ function KakaoMap({storeList, setStoreList, detailPageInfo, getStoreDetail}) {
         onCenterChanged={(map) => getIsCenter(map.getCenter().getLat(), map.getCenter().getLng())} //지도의 중심이 현재 위치인지를 판단
         onBoundsChanged={(map) => setState((prev) => ({
           ...prev,
-          sw: map.getBounds().getSouthWest().toString(),
-          ne: map.getBounds().getNorthEast().toString(),
+          center: {
+            lat: map.getCenter().getLat(),
+            lng: map.getCenter().getLng(),
+          },
+          level: map.getLevel(),
+          swLat: map.getBounds().getSouthWest().getLat(),
+          swLng: map.getBounds().getSouthWest().getLng(),
+          neLat: map.getBounds().getNorthEast().getLat(),
+          neLng: map.getBounds().getNorthEast().getLng(),
         }))}
       >
         <ZoomControl position={kakao.maps.ControlPosition.RIGHT} />
         <MapTypeControl position={kakao.maps.ControlPosition.TOPRIGHT} />
-        {!state.isLoading && (
+        {!state.isLoading && isCenter && (
           <MapMarker
             position={state.center}
             image={{
@@ -178,9 +161,9 @@ function KakaoMap({storeList, setStoreList, detailPageInfo, getStoreDetail}) {
         )}
         <MarkerClusterer
           averageCenter={true}
-          minLevel={3}
+          minLevel={4}
         >
-          {storeList.map((store) => (
+          {markerList.map((store) => (
             <MapMarker
               key={store.store_id}
               position={{

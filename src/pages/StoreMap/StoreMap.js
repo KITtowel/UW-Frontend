@@ -29,11 +29,28 @@ const NearStore = () => {
     setDetailPageInfo(res.data);
   }
 
+  const [state, setState] = useState({
+    center: {
+      lat: 35.854795175382435,
+      lng: 128.54823034227059,
+    },
+    errMsg: null,
+    isLoading: false,
+    isPanto: false,
+    level: 2,
+    swLat: null,
+    swLng: null,
+    neLat: null,
+    neLng: null,
+  })
+
   return (
     <Container>
       <InfoBar />
       <SideBar
+        state={state}
         storeList={storeList}
+        setStoreList={setStoreList}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         detailPageInfo={detailPageInfo}
@@ -41,7 +58,8 @@ const NearStore = () => {
         getStoreDetail={getStoreDetail}
       />
       <KakaoMap
-        storeList={storeList}
+        state={state}
+        setState={setState}
         setStoreList={setStoreList}
         detailPageInfo={detailPageInfo}
         getStoreDetail={getStoreDetail}
