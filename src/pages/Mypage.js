@@ -239,6 +239,7 @@ const List = styled.div`
 
 function MyPage() {
   // 기본
+  const storedUserId = localStorage.getItem("userId");
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
@@ -253,12 +254,7 @@ function MyPage() {
     navigate(-1);
   };
   // 내 정보
-  const [userData, setUserData] = useState({
-    nickname: "",
-    location: "",
-    location2: "",
-    image: "",
-  });
+  const [userData, setUserData] = useState("");
   const [isImageChanged, setIsImageChanged] = useState(false);
   const [profilePicture, setProfilePicture] = useState(DefaultProfilePicture);
   const [selectedProvince, setSelectedProvince] = useState("");
@@ -266,7 +262,10 @@ function MyPage() {
   const [nickname, setNickname] = useState(userData.nickname);
   const [location, setLocation] = useState("");
   const [location2, setLocation2] = useState("");
-  const [image, setImage] = useState(profilePicture);
+  const [image, setImage] = useState(null);
+  // 후기 목록
+  const [reviews, setReviews] = useState([]);
+  const [userToken, setUserToken] = useState("");
   // 비밀번호 변경
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -279,7 +278,9 @@ function MyPage() {
   // 기본
   const handleTabClick = tab => {
     resetInputFields();
-    setProfilePicture(userData.image || DefaultProfilePicture);
+    if (tab !== "myinfo") {
+      setImage(null);
+    }
     setActiveTab(tab);
   };
 
@@ -297,6 +298,22 @@ function MyPage() {
   };
 
   // 후기 목록
+  const getReviews = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE_URL}/stores/reviews/`,
+        {
+          headers: {
+            Authorization: `Token ${userToken}`,
+          },
+        }
+      );
+      setReviews(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const [data, setData] = useState([
     {
       id: 1,
@@ -367,19 +384,19 @@ function MyPage() {
     setSelectedProvince(e.target.value);
     setSelectedCity("");
   };
-  const handleImageChange = async e => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      const imageURL = URL.createObjectURL(file);
-      setProfilePicture(imageURL);
-      setIsImageChanged(true);
+  const handleImageChange = event => {
+    const file = event.target.files[0];
+    if (file) {
+      setImage(file);
     }
   };
+
   const handleNicknameChange = e => {
     setNickname(e.target.value);
   };
   const handleLocationChange = e => {
     setLocation(e.target.value);
+    setSelectedProvince(e.target.value);
   };
   const handleLocation2Change = e => {
     setLocation2(e.target.value);
@@ -397,14 +414,42 @@ function MyPage() {
   };
 
   // 내 정보
+  const getProfileData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`
+      );
+      setUserData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleSubmit1 = async () => {
     try {
-      await axios.put(`${process.env.REACT_APP_API_BASE_URL}/users/profile/{user}/`, {
-        nickname,
-        location,
-        location2,
-        image,
-      });
+      const formData = new FormData();
+      formData.append("nickname", nickname);
+      formData.append("location", location);
+      formData.append("location2", location2);
+      if (image) {
+        formData.append("image", image);
+      }
+
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      await axios.put(
+        `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`,
+        formData,
+        config
+      );
+
+      getProfileData();
+      alert("내 정보가 변경되었습니다.");
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
@@ -436,9 +481,12 @@ function MyPage() {
   // 회원 탈퇴
   const handleSubmit3 = async () => {
     try {
-      await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/users/profile/{user}/`, {
-        data: { password, reason },
-      });
+      await axios.delete(
+        `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`,
+        {
+          data: { password, reason },
+        }
+      );
     } catch (error) {
       console.error(error);
     }
@@ -459,7 +507,7 @@ function MyPage() {
     async function fetchUserData() {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_BASE_URL}/users/profile/{user}/`
+          `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`
         );
 
         if (response.data.success) {
@@ -480,9 +528,9 @@ function MyPage() {
 
   useEffect(() => {
     if (
-      userData.nickname !== nickname ||
-      userData.location !== location ||
-      userData.location2 !== location2 ||
+      (nickname && userData.nickname !== nickname) ||
+      (location && userData.location !== location) ||
+      (location2 && userData.location2 !== location2) ||
       isImageChanged
     ) {
       setIsChanged(true);
@@ -510,6 +558,11 @@ function MyPage() {
       setIsChanged(false);
     }
   }, [password, reason]);
+
+  useEffect(() => {
+    getReviews();
+    getProfileData();
+  }, []);
 
   return (
     <>
@@ -551,7 +604,13 @@ function MyPage() {
                 <TableRow>
                   <TableHeader>프로필 사진</TableHeader>
                   <TableCell>
-                    <ProfilePicture src={profilePicture} />
+                    <ProfilePicture
+                      src={
+                        image
+                          ? URL.createObjectURL(image)
+                          : userData.image || profilePicture
+                      }
+                    />
                     <div>
                       <label htmlFor="imageInput">
                         <EditButton as="span">이미지 선택</EditButton>
@@ -570,15 +629,19 @@ function MyPage() {
                   <TableHeader>닉네임</TableHeader>
                   <TableCell>
                     <Input
-                      placeholder={userData.nickname}
-                      value={nickname}
-                      onChange={handleNicknameChange}></Input>
+                      placeholder={userData.nickname || ""}
+                      value={nickname || userData.nickname || ""}
+                      onChange={handleNicknameChange}
+                    />
                   </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableHeader>현재 거주 지역</TableHeader>
                   <TableCell>
-                    <Select id="province" onChange={handleLocationChange}>
+                    <Select
+                      id="province"
+                      value={location || userData.location}
+                      onChange={handleLocationChange}>
                       <option value="">시/도 선택</option>
                       {Object.keys(cityOptions).map(province => (
                         <option key={province} value={province}>
@@ -586,7 +649,11 @@ function MyPage() {
                         </option>
                       ))}
                     </Select>
-                    <Select id="city" onChange={handleLocation2Change}>
+                    <Select
+                      id="city"
+                      value={location2 || userData.location2}
+                      onChange={handleLocation2Change}
+                      disabled={!selectedProvince}>
                       <option value="">시/군/구 선택</option>
                       {selectedProvince === ""
                         ? Object.values(cityOptions)
@@ -671,14 +738,14 @@ function MyPage() {
         )}
         {activeTab === "reviews" && (
           <div>
-            {data.map(item => (
+            {reviews.map(item => (
               <List key={item.id}>
                 <div style={{}}>
                   <div style={{ position: "absolute", right: "30%" }}>
                     <FiEdit style={{ marginRight: "0.5rem" }} />
                     <FiTrash2 />
                   </div>
-                  <h2 style={{ display: "block" }}>{item.name}</h2>
+                  <h2 style={{ display: "block" }}>{item.profile.nickname}</h2>
                   <div
                     style={{
                       display: "flex",
@@ -686,10 +753,10 @@ function MyPage() {
                       color: "#666",
                     }}>
                     <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
-                    <p>{item.address}</p>
+                    <p>{item.profile.location}</p>
                   </div>
                 </div>
-                <p>{item.review}</p>
+                <p>{item.content}</p>
               </List>
             ))}
           </div>
