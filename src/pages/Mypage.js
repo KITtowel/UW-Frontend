@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-// import Logo from "../assets/logo.png";
-// import User from "../components/User";
 import Select from "../components/Select";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
@@ -240,11 +238,12 @@ const List = styled.div`
 function MyPage() {
   // 기본
   const storedUserId = localStorage.getItem("userId");
+  const storedToken = localStorage.getItem("token");
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
     if (isAuthenticated !== true) {
-      // navigate("/");
+      navigate("/");
     }
   }, [isAuthenticated]);
   const [page, setPage] = useState(1);
@@ -253,29 +252,6 @@ function MyPage() {
   const handleCancel = () => {
     navigate(-1);
   };
-  // 내 정보
-  const [userData, setUserData] = useState("");
-  const [isImageChanged, setIsImageChanged] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(DefaultProfilePicture);
-  const [selectedProvince, setSelectedProvince] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [nickname, setNickname] = useState(userData.nickname);
-  const [location, setLocation] = useState("");
-  const [location2, setLocation2] = useState("");
-  const [image, setImage] = useState(null);
-  // 후기 목록
-  const [reviews, setReviews] = useState([]);
-  const [userToken, setUserToken] = useState("");
-  // 비밀번호 변경
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
-  // 회원 탈퇴
-  const [password, setPassword] = useState("");
-  const [reason, setReason] = useState("");
-  const [showOtherInput, setShowOtherInput] = useState(false);
-
-  // 기본
   const handleTabClick = tab => {
     resetInputFields();
     if (tab !== "myinfo") {
@@ -283,7 +259,6 @@ function MyPage() {
     }
     setActiveTab(tab);
   };
-
   const resetInputFields = () => {
     setOldPassword("");
     setNewPassword("");
@@ -297,86 +272,16 @@ function MyPage() {
     setShowOtherInput(false);
   };
 
-  // 후기 목록
-  const getReviews = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}/stores/reviews/`,
-        {
-          headers: {
-            Authorization: `Token ${userToken}`,
-          },
-        }
-      );
-      setReviews(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: "GS25 구미옥계대로점",
-      category: "편의점",
-      rating: 5.0,
-      address: "경상북도 구미시 산호대로 747",
-      liked: false,
-      review: "친절해요.",
-    },
-    {
-      id: 2,
-      name: "GS25 옥계희망점",
-      category: "편의점",
-      rating: 4.2,
-      address: "경상북도 구미시 옥계동 산호대로25안길 1",
-      liked: false,
-      review: "친절해요.",
-    },
-    {
-      id: 3,
-      name: "GS25 옥계센타점",
-      category: "편의점",
-      rating: 4.8,
-      address: "경상북도 구미시 산호대로24길 9-12",
-      liked: false,
-      review: "친절해요.",
-    },
-    {
-      id: 4,
-      name: "GS25 구미옥계행운점",
-      category: "편의점",
-      rating: 3.9,
-      address: "경상북도 구미시 산호대로27길 13-17",
-      liked: false,
-      review: "친절해요.",
-    },
-    {
-      id: 5,
-      name: "GS25 구미산호점",
-      category: "편의점",
-      rating: 4.1,
-      address: "경상북도 구미시 옥계동 산호대로27길 17",
-      liked: false,
-      review: "친절해요.",
-    },
-  ]);
-
-  // 좋아요 목록
-  const handleLike = id => {
-    const newData = data.map(item => {
-      if (item.id === id) {
-        return {
-          ...item,
-          liked: !item.liked,
-        };
-      }
-      return item;
-    });
-    setData(newData);
-  };
-
   // 내 정보
+  const [userData, setUserData] = useState("");
+  const [isImageChanged, setIsImageChanged] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(DefaultProfilePicture);
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [nickname, setNickname] = useState(userData.nickname);
+  const [location, setLocation] = useState("");
+  const [location2, setLocation2] = useState("");
+  const [image, setImage] = useState(null);
   const handleCityChange = e => {
     setSelectedCity(e.target.value);
   };
@@ -390,7 +295,6 @@ function MyPage() {
       setImage(file);
     }
   };
-
   const handleNicknameChange = e => {
     setNickname(e.target.value);
   };
@@ -401,19 +305,6 @@ function MyPage() {
   const handleLocation2Change = e => {
     setLocation2(e.target.value);
   };
-
-  //비밀번호 변경
-  const handleOldPasswordChange = e => {
-    setOldPassword(e.target.value);
-  };
-  const handleNewPasswordChange = e => {
-    setNewPassword(e.target.value);
-  };
-  const handleNewPasswordConfirmChange = e => {
-    setNewPasswordConfirm(e.target.value);
-  };
-
-  // 내 정보
   const getProfileData = async () => {
     try {
       const response = await axios.get(
@@ -424,7 +315,6 @@ function MyPage() {
       console.error(error);
     }
   };
-
   const handleSubmit1 = async () => {
     try {
       const formData = new FormData();
@@ -434,19 +324,16 @@ function MyPage() {
       if (image) {
         formData.append("image", image);
       }
-
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       };
-
       await axios.put(
         `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`,
         formData,
         config
       );
-
       getProfileData();
       alert("내 정보가 변경되었습니다.");
       navigate("/");
@@ -454,8 +341,89 @@ function MyPage() {
       console.error(error);
     }
   };
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`
+        );
+        if (response.data.success) {
+          const { nickname, location, location2, image } = response.data;
+          setUserData({ nickname, location, location2, image });
+          setProfilePicture(image || DefaultProfilePicture);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchUserData();
+  }, []);
+  useEffect(() => {
+    getProfileData();
+  }, []);
+
+  // 좋아요 목록
+  const handleLike = async id => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/stores/${storedUserId}/like/`,
+        null,
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+          },
+        }
+      );
+      const updatedItem = response.data;
+      setData(prevData =>
+        prevData.map(item => {
+          if (item.id === updatedItem.id) {
+            return updatedItem;
+          }
+          return item;
+        })
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // 후기 목록
+  const [reviews, setReviews] = useState([]);
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const getReviews = async () => {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_BASE_URL}/stores/reviewed_list/`,
+          {
+            headers: {
+              Authorization: `Token ${storedToken}`,
+            },
+          }
+        );
+        setReviews(response.data.results);
+        console.log(response.data.results);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getReviews();
+  }, [storedToken, storedUserId]);
 
   // 비밀번호 변경
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
+  const handleOldPasswordChange = e => {
+    setOldPassword(e.target.value);
+  };
+  const handleNewPasswordChange = e => {
+    setNewPassword(e.target.value);
+  };
+  const handleNewPasswordConfirmChange = e => {
+    setNewPasswordConfirm(e.target.value);
+  };
   const handleSubmit2 = async () => {
     try {
       const response = await axios.patch(
@@ -466,7 +434,6 @@ function MyPage() {
           new_password_confirm: newPasswordConfirm,
         }
       );
-
       if (response.data.success) {
         console.log("비밀번호가 성공적으로 변경되었습니다.");
       } else {
@@ -479,6 +446,9 @@ function MyPage() {
   };
 
   // 회원 탈퇴
+  const [password, setPassword] = useState("");
+  const [reason, setReason] = useState("");
+  const [showOtherInput, setShowOtherInput] = useState(false);
   const handleSubmit3 = async () => {
     try {
       await axios.delete(
@@ -503,29 +473,7 @@ function MyPage() {
     }
   };
 
-  useEffect(() => {
-    async function fetchUserData() {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`
-        );
-
-        if (response.data.success) {
-          const { nickname, location, location2, image } = response.data;
-          setUserData({ nickname, location, location2, image });
-          setProfilePicture(image || DefaultProfilePicture);
-        } else {
-          console.log("사용자 데이터를 가져오는데 실패했습니다.");
-        }
-      } catch (error) {
-        console.error(error);
-        console.log("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
-      }
-    }
-
-    fetchUserData();
-  }, []);
-
+  // 탭 초기화
   useEffect(() => {
     if (
       (nickname && userData.nickname !== nickname) ||
@@ -538,7 +486,6 @@ function MyPage() {
       setIsChanged(false);
     }
   }, [userData, nickname, location, location2, isImageChanged]);
-
   useEffect(() => {
     if (
       oldPassword.length > 0 &&
@@ -550,7 +497,6 @@ function MyPage() {
       setIsChanged(false);
     }
   }, [oldPassword, newPassword, newPasswordConfirm]);
-
   useEffect(() => {
     if (password.length > 0 && reason !== "") {
       setIsChanged(true);
@@ -558,11 +504,6 @@ function MyPage() {
       setIsChanged(false);
     }
   }, [password, reason]);
-
-  useEffect(() => {
-    getReviews();
-    getProfileData();
-  }, []);
 
   return (
     <>
@@ -690,10 +631,10 @@ function MyPage() {
         )}
         {activeTab === "likes" && (
           <div>
-            {data.map(item => (
-              <List key={item.id}>
+            {data.results.map(item => (
+              <List key={item.store_id}>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <h2 style={{ marginRight: "1rem" }}>{item.name}</h2>
+                  <h2 style={{ marginRight: "1rem" }}>{item.store_name}</h2>
                   <h3 style={{ marginRight: "1rem", color: "#666" }}>
                     {item.category}
                   </h3>
@@ -705,7 +646,7 @@ function MyPage() {
                         right: "30%",
                         cursor: "pointer",
                       }}
-                      onClick={() => handleLike(item.id)}
+                      onClick={() => handleLike(item.store_id)}
                     />
                   ) : (
                     <RiThumbUpFill
@@ -715,12 +656,12 @@ function MyPage() {
                         right: "30%",
                         cursor: "pointer",
                       }}
-                      onClick={() => handleLike(item.id)}
+                      onClick={() => handleLike(item.store_id)}
                     />
                   )}
                 </div>
                 <p style={{ color: "#666" }}>
-                  <FaStar color="#F7CA46" size={15} /> {item.rating} / 5
+                  <FaStar color="#F7CA46" size={15} /> {item.rating_mean} / 5
                 </p>
                 <div
                   style={{
@@ -729,23 +670,28 @@ function MyPage() {
                     color: "#666",
                   }}>
                   <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
-                  <p>{item.address}</p>
+                  <p>{item.store_address}</p>
                 </div>
               </List>
             ))}
-            <Pagination total={100} limit={15} page={page} setPage={setPage} />
+            <Pagination
+              total={data.count}
+              limit={12}
+              page={page}
+              setPage={setPage}
+            />
           </div>
         )}
         {activeTab === "reviews" && (
           <div>
-            {reviews.map(item => (
-              <List key={item.id}>
+            {reviews && reviews.length > 0 ? (
+              <List key={reviews[0].id}>
                 <div style={{}}>
                   <div style={{ position: "absolute", right: "30%" }}>
                     <FiEdit style={{ marginRight: "0.5rem" }} />
                     <FiTrash2 />
                   </div>
-                  <h2 style={{ display: "block" }}>{item.profile.nickname}</h2>
+                  <h2 style={{ display: "block" }}>{reviews[0].store_name}</h2>
                   <div
                     style={{
                       display: "flex",
@@ -753,14 +699,17 @@ function MyPage() {
                       color: "#666",
                     }}>
                     <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
-                    <p>{item.profile.location}</p>
+                    <p>{reviews[0].store_address}</p>
                   </div>
                 </div>
-                <p>{item.content}</p>
+                <p>{reviews[0].content}</p>
               </List>
-            ))}
+            ) : (
+              <p>리뷰가 없습니다.</p>
+            )}
           </div>
         )}
+
         {activeTab === "changepw" && (
           <Wrapper>
             <InputCenter
