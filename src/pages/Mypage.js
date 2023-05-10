@@ -284,6 +284,26 @@ function MyPage() {
       setImage(null);
     }
     setActiveTab(tab);
+
+    if (tab === "likes") {
+      const fetchData = async () => {
+        try {
+          const response = await axios.post(
+            `${process.env.REACT_APP_API_BASE_URL}/stores/liked_list/?page=${likePage}`,
+            null,
+            {
+              headers: {
+                Authorization: `Token ${storedToken}`,
+              },
+            }
+          );
+          setLikedStores(response.data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      fetchData();
+    }
   };
 
   const resetInputFields = () => {
@@ -321,16 +341,31 @@ function MyPage() {
   }, [likePage, storedToken]);
 
   const handleLike = async id => {
-    const newData = likedStores.results.map(item => {
-      if (item.store_id === id) {
-        return {
-          ...item,
-          liked: !item.liked,
-        };
-      }
-      return item;
-    });
-    setLikedStores({ ...likedStores, results: newData });
+    try {
+      const newData = likedStores.results.map(item => {
+        if (item.store_id === id) {
+          return {
+            ...item,
+            liked: !item.liked,
+          };
+        }
+        return item;
+      });
+      setLikedStores(prevState => ({ ...prevState, results: newData }));
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/stores/like/${storedUserId}/`,
+        null,
+        {
+          headers: {
+            Authorization: `Token ${storedToken}`,
+          },
+        }
+      );
+      alert(response.data.message);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   // 내 정보
@@ -341,11 +376,9 @@ function MyPage() {
     setSelectedProvince(e.target.value);
     setSelectedCity("");
   };
-  const handleImageChange = event => {
-    const file = event.target.files[0];
-    if (file) {
-      setImage(file);
-    }
+  const handleImageChange = e => {
+    setImage(e.target.files[0]);
+    setIsImageChanged(true);
   };
 
   const handleNicknameChange = e => {
@@ -385,11 +418,18 @@ function MyPage() {
   const handleSubmit1 = async () => {
     try {
       const formData = new FormData();
-      formData.append("nickname", nickname);
-      formData.append("location", location);
-      formData.append("location2", location2);
+      if (nickname) {
+        formData.append("nickname", nickname);
+      }
+      if (location) {
+        formData.append("location", location);
+      }
+      if (location2) {
+        formData.append("location2", location2);
+      }
       if (image) {
         formData.append("image", image);
+        setIsImageChanged(true);
       }
 
       const config = {
@@ -461,57 +501,42 @@ function MyPage() {
   };
 
   useEffect(() => {
-    async function fetchUserData() {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`
-        );
+    let hasChanges = false;
 
-        if (response.data.success) {
-          const { nickname, location, location2, image } = response.data;
-          setUserData({ nickname, location, location2, image });
-          setProfilePicture(image || DefaultProfilePicture);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    fetchUserData();
-  }, []);
-
-  useEffect(() => {
     if (
       (nickname && userData.nickname !== nickname) ||
       (location && userData.location !== location) ||
       (location2 && userData.location2 !== location2) ||
       isImageChanged
     ) {
-      setIsChanged(true);
-    } else {
-      setIsChanged(false);
+      hasChanges = true;
     }
-  }, [userData, nickname, location, location2, isImageChanged]);
 
-  useEffect(() => {
     if (
       oldPassword.length > 0 &&
       newPassword.length > 0 &&
       newPasswordConfirm.length > 0
     ) {
-      setIsChanged(true);
-    } else {
-      setIsChanged(false);
+      hasChanges = true;
     }
-  }, [oldPassword, newPassword, newPasswordConfirm]);
 
-  useEffect(() => {
     if (password.length > 0 && reason !== "") {
-      setIsChanged(true);
-    } else {
-      setIsChanged(false);
+      hasChanges = true;
     }
-  }, [password, reason]);
+
+    setIsChanged(hasChanges);
+  }, [
+    userData,
+    nickname,
+    location,
+    location2,
+    isImageChanged,
+    oldPassword,
+    newPassword,
+    newPasswordConfirm,
+    password,
+    reason,
+  ]);
 
   // 후기 목록
   useEffect(() => {
@@ -681,7 +706,7 @@ function MyPage() {
                         right: "30%",
                         cursor: "pointer",
                       }}
-                      onClick={() => handleLike(item.store_id)}
+                      onClick={() => handleLike(item.store_id, true)}
                     />
                   ) : (
                     <RiThumbUpFill
@@ -691,7 +716,7 @@ function MyPage() {
                         right: "30%",
                         cursor: "pointer",
                       }}
-                      onClick={() => handleLike(item.store_id)}
+                      onClick={() => handleLike(item.store_id, false)}
                     />
                   )}
                 </div>

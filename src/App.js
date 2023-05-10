@@ -2,10 +2,11 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Mypage from "./pages/Mypage";
 import FindId from "./pages/FindId";
 import FindPw from "./pages/FindPw";
+import MyPage from "./pages/MyPage";
 import { StoreMap } from "./pages";
+// import { MyPage } from "./pages";
 
 const App = () => {
   return (
@@ -16,7 +17,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/findid" element={<FindId />} />
         <Route path="/findpw" element={<FindPw />} />
-        <Route path="/mypage" element={<Mypage />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </BrowserRouter>
   );
