@@ -160,7 +160,7 @@ const StoreHeader = styled.div`
 const StoreName = styled.h1`
   font-size: 1.2em;
   margin-right: 3px;
-  max-width: 170px;
+  max-width: 160px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -179,6 +179,7 @@ const StoreRate = styled.h2`
 const StoreLoc = styled.h2`
   display: flex;
   font-size: 0.9em;
+  text-align: left;
 `;
 
 const LocationIcon = styled(MdLocationOn)`

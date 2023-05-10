@@ -32,40 +32,40 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
 
   //현재 위치의 좌표를 설정함
   useEffect(() => {
-    // if (navigator.geolocation) {
-    //   // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-    //   navigator.geolocation.getCurrentPosition(
-    //     (position) => {
-    //       setState((prev) => ({
-    //         ...prev,
-    //         center: {
-    //           lat: position.coords.latitude, // 위도
-    //           lng: position.coords.longitude, // 경도
-    //         },
-    //         isLoading: false,
-    //       }));
-    //       setCurPos({
-    //         lat: position.coords.latitude, // 위도
-    //         lng: position.coords.longitude, // 경도
-    //       });
-    //       setIsCenter(true);
-    //     },
-    //     (err) => {
-    //       setState((prev) => ({
-    //         ...prev,
-    //         errMsg: err.message,
-    //         isLoading: false,
-    //       }))
-    //     }
-    //   )
-    // } else {
-    //   // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정
-    //   setState((prev) => ({
-    //     ...prev,
-    //     errMsg: "geolocation을 사용할수 없어요..",
-    //     isLoading: false,
-    //   }))
-    // }
+    if (navigator.geolocation) {
+      // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setState((prev) => ({
+            ...prev,
+            center: {
+              lat: position.coords.latitude, // 위도
+              lng: position.coords.longitude, // 경도
+            },
+            isLoading: false,
+          }));
+          setCurPos({
+            lat: position.coords.latitude, // 위도
+            lng: position.coords.longitude, // 경도
+          });
+          setIsCenter(true);
+        },
+        (err) => {
+          setState((prev) => ({
+            ...prev,
+            errMsg: err.message,
+            isLoading: false,
+          }))
+        }
+      )
+    } else {
+      // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정
+      setState((prev) => ({
+        ...prev,
+        errMsg: "geolocation을 사용할수 없어요..",
+        isLoading: false,
+      }))
+    }
   }, [])
 
   //현재 위치 값으로 map중앙을 설정 이동하는 함수
