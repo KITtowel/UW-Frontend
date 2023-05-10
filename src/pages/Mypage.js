@@ -238,7 +238,6 @@ const List = styled.div`
 function MyPage() {
   const storedUserId = localStorage.getItem("userId");
   const storedToken = localStorage.getItem("token");
-  // const { storedToken, storedUserId } = useContext(AuthContext);
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
@@ -247,37 +246,12 @@ function MyPage() {
     }
   }, [isAuthenticated]);
   const [isChanged, setIsChanged] = useState(false);
-  const [activeTab, setActiveTab] = useState("myinfo");
   const handleCancel = () => {
     navigate(-1);
   };
-  // 내 정보
-  const [userData, setUserData] = useState("");
-  const [isImageChanged, setIsImageChanged] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(DefaultProfilePicture);
-  const [selectedProvince, setSelectedProvince] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [nickname, setNickname] = useState(userData.nickname);
-  const [location, setLocation] = useState("");
-  const [location2, setLocation2] = useState("");
-  const [image, setImage] = useState(null);
-  // 좋아요 목록
-  const [likePage, setLikePage] = useState(1);
-  const [likedStores, setLikedStores] = useState({ results: [] });
-  // 후기 목록
-  const [reviews, setReviews] = useState([]);
-  const [reviewPage, setReviewPage] = useState(1);
-  const [reviewsCount, setReviewsCount] = useState(0);
-  // 비밀번호 변경
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
-  // 회원 탈퇴
-  const [password, setPassword] = useState("");
-  const [reason, setReason] = useState("");
-  const [showOtherInput, setShowOtherInput] = useState(false);
 
-  // 기본
+  // 탭
+  const [activeTab, setActiveTab] = useState("myinfo");
   const handleTabClick = tab => {
     resetInputFields();
     if (tab !== "myinfo") {
@@ -305,7 +279,6 @@ function MyPage() {
       fetchData();
     }
   };
-
   const resetInputFields = () => {
     setOldPassword("");
     setNewPassword("");
@@ -319,7 +292,91 @@ function MyPage() {
     setShowOtherInput(false);
   };
 
-  // 좋아요 목록
+  // 내 정보
+  const [userData, setUserData] = useState({});
+  const [isImageChanged, setIsImageChanged] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(DefaultProfilePicture);
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [location, setLocation] = useState("");
+  const [location2, setLocation2] = useState("");
+  const [image, setImage] = useState(null);
+  const getProfileData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`
+      );
+      setUserData(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleCityChange = e => {
+    setSelectedCity(e.target.value);
+  };
+  const handleProvinceChange = e => {
+    setSelectedProvince(e.target.value);
+    setSelectedCity("");
+  };
+  const handleImageChange = e => {
+    setImage(e.target.files[0]);
+    setIsImageChanged(true);
+  };
+  const handleNicknameChange = e => {
+    setNickname(e.target.value);
+  };
+  const handleLocationChange = e => {
+    setLocation(e.target.value);
+    setSelectedProvince(e.target.value);
+  };
+  const handleLocation2Change = e => {
+    setLocation2(e.target.value);
+  };
+  const handleSubmit1 = async () => {
+    try {
+      const formData = new FormData();
+      if (nickname) {
+        formData.append("nickname", nickname);
+      }
+      if (location) {
+        formData.append("location", location);
+      }
+      if (location2) {
+        formData.append("location2", location2);
+      }
+      if (image) {
+        formData.append("image", image);
+        setIsImageChanged(true);
+      }
+
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Token ${storedToken}`,
+        },
+      };
+
+      await axios.put(
+        `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`,
+        formData,
+        config
+      );
+
+      getProfileData();
+      alert("내 정보가 변경되었습니다.");
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    getProfileData();
+  }, []);
+
+  // 좋아요
+  const [likePage, setLikePage] = useState(1);
+  const [likedStores, setLikedStores] = useState({ results: [] });
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -368,31 +425,36 @@ function MyPage() {
     }
   };
 
-  // 내 정보
-  const handleCityChange = e => {
-    setSelectedCity(e.target.value);
-  };
-  const handleProvinceChange = e => {
-    setSelectedProvince(e.target.value);
-    setSelectedCity("");
-  };
-  const handleImageChange = e => {
-    setImage(e.target.files[0]);
-    setIsImageChanged(true);
-  };
+  // 후기
+  const [reviews, setReviews] = useState([]);
+  const [reviewPage, setReviewPage] = useState(1);
+  const [reviewsCount, setReviewsCount] = useState(0);
+  useEffect(() => {
+    const getReviews = async () => {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_BASE_URL}/stores/reviewed_list/?page=${reviewPage}`,
+          {},
+          {
+            headers: {
+              Authorization: `Token ${storedToken}`,
+            },
+          }
+        );
+        setReviews(response.data.results);
+        setReviewsCount(response.data.count);
+        console.log(response.data.results);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getReviews();
+  }, [storedToken, reviewPage]);
 
-  const handleNicknameChange = e => {
-    setNickname(e.target.value);
-  };
-  const handleLocationChange = e => {
-    setLocation(e.target.value);
-    setSelectedProvince(e.target.value);
-  };
-  const handleLocation2Change = e => {
-    setLocation2(e.target.value);
-  };
-
-  //비밀번호 변경
+  // 비밀번호 변경
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
   const handleOldPasswordChange = e => {
     setOldPassword(e.target.value);
   };
@@ -402,57 +464,6 @@ function MyPage() {
   const handleNewPasswordConfirmChange = e => {
     setNewPasswordConfirm(e.target.value);
   };
-
-  // 내 정보
-  const getProfileData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`
-      );
-      setUserData(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleSubmit1 = async () => {
-    try {
-      const formData = new FormData();
-      if (nickname) {
-        formData.append("nickname", nickname);
-      }
-      if (location) {
-        formData.append("location", location);
-      }
-      if (location2) {
-        formData.append("location2", location2);
-      }
-      if (image) {
-        formData.append("image", image);
-        setIsImageChanged(true);
-      }
-
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      };
-
-      await axios.put(
-        `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`,
-        formData,
-        config
-      );
-
-      getProfileData();
-      alert("내 정보가 변경되었습니다.");
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // 비밀번호 변경
   const handleSubmit2 = async () => {
     try {
       const response = await axios.patch(
@@ -476,6 +487,9 @@ function MyPage() {
   };
 
   // 회원 탈퇴
+  const [password, setPassword] = useState("");
+  const [reason, setReason] = useState("");
+  const [showOtherInput, setShowOtherInput] = useState(false);
   const handleSubmit3 = async () => {
     try {
       await axios.delete(
@@ -499,10 +513,8 @@ function MyPage() {
       setShowOtherInput(false);
     }
   };
-
   useEffect(() => {
     let hasChanges = false;
-
     if (
       (nickname && userData.nickname !== nickname) ||
       (location && userData.location !== location) ||
@@ -511,7 +523,6 @@ function MyPage() {
     ) {
       hasChanges = true;
     }
-
     if (
       oldPassword.length > 0 &&
       newPassword.length > 0 &&
@@ -519,11 +530,9 @@ function MyPage() {
     ) {
       hasChanges = true;
     }
-
     if (password.length > 0 && reason !== "") {
       hasChanges = true;
     }
-
     setIsChanged(hasChanges);
   }, [
     userData,
@@ -537,33 +546,6 @@ function MyPage() {
     password,
     reason,
   ]);
-
-  // 후기 목록
-  useEffect(() => {
-    const getReviews = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_BASE_URL}/stores/reviewed_list/?page=${reviewPage}`,
-          {},
-          {
-            headers: {
-              Authorization: `Token ${storedToken}`,
-            },
-          }
-        );
-        setReviews(response.data.results);
-        setReviewsCount(response.data.count);
-        console.log(response.data.results);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getReviews();
-  }, [storedToken, reviewPage]);
-
-  useEffect(() => {
-    getProfileData();
-  }, []);
 
   return (
     <>
@@ -706,7 +688,7 @@ function MyPage() {
                         right: "30%",
                         cursor: "pointer",
                       }}
-                      onClick={() => handleLike(item.store_id, true)}
+                      onClick={() => handleLike(item.store_id, false)}
                     />
                   ) : (
                     <RiThumbUpFill
@@ -716,7 +698,7 @@ function MyPage() {
                         right: "30%",
                         cursor: "pointer",
                       }}
-                      onClick={() => handleLike(item.store_id, false)}
+                      onClick={() => handleLike(item.store_id, true)}
                     />
                   )}
                 </div>

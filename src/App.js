@@ -4,7 +4,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import FindId from "./pages/FindId";
 import FindPw from "./pages/FindPw";
-import MyPage from "./pages/MyPage";
+import Mypage from "./pages/Mypage";
 import { StoreMap } from "./pages";
 // import { MyPage } from "./pages";
 
@@ -17,7 +17,7 @@ const App = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/findid" element={<FindId />} />
         <Route path="/findpw" element={<FindPw />} />
-        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/mypage" element={<Mypage />} />
       </Routes>
     </BrowserRouter>
   );
