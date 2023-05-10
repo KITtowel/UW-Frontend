@@ -236,9 +236,9 @@ const List = styled.div`
 `;
 
 function MyPage() {
-  // 기본
   const storedUserId = localStorage.getItem("userId");
   const storedToken = localStorage.getItem("token");
+  // const { storedToken, storedUserId } = useContext(AuthContext);
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
@@ -246,12 +246,38 @@ function MyPage() {
       navigate("/");
     }
   }, [isAuthenticated]);
-  const [page, setPage] = useState(1);
   const [isChanged, setIsChanged] = useState(false);
   const [activeTab, setActiveTab] = useState("myinfo");
   const handleCancel = () => {
     navigate(-1);
   };
+  // 내 정보
+  const [userData, setUserData] = useState("");
+  const [isImageChanged, setIsImageChanged] = useState(false);
+  const [profilePicture, setProfilePicture] = useState(DefaultProfilePicture);
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [nickname, setNickname] = useState(userData.nickname);
+  const [location, setLocation] = useState("");
+  const [location2, setLocation2] = useState("");
+  const [image, setImage] = useState(null);
+  // 좋아요 목록
+  const [likePage, setLikePage] = useState(1);
+  const [likedStores, setLikedStores] = useState({ results: [] });
+  // 후기 목록
+  const [reviews, setReviews] = useState([]);
+  const [reviewPage, setReviewPage] = useState(1);
+  const [reviewsCount, setReviewsCount] = useState(0);
+  // 비밀번호 변경
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
+  // 회원 탈퇴
+  const [password, setPassword] = useState("");
+  const [reason, setReason] = useState("");
+  const [showOtherInput, setShowOtherInput] = useState(false);
+
+  // 기본
   const handleTabClick = tab => {
     resetInputFields();
     if (tab !== "myinfo") {
@@ -259,6 +285,7 @@ function MyPage() {
     }
     setActiveTab(tab);
   };
+
   const resetInputFields = () => {
     setOldPassword("");
     setNewPassword("");
@@ -272,16 +299,41 @@ function MyPage() {
     setShowOtherInput(false);
   };
 
+  // 좋아요 목록
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_BASE_URL}/stores/liked_list/?page=${likePage}`,
+          null,
+          {
+            headers: {
+              Authorization: `Token ${storedToken}`,
+            },
+          }
+        );
+        setLikedStores(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [likePage, storedToken]);
+
+  const handleLike = async id => {
+    const newData = likedStores.results.map(item => {
+      if (item.store_id === id) {
+        return {
+          ...item,
+          liked: !item.liked,
+        };
+      }
+      return item;
+    });
+    setLikedStores({ ...likedStores, results: newData });
+  };
+
   // 내 정보
-  const [userData, setUserData] = useState("");
-  const [isImageChanged, setIsImageChanged] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(DefaultProfilePicture);
-  const [selectedProvince, setSelectedProvince] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
-  const [nickname, setNickname] = useState(userData.nickname);
-  const [location, setLocation] = useState("");
-  const [location2, setLocation2] = useState("");
-  const [image, setImage] = useState(null);
   const handleCityChange = e => {
     setSelectedCity(e.target.value);
   };
@@ -295,6 +347,7 @@ function MyPage() {
       setImage(file);
     }
   };
+
   const handleNicknameChange = e => {
     setNickname(e.target.value);
   };
@@ -305,6 +358,19 @@ function MyPage() {
   const handleLocation2Change = e => {
     setLocation2(e.target.value);
   };
+
+  //비밀번호 변경
+  const handleOldPasswordChange = e => {
+    setOldPassword(e.target.value);
+  };
+  const handleNewPasswordChange = e => {
+    setNewPassword(e.target.value);
+  };
+  const handleNewPasswordConfirmChange = e => {
+    setNewPasswordConfirm(e.target.value);
+  };
+
+  // 내 정보
   const getProfileData = async () => {
     try {
       const response = await axios.get(
@@ -315,6 +381,7 @@ function MyPage() {
       console.error(error);
     }
   };
+
   const handleSubmit1 = async () => {
     try {
       const formData = new FormData();
@@ -324,16 +391,19 @@ function MyPage() {
       if (image) {
         formData.append("image", image);
       }
+
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       };
+
       await axios.put(
         `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`,
         formData,
         config
       );
+
       getProfileData();
       alert("내 정보가 변경되었습니다.");
       navigate("/");
@@ -341,89 +411,8 @@ function MyPage() {
       console.error(error);
     }
   };
-  useEffect(() => {
-    async function fetchUserData() {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`
-        );
-        if (response.data.success) {
-          const { nickname, location, location2, image } = response.data;
-          setUserData({ nickname, location, location2, image });
-          setProfilePicture(image || DefaultProfilePicture);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchUserData();
-  }, []);
-  useEffect(() => {
-    getProfileData();
-  }, []);
-
-  // 좋아요 목록
-  const handleLike = async id => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/stores/${storedUserId}/like/`,
-        null,
-        {
-          headers: {
-            Authorization: `Token ${storedToken}`,
-          },
-        }
-      );
-      const updatedItem = response.data;
-      setData(prevData =>
-        prevData.map(item => {
-          if (item.id === updatedItem.id) {
-            return updatedItem;
-          }
-          return item;
-        })
-      );
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  // 후기 목록
-  const [reviews, setReviews] = useState([]);
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    const getReviews = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_BASE_URL}/stores/reviewed_list/`,
-          {
-            headers: {
-              Authorization: `Token ${storedToken}`,
-            },
-          }
-        );
-        setReviews(response.data.results);
-        console.log(response.data.results);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getReviews();
-  }, [storedToken, storedUserId]);
 
   // 비밀번호 변경
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
-  const handleOldPasswordChange = e => {
-    setOldPassword(e.target.value);
-  };
-  const handleNewPasswordChange = e => {
-    setNewPassword(e.target.value);
-  };
-  const handleNewPasswordConfirmChange = e => {
-    setNewPasswordConfirm(e.target.value);
-  };
   const handleSubmit2 = async () => {
     try {
       const response = await axios.patch(
@@ -434,6 +423,7 @@ function MyPage() {
           new_password_confirm: newPasswordConfirm,
         }
       );
+
       if (response.data.success) {
         console.log("비밀번호가 성공적으로 변경되었습니다.");
       } else {
@@ -446,9 +436,6 @@ function MyPage() {
   };
 
   // 회원 탈퇴
-  const [password, setPassword] = useState("");
-  const [reason, setReason] = useState("");
-  const [showOtherInput, setShowOtherInput] = useState(false);
   const handleSubmit3 = async () => {
     try {
       await axios.delete(
@@ -473,7 +460,26 @@ function MyPage() {
     }
   };
 
-  // 탭 초기화
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`
+        );
+
+        if (response.data.success) {
+          const { nickname, location, location2, image } = response.data;
+          setUserData({ nickname, location, location2, image });
+          setProfilePicture(image || DefaultProfilePicture);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchUserData();
+  }, []);
+
   useEffect(() => {
     if (
       (nickname && userData.nickname !== nickname) ||
@@ -486,6 +492,7 @@ function MyPage() {
       setIsChanged(false);
     }
   }, [userData, nickname, location, location2, isImageChanged]);
+
   useEffect(() => {
     if (
       oldPassword.length > 0 &&
@@ -497,6 +504,7 @@ function MyPage() {
       setIsChanged(false);
     }
   }, [oldPassword, newPassword, newPasswordConfirm]);
+
   useEffect(() => {
     if (password.length > 0 && reason !== "") {
       setIsChanged(true);
@@ -504,6 +512,33 @@ function MyPage() {
       setIsChanged(false);
     }
   }, [password, reason]);
+
+  // 후기 목록
+  useEffect(() => {
+    const getReviews = async () => {
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_BASE_URL}/stores/reviewed_list/?page=${reviewPage}`,
+          {},
+          {
+            headers: {
+              Authorization: `Token ${storedToken}`,
+            },
+          }
+        );
+        setReviews(response.data.results);
+        setReviewsCount(response.data.count);
+        console.log(response.data.results);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getReviews();
+  }, [storedToken, reviewPage]);
+
+  useEffect(() => {
+    getProfileData();
+  }, []);
 
   return (
     <>
@@ -631,7 +666,7 @@ function MyPage() {
         )}
         {activeTab === "likes" && (
           <div>
-            {data.results.map(item => (
+            {likedStores.results.map(item => (
               <List key={item.store_id}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <h2 style={{ marginRight: "1rem" }}>{item.store_name}</h2>
@@ -674,42 +709,51 @@ function MyPage() {
                 </div>
               </List>
             ))}
-            <Pagination
-              total={data.count}
-              limit={12}
-              page={page}
-              setPage={setPage}
-            />
+            {likedStores.count > 0 && (
+              <Pagination
+                total={likedStores.count}
+                limit={12}
+                page={likePage}
+                setPage={setLikePage}
+              />
+            )}
           </div>
         )}
         {activeTab === "reviews" && (
           <div>
             {reviews && reviews.length > 0 ? (
-              <List key={reviews[0].id}>
-                <div style={{}}>
-                  <div style={{ position: "absolute", right: "30%" }}>
-                    <FiEdit style={{ marginRight: "0.5rem" }} />
-                    <FiTrash2 />
+              reviews.map(review => (
+                <List key={review.id}>
+                  <div style={{}}>
+                    <div style={{ position: "absolute", right: "30%" }}>
+                      <FiEdit style={{ marginRight: "0.5rem" }} />
+                      <FiTrash2 />
+                    </div>
+                    <h2 style={{ display: "block" }}>{review.store_name}</h2>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        color: "#666",
+                      }}>
+                      <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
+                      <p>{review.store_address}</p>
+                    </div>
                   </div>
-                  <h2 style={{ display: "block" }}>{reviews[0].store_name}</h2>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      color: "#666",
-                    }}>
-                    <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
-                    <p>{reviews[0].store_address}</p>
-                  </div>
-                </div>
-                <p>{reviews[0].content}</p>
-              </List>
+                  <p>{review.content}</p>
+                </List>
+              ))
             ) : (
               <p>리뷰가 없습니다.</p>
             )}
+            <Pagination
+              total={reviewsCount}
+              limit={12}
+              page={reviewPage}
+              setPage={setReviewPage}
+            />
           </div>
         )}
-
         {activeTab === "changepw" && (
           <Wrapper>
             <InputCenter
