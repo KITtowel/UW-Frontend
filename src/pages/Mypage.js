@@ -429,25 +429,41 @@ function MyPage() {
   const [reviews, setReviews] = useState([]);
   const [reviewPage, setReviewPage] = useState(1);
   const [reviewsCount, setReviewsCount] = useState(0);
+  const getReviews = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/stores/reviewed_list/?page=${reviewPage}`,
+        {},
+        {
+          headers: {
+            Authorization: `Token ${storedToken}`,
+          },
+        }
+      );
+      setReviews(response.data.results);
+      setReviewsCount(response.data.count);
+      console.log(response.data.results);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_BASE_URL}/stores/reviews/${storedUserId}/`,
+        {
+          headers: {
+            Authorization: `Token ${storedToken}`,
+          },
+        }
+      );
+      alert(response.data.message);
+      getReviews();
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
-    const getReviews = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_BASE_URL}/stores/reviewed_list/?page=${reviewPage}`,
-          {},
-          {
-            headers: {
-              Authorization: `Token ${storedToken}`,
-            },
-          }
-        );
-        setReviews(response.data.results);
-        setReviewsCount(response.data.count);
-        console.log(response.data.results);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     getReviews();
   }, [storedToken, reviewPage]);
 
@@ -734,7 +750,10 @@ function MyPage() {
                   <div style={{}}>
                     <div style={{ position: "absolute", right: "30%" }}>
                       <FiEdit style={{ marginRight: "0.5rem" }} />
-                      <FiTrash2 />
+                      <FiTrash2
+                        style={{ cursor: "pointer" }}
+                        onClick={handleDelete}
+                      />
                     </div>
                     <h2 style={{ display: "block" }}>{review.store_name}</h2>
                     <div
