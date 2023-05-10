@@ -370,7 +370,7 @@ function MyPage() {
         null,
         {
           headers: {
-            // Authorization: `Token ${token}`,
+            Authorization: `Token ${storedToken}`,
           },
         }
       );
