@@ -566,6 +566,10 @@ function MyPage() {
     getReviews();
   }, [storedToken, reviewPage]);
 
+  useEffect(() => {
+    getReviews();
+  }, [reviewPage]);
+
   // 비밀번호 변경
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -844,7 +848,7 @@ function MyPage() {
             {likedStores.count > 0 && (
               <Pagination
                 total={likedStores.count}
-                limit={12}
+                limit={20}
                 page={likePage}
                 setPage={setLikePage}
               />
@@ -893,7 +897,7 @@ function MyPage() {
             {reviews.length > 0 && (
               <Pagination
                 total={reviewsCount}
-                limit={12}
+                limit={20}
                 page={reviewPage}
                 setPage={setReviewPage}
               />
