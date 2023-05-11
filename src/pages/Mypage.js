@@ -440,14 +440,13 @@ function MyPage() {
     };
     fetchData();
   }, [likePage, storedToken]);
-
-  const handleLike = async id => {
+  const handleLike = async (id, isLiked) => {
     try {
       const newData = likedStores.results.map(item => {
         if (item.store_id === id) {
           return {
             ...item,
-            liked: !item.liked,
+            liked: isLiked,
           };
         }
         return item;
@@ -455,7 +454,7 @@ function MyPage() {
       setLikedStores(prevState => ({ ...prevState, results: newData }));
 
       const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/stores/like/${storedUserId}/`,
+        `${process.env.REACT_APP_API_BASE_URL}/stores/like/${id}/`,
         null,
         {
           headers: {
@@ -478,18 +477,27 @@ function MyPage() {
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(0);
   const handleEditModal = id => {
+    const selectedReview = reviews.find(review => review.id === id);
+    if (selectedReview) {
+      setContent(selectedReview.content);
+      setRating(selectedReview.rating);
+    }
     setSelectedReviewId(id);
     setShowEditModal(true);
   };
+
   const handleClose = () => {
     setShowEditModal(false);
   };
+
   const handleContentChange = e => {
     setContent(e.target.value);
   };
-  const handleRatingChange = e => {
-    setRating(e.target.value);
+
+  const handleRatingChange = value => {
+    setRating(value);
   };
+
   const handleSubmit = async e => {
     e.preventDefault();
     try {
@@ -537,22 +545,23 @@ function MyPage() {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async reviewId => {
     try {
       const response = await axios.delete(
-        `${process.env.REACT_APP_API_BASE_URL}/stores/reviews/${storedUserId}/`,
+        `${process.env.REACT_APP_API_BASE_URL}/stores/reviews/${reviewId}/`,
         {
           headers: {
             Authorization: `Token ${storedToken}`,
           },
         }
       );
-      alert(response.data.message);
+      alert("후기글이 삭제되었습니다.");
       getReviews();
     } catch (error) {
       console.error(error);
     }
   };
+
   useEffect(() => {
     getReviews();
   }, [storedToken, reviewPage]);
@@ -899,6 +908,7 @@ function MyPage() {
                         <Star
                           key={ratingValue}
                           active={ratingValue <= rating}
+                          onChange={handleRatingChange}
                           onClick={() => setRating(ratingValue)}
                         />
                       );
@@ -914,13 +924,16 @@ function MyPage() {
                     value={content}
                     onChange={handleContentChange}
                   />
-                  <AbleButton type="submit">확인</AbleButton>
-                  <DisableButton onClick={handleClose}>취소</DisableButton>
+                  <AbleButton type="submit" onClick={handleSubmit}>
+                    확인
+                  </AbleButton>
+                  <AbleButton onClick={handleClose}>취소</AbleButton>
                 </EditModalContent>
               </EditModal>
             )}
           </div>
         )}
+
         {activeTab === "changepw" && (
           <Wrapper>
             <InputCenter
