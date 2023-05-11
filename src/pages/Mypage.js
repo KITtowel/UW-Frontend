@@ -234,7 +234,23 @@ const List = styled.div`
     vertical-align: middle;
   }
 `;
-
+const Button = styled.button`
+  padding: 11px 130px;
+  color: rgb(253, 249, 243);
+  font-weight: 600;
+  text-transform: uppercase;
+  background: #9dc3e6;
+  border: none;
+  border-radius: 50px;
+  outline: 0;
+  cursor: pointer;
+  margin-top: 0.6rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-out;
+  :hover {
+    background: #2e75b6;
+  }
+`;
 const EditModal = styled.div`
   position: fixed;
   top: 0;
@@ -242,28 +258,22 @@ const EditModal = styled.div`
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 999;
 `;
-
 const EditModalContent = styled.div`
-  width: 500px;
-  height: 300px;
+  position: fixed;
+  top: calc(50% - 180px);
+  left: calc(50% - 300px);
+  width: 600px;
+  height: 360px;
   background-color: white;
   border-radius: 10px;
   padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  text-align: center;
 `;
-
 const StarContainer = styled.div`
-  display: block;
-  align-items: center;
+  margin: 20px;
 `;
-
 const Star = styled(FaStar)`
   color: ${props => (props.active ? "gold" : "#ccc")};
   cursor: pointer;
@@ -881,26 +891,31 @@ function MyPage() {
             )}
             {showEditModal && (
               <EditModal>
-                <StarContainer>
-                  {[...Array(5)].map((star, index) => {
-                    const ratingValue = index + 1;
-                    return (
-                      <Star
-                        key={ratingValue}
-                        active={ratingValue <= rating}
-                        onClick={() => setRating(ratingValue)}
-                      />
-                    );
-                  })}
-                </StarContainer>
                 <EditModalContent>
-                  <input
+                  <StarContainer>
+                    {[...Array(5)].map((star, index) => {
+                      const ratingValue = index + 1;
+                      return (
+                        <Star
+                          key={ratingValue}
+                          active={ratingValue <= rating}
+                          onClick={() => setRating(ratingValue)}
+                        />
+                      );
+                    })}
+                  </StarContainer>
+                  <InputCenter
+                    style={{
+                      width: "400px",
+                      height: "150px",
+                      marginTop: "20px",
+                    }}
                     type="text"
                     value={content}
                     onChange={handleContentChange}
                   />
-                  <button type="submit">확인</button>
-                  <button onClick={handleClose}>취소</button>
+                  <AbleButton type="submit">확인</AbleButton>
+                  <DisableButton onClick={handleClose}>취소</DisableButton>
                 </EditModalContent>
               </EditModal>
             )}
