@@ -1,11 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Link, useNavigate } from 'react-router-dom';
+import React from "react";
+import styled from "styled-components";
+import { Link, useNavigate } from "react-router-dom";
 import Logo2 from "../../../assets/logo2.png";
-import { BsPersonFill } from 'react-icons/bs';
-import { AiFillCreditCard } from 'react-icons/ai'
-import Button from '../../../components/Button';
-import { useAuth } from '../../../contexts/AuthContext';
+import { BsPersonFill } from "react-icons/bs";
+import { AiFillCreditCard } from "react-icons/ai";
+import Button from "../../../components/Button";
+import { useAuth } from "../../../contexts/AuthContext";
+import axios from "axios";
 
 const Container = styled.div`
   position: relative;
@@ -20,20 +21,20 @@ const Container = styled.div`
 `;
 
 const Logo = styled.button`
-    background-image: url(${Logo2});
-    background-size: contain;
-    background-position: center;
-    width: 60px;
-    height: 60px;
-    border: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
-    border-radius: 50%;
-    transition: box-shadow 0.3s;
-    cursor: pointer;
-    :hover {
-      box-shadow: 0 0 3px rgba(0, 0, 0, 0.3), 0 1px 10px rgba(0, 0, 0, 0.1);
-    }
-    margin-top: 10px;
+  background-image: url(${Logo2});
+  background-size: contain;
+  background-position: center;
+  width: 60px;
+  height: 60px;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  transition: box-shadow 0.3s;
+  cursor: pointer;
+  :hover {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3), 0 1px 10px rgba(0, 0, 0, 0.1);
+  }
+  margin-top: 10px;
 `;
 
 const Icon = styled.button`
@@ -48,7 +49,7 @@ const Icon = styled.button`
   transition: box-shadow 0.3s;
   text-align: center;
   line-height: 70px;
-  color: #24A1E8;
+  color: #24a1e8;
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.3), 0 1px 10px rgba(0, 0, 0, 0.1);
   }
@@ -59,39 +60,55 @@ const Btn = styled(Button)`
   bottom: 15px;
   font-size: 12px;
   padding: 7px 12px;
-  background-color: ${props => props.isAuthenticated === true && '#f08684'};
+  background-color: ${props => props.isAuthenticated === true && "#f08684"};
   :hover {
-      background: ${props => props.isAuthenticated === true && '#ff6965'};;
+    background: ${props => props.isAuthenticated === true && "#ff6965"};
   }
-`
+`;
 
 function InfoBar(props) {
+  const storedUserId = localStorage.getItem("userId");
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
+  const handleCheck = async e => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/users/moneycheck/${storedUserId}/`
+      );
+      window.location.href = `${response.data.url}`;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Container>
-      <Link to='/'>
+      <Link to="/">
         <Logo />
       </Link>
       <Icon title="잔액 조회">
-        <AiFillCreditCard />
+        <AiFillCreditCard onClick={() => handleCheck()} />
       </Icon>
-      {
-        isAuthenticated && (
-          <Link to='/mypage'>
-            <Icon>
-              <BsPersonFill />
-            </Icon>
-          </Link>
-        )
-      }
-      
-      {
-        isAuthenticated === true ?
-        <Btn isAuthenticated={isAuthenticated} onClick={logout}>로그아웃</Btn> :
-        <Btn isAuthenticated={isAuthenticated} onClick={() => navigate('/login')}>로그인</Btn>
-      }
+      {isAuthenticated && (
+        <Link to="/mypage">
+          <Icon>
+            <BsPersonFill />
+          </Icon>
+        </Link>
+      )}
+
+      {isAuthenticated === true ? (
+        <Btn isAuthenticated={isAuthenticated} onClick={logout}>
+          로그아웃
+        </Btn>
+      ) : (
+        <Btn
+          isAuthenticated={isAuthenticated}
+          onClick={() => navigate("/login")}>
+          로그인
+        </Btn>
+      )}
     </Container>
   );
 }
