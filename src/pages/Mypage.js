@@ -235,6 +235,40 @@ const List = styled.div`
   }
 `;
 
+const EditModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+`;
+
+const EditModalContent = styled.div`
+  width: 500px;
+  height: 300px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+`;
+
+const StarContainer = styled.div`
+  display: block;
+  align-items: center;
+`;
+
+const Star = styled(FaStar)`
+  color: ${props => (props.active ? "gold" : "#ccc")};
+  cursor: pointer;
+`;
+
 function MyPage() {
   const storedUserId = localStorage.getItem("userId");
   const storedToken = localStorage.getItem("token");
@@ -429,6 +463,51 @@ function MyPage() {
   const [reviews, setReviews] = useState([]);
   const [reviewPage, setReviewPage] = useState(1);
   const [reviewsCount, setReviewsCount] = useState(0);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedReviewId, setSelectedReviewId] = useState(null);
+  const [content, setContent] = useState("");
+  const [rating, setRating] = useState(0);
+  const handleEditModal = id => {
+    setSelectedReviewId(id);
+    setShowEditModal(true);
+  };
+  const handleClose = () => {
+    setShowEditModal(false);
+  };
+  const handleContentChange = e => {
+    setContent(e.target.value);
+  };
+  const handleRatingChange = e => {
+    setRating(e.target.value);
+  };
+  const handleSubmit = async e => {
+    e.preventDefault();
+    try {
+      const config = {
+        headers: {
+          Authorization: `Token ${storedToken}`,
+        },
+      };
+      const body = {};
+      if (content !== "") {
+        body.content = content;
+      }
+      if (rating !== 0) {
+        body.rating = rating;
+      }
+      const response = await axios.put(
+        `${process.env.REACT_APP_API_BASE_URL}/stores/reviews/${selectedReviewId}/`,
+        body,
+        config
+      );
+      alert(response.data.message);
+      getReviews();
+      setShowEditModal(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const getReviews = async () => {
     try {
       const response = await axios.post(
@@ -447,6 +526,7 @@ function MyPage() {
       console.error(error);
     }
   };
+
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
@@ -689,49 +769,59 @@ function MyPage() {
         )}
         {activeTab === "likes" && (
           <div>
-            {likedStores.results.map(item => (
-              <List key={item.store_id}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <h2 style={{ marginRight: "1rem" }}>{item.store_name}</h2>
-                  <h3 style={{ marginRight: "1rem", color: "#666" }}>
-                    {item.category}
-                  </h3>
-                  {item.liked ? (
-                    <RiThumbUpLine
-                      style={{
-                        color: "#24A1E8",
-                        position: "absolute",
-                        right: "30%",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleLike(item.store_id, false)}
-                    />
-                  ) : (
-                    <RiThumbUpFill
-                      style={{
-                        color: "#666",
-                        position: "absolute",
-                        right: "30%",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleLike(item.store_id, true)}
-                    />
-                  )}
-                </div>
-                <p style={{ color: "#666" }}>
-                  <FaStar color="#F7CA46" size={15} /> {item.rating_mean} / 5
-                </p>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    color: "#666",
-                  }}>
-                  <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
-                  <p>{item.store_address}</p>
-                </div>
-              </List>
-            ))}
+            {likedStores.count > 0 ? (
+              likedStores.results.map(item => (
+                <List key={item.store_id}>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <h2 style={{ marginRight: "1rem" }}>{item.store_name}</h2>
+                    <h3 style={{ marginRight: "1rem", color: "#666" }}>
+                      {item.category}
+                    </h3>
+                    {item.liked ? (
+                      <RiThumbUpLine
+                        style={{
+                          color: "#24A1E8",
+                          position: "absolute",
+                          right: "30%",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleLike(item.store_id, false)}
+                      />
+                    ) : (
+                      <RiThumbUpFill
+                        style={{
+                          color: "#666",
+                          position: "absolute",
+                          right: "30%",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleLike(item.store_id, true)}
+                      />
+                    )}
+                  </div>
+                  <p style={{ color: "#666" }}>
+                    <FaStar color="#F7CA46" size={15} /> {item.rating_mean} / 5
+                  </p>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      color: "#666",
+                    }}>
+                    <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
+                    <p>{item.store_address}</p>
+                  </div>
+                </List>
+              ))
+            ) : (
+              <p
+                style={{
+                  textAlign: "center",
+                  padding: "2.5rem",
+                }}>
+                좋아요한 가게가 없습니다.
+              </p>
+            )}
             {likedStores.count > 0 && (
               <Pagination
                 total={likedStores.count}
@@ -749,10 +839,13 @@ function MyPage() {
                 <List key={review.id}>
                   <div style={{}}>
                     <div style={{ position: "absolute", right: "30%" }}>
-                      <FiEdit style={{ marginRight: "0.5rem" }} />
+                      <FiEdit
+                        style={{ marginRight: "0.5rem", cursor: "pointer" }}
+                        onClick={() => handleEditModal(review.id)}
+                      />
                       <FiTrash2
                         style={{ cursor: "pointer" }}
-                        onClick={handleDelete}
+                        onClick={() => handleDelete(review.id)}
                       />
                     </div>
                     <h2 style={{ display: "block" }}>{review.store_name}</h2>
@@ -770,14 +863,47 @@ function MyPage() {
                 </List>
               ))
             ) : (
-              <p>리뷰가 없습니다.</p>
+              <p
+                style={{
+                  textAlign: "center",
+                  padding: "2.5rem",
+                }}>
+                리뷰가 없습니다.
+              </p>
             )}
-            <Pagination
-              total={reviewsCount}
-              limit={12}
-              page={reviewPage}
-              setPage={setReviewPage}
-            />
+            {reviews.length > 0 && (
+              <Pagination
+                total={reviewsCount}
+                limit={12}
+                page={reviewPage}
+                setPage={setReviewPage}
+              />
+            )}
+            {showEditModal && (
+              <EditModal>
+                <StarContainer>
+                  {[...Array(5)].map((star, index) => {
+                    const ratingValue = index + 1;
+                    return (
+                      <Star
+                        key={ratingValue}
+                        active={ratingValue <= rating}
+                        onClick={() => setRating(ratingValue)}
+                      />
+                    );
+                  })}
+                </StarContainer>
+                <EditModalContent>
+                  <input
+                    type="text"
+                    value={content}
+                    onChange={handleContentChange}
+                  />
+                  <button type="submit">확인</button>
+                  <button onClick={handleClose}>취소</button>
+                </EditModalContent>
+              </EditModal>
+            )}
           </div>
         )}
         {activeTab === "changepw" && (
