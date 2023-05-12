@@ -58,7 +58,7 @@ const CloseIcon = styled(ArrowIcon)`
   font-size: 30px;
 `;
 
-const SearchWrapper = styled.div`
+const SearchWrapper = styled.form`
   position: relative;
   display: flex;
   padding: 10px;
@@ -98,6 +98,11 @@ const SearchIcon = styled.div`
   top: 50%;
   right: 15px;
   transform: translateY(-45%);
+  cursor: pointer;
+  transition: font-size 0.3s;
+  :hover{
+    font-size: 1em;
+  }
 `;
 
 const TagList = styled.ul`
@@ -118,7 +123,6 @@ const Tag = styled.li`
   border: 0.3px solid rgba(var(--place-color-bg18), 1);
   cursor: pointer;
   transition: background-color 0.3s;
-  ${(props) => console.log(props)}
   background-color: ${(props) => {
     if (props.isClicked) {
       switch(props.children) {
@@ -270,6 +274,31 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
   const [total, setTotal] = useState(1);
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
   const [clickedTag, setClickedTag] = useState(['전체']);
+  const [keyword, setKeyword] = useState('');
+  const [keyType, setKeyType] = useState('가게명');
+
+  useEffect(() => {
+    storeList.results && setTotal(storeList.count);
+  }, [storeList])
+
+  useEffect(() => {
+    async function getStoreList()  {
+      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/?page=${page}`, {
+        "latitude": state.center.lat,
+        "longitude": state.center.lng,
+        "ne_latitude": state.neLat,
+        "ne_longitude": state.neLng,
+        "sw_latitude": state.swLat,
+        "sw_longitude": state.swLng
+      })
+      setStoreList(listRes.data);
+    }
+    getStoreList();
+  }, [page])
+
+  useEffect(() => {
+
+  }, [clickedTag]);
 
   const tagClickHandler = (e) => {
     let temp = [...clickedTag];
@@ -296,24 +325,21 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
     setDetailPageInfo(null);
   }
 
-  useEffect(() => {
-    storeList.results && setTotal(storeList.count);
-  }, [storeList])
+  const handleInputChange = (e) => {
+    setKeyword(e.target.value);
+  }
 
-  useEffect(() => {
-    async function getStoreList()  {
-      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/?page=${page}`, {
-        "latitude": state.center.lat,
-        "longitude": state.center.lng,
-        "ne_latitude": state.neLat,
-        "ne_longitude": state.neLng,
-        "sw_latitude": state.swLat,
-        "sw_longitude": state.swLng
-      })
-      setStoreList(listRes.data);
+  const handleSelectChange = (e) => {
+    setKeyType(e.target.value);
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (keyword === '') {
+      alert('검색할 단어를 입력해주세요.');
     }
-    getStoreList();
-  }, [page])
+    console.log(keyword, keyType);
+  }
 
   return (
     <Container isOpen={isOpen} detailPageInfo={detailPageInfo}>
@@ -329,18 +355,20 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
           <IoIosClose />
         </CloseIcon>
       </CloseDetailBtn>}
-      <SearchWrapper>
-        <SearchSelect>
-          <option label="가맹점" value="store" />
-          <option label="메뉴" value="menu" />
+      <SearchWrapper onSubmit={handleSubmit}>
+        <SearchSelect value={keyType} onChange={handleSelectChange}>
+          <option label="가게명" value="가게명" />
+          <option label="메뉴" value="메뉴" />
         </SearchSelect>
-        <SearchIcon>
+        <SearchIcon onClick={handleSubmit}>
           <BsSearch />
         </SearchIcon>
         <SearchInput
           type="search"
           name="search"
           placeholder="검색어를 입력해주세요."
+          value={keyword}
+          onChange={handleInputChange}
         />
       </SearchWrapper>
       <TagList>

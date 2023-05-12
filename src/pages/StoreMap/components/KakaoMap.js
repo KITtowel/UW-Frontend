@@ -83,7 +83,6 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
 
   // 가맹점 정보를 받아옴
   useEffect(() => {
-    console.log('hihi');
     async function getStoreMakerList()  {
       const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/map_mark/`, {
         "latitude": state.center.lat,
@@ -102,7 +101,6 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
         "sw_latitude": state.swLat,
         "sw_longitude": state.swLng
       })
-      console.log(listRes.data);
       setStoreList(listRes.data);
     }
     state.level <= 2 && getStoreMakerList();

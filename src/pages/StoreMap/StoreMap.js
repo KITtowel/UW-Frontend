@@ -24,7 +24,6 @@ const NearStore = () => {
   const getStoreDetail = async (id) => {
     const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/detail/${id}/`);
     let item = res;
-    console.log(item.data);
     setIsOpen(true);
     setDetailPageInfo(res.data);
   }
