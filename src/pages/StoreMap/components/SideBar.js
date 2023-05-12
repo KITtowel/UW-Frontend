@@ -110,7 +110,7 @@ const TagList = styled.ul`
 
 const Tag = styled.li`
   margin: 3px 5px;
-  padding: 3px 5px;
+  padding: 5px 8px;
   text-align: center;
   font-size: 0.8em;
   border-radius: 10px;
@@ -118,6 +118,37 @@ const Tag = styled.li`
   border: 0.3px solid rgba(var(--place-color-bg18), 1);
   cursor: pointer;
   transition: background-color 0.3s;
+  ${(props) => console.log(props)}
+  background-color: ${(props) => {
+    if (props.isClicked) {
+      switch(props.children) {
+        case '전체':
+          return '#e5ecf0';
+        case '한식':
+          return '#FFDAB9';
+        case '중식':
+          return '#FFD700';
+        case '일식':
+          return '#cde7b6';
+        case '분식':
+          return '#ffb8b8';
+        case '아시안/양식':
+          return '#FFA07A';
+        case '치킨':
+          return '#f1b62e';
+        case '피자':
+          return '#e0e094';
+        case '패스트푸드':
+          return '#F9D1AD';
+        case '카페/디저트':
+          return '#CD853F';
+        case '편의점':
+          return '#fefecc';
+        case '기타':
+          return '#cccccc';
+      }
+    }
+  }};
   :hover {
     background-color: ${(props) => {
       switch(props.children) {
@@ -241,7 +272,16 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
   const [clickedTag, setClickedTag] = useState(['전체']);
 
   const tagClickHandler = (e) => {
-    console.log(e.target.textContent);
+    let temp = [...clickedTag];
+    if (temp[0] === '전체' && e.target.textContent !== '전체') {
+      temp = [];
+    }
+    if (e.target.textContent === '전체') {
+      temp = ['전체'];
+    } else {
+      temp.push(e.target.textContent);
+    }
+    setClickedTag(temp);
   }
 
   const handleOpen = () => {
@@ -304,7 +344,7 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
         />
       </SearchWrapper>
       <TagList>
-        {tagList.map((tag) => <Tag key={tag.toString()} onClick={tagClickHandler}>{tag}</Tag>)}
+        {tagList.map((tag) => <Tag key={tag.toString()} onClick={tagClickHandler} isClicked={clickedTag.includes(tag)}>{tag}</Tag>)}
       </TagList>
       <StoreList>
         {storeList.results && storeList.results.map((store, idx) => (
