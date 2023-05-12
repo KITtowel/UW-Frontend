@@ -70,7 +70,6 @@ const SearchSelect = styled.select`
   border-radius: 4px 0 0 4px;
   border: 1px solid rgba(245, 245, 245, 0.7);
   border-right: 0;
-  /* box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1); */
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
@@ -87,8 +86,6 @@ const SearchInput = styled.input`
   border-left: 0;
   font-size: 14px;
   transition: all 0.3s ease-out;
-  /* box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1); */
-  /* box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); */
   :focus,
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
@@ -117,25 +114,59 @@ const Tag = styled.li`
   text-align: center;
   font-size: 0.8em;
   border-radius: 10px;
-  border: 1px solid black;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+  border: 0.3px solid rgba(var(--place-color-bg18), 1);
   cursor: pointer;
+  transition: background-color 0.3s;
+  :hover {
+    background-color: ${(props) => {
+      switch(props.children) {
+        case '전체':
+          return '#e5ecf0';
+        case '한식':
+          return '#FFDAB9';
+        case '중식':
+          return '#FFD700';
+        case '일식':
+          return '#cde7b6';
+        case '분식':
+          return '#ffb8b8';
+        case '아시안/양식':
+          return '#FFA07A';
+        case '치킨':
+          return '#f1b62e';
+        case '피자':
+          return '#e0e094';
+        case '패스트푸드':
+          return '#F9D1AD';
+        case '카페/디저트':
+          return '#CD853F';
+        case '편의점':
+          return '#fefecc';
+        case '기타':
+          return '#cccccc';
+      }
+    }};
+  }
 `;
 
 const StoreList = styled.ul`
   height: calc(100vh - 190px);
+  width: 100%;
   overflow: auto;
   border-bottom: 1.5px solid #aeaeae;
 `;
 
 const StoreItem = styled.li`
   height: 80px;
+  width: 100%;
   border-bottom: 1px solid #D9D9D9;
-  padding: 45px 0 45px 20px;
+  padding: 50px 15px 50px 15px;
   display: flex;
   justify-content: center;
   align-items: center;
   :hover {
-    background-color: #D9D9D9;
+    background-color: #f4f8fb;
   }
 `;
 
@@ -149,8 +180,8 @@ const StoreInfo = styled.div`
 
 const StoreHeader = styled.div`
   display: flex;
-  justify-content: left;
   cursor: pointer;
+  width: 100%;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-use-select: none;
@@ -164,6 +195,7 @@ const StoreName = styled.h1`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #0068c3;
 `;
 
 const StoreRate = styled.h2`
@@ -183,15 +215,17 @@ const StoreLoc = styled.h2`
 `;
 
 const LocationIcon = styled(MdLocationOn)`
-  font-size: 1em;
+  font-size: 15px;
   margin-right: 2px;
+  min-width: 15px;
+  height: 15px;
   color: #ef877d;
 `
 
 const StoreTag = styled.h3`
   align-self: flex-end;
   color: grey;
-  font-size: 0.9em;
+  font-size: 0.85em;
 `;
 
 const Star = styled(AiTwotoneStar)`
@@ -201,11 +235,14 @@ const Star = styled(AiTwotoneStar)`
 `;
 
 function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, setIsOpen}) {
-  // const [isOpen, setIsOpen] = useState(true);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(1);
-
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
+  const [clickedTag, setClickedTag] = useState(['전체']);
+
+  const tagClickHandler = (e) => {
+    console.log(e.target.textContent);
+  }
 
   const handleOpen = () => {
     if (isOpen) {
@@ -267,7 +304,7 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
         />
       </SearchWrapper>
       <TagList>
-        {tagList.map((tag) => <Tag key={tag.toString()}>{tag}</Tag>)}
+        {tagList.map((tag) => <Tag key={tag.toString()} onClick={tagClickHandler}>{tag}</Tag>)}
       </TagList>
       <StoreList>
         {storeList.results && storeList.results.map((store, idx) => (
@@ -277,7 +314,9 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
                 <StoreName>{store.store_name}</StoreName>
                 <StoreTag>{store.category}</StoreTag>
               </StoreHeader>
-              <StoreLoc><LocationIcon />{store.store_address}</StoreLoc>
+              <div style={{display: 'flex'}}>
+                <StoreLoc><LocationIcon />{store.store_address}</StoreLoc>
+              </div>
               <StoreRate onClick={() => getStoreDetail(store.store_id)}><Star /> {`${store.rating_mean} (리뷰 ${store.reviews_count} 개)`}</StoreRate>
             </StoreInfo>
           </StoreItem>
