@@ -308,7 +308,8 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
     if (e.target.textContent === '전체') {
       temp = ['전체'];
     } else {
-      temp.push(e.target.textContent);
+      clickedTag.includes(e.target.textContent) ? temp.filter((s) => false) : temp.push(e.target.textContent);
+      console.log(temp)
     }
     setClickedTag(temp);
   }
