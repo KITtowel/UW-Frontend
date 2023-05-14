@@ -7,8 +7,13 @@ import Logo2 from "../assets/logo2.png";
 import DefaultProfilePicture from "../assets/profile.png";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
-import { RiThumbUpFill, RiThumbUpLine } from "react-icons/ri";
-import { MdOutlineLocationOn } from "react-icons/md";
+import {
+  RiThumbUpFill,
+  RiThumbUpLine,
+  RiLockPasswordFill,
+} from "react-icons/ri";
+import { MdOutlineLocationOn, MdRateReview } from "react-icons/md";
+import { BsFillPersonFill } from "react-icons/bs";
 import { Pagination } from "../components";
 import axios from "axios";
 
@@ -53,6 +58,9 @@ const Header = styled.div`
   border-bottom: 1px solid #969696;
   display: flex;
   align-items: center;
+  * {
+    text-align: right;
+  }
 `;
 
 const Center = styled.div`
@@ -145,6 +153,10 @@ const Wrapper = styled.div`
 const LogoIcon = styled.img`
   width: 50px;
   margin: 15px 50px;
+  @media (max-width: 768px) {
+    width: 30px;
+    margin: 15px 30px;
+  }
 `;
 
 const ProfilePicture = styled.img`
@@ -277,6 +289,24 @@ const StarContainer = styled.div`
 const Star = styled(FaStar)`
   color: ${props => (props.active ? "gold" : "#ccc")};
   cursor: pointer;
+`;
+
+const PcOnly = styled.span`
+  display: none;
+
+  @media (min-width: 769px) {
+    display: inline;
+  }
+`;
+
+const MobileOnly = styled.span`
+  @media (max-width: 768px) {
+    display: inline;
+  }
+
+  @media (min-width: 769px) {
+    display: none;
+  }
 `;
 
 function MyPage() {
@@ -566,10 +596,6 @@ function MyPage() {
     getReviews();
   }, [storedToken, reviewPage]);
 
-  useEffect(() => {
-    getReviews();
-  }, [reviewPage]);
-
   // 비밀번호 변경
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -675,27 +701,42 @@ function MyPage() {
         <NavButton
           selected={activeTab === "myinfo"}
           onClick={() => handleTabClick("myinfo", resetInputFields)}>
-          내 정보
+          <PcOnly>내 정보</PcOnly>
+          <MobileOnly>
+            <BsFillPersonFill />
+          </MobileOnly>
         </NavButton>
         <NavButton
           selected={activeTab === "likes"}
           onClick={() => handleTabClick("likes", resetInputFields)}>
-          좋아요 목록
+          <PcOnly>좋아요 목록</PcOnly>
+          <MobileOnly>
+            <RiThumbUpFill />
+          </MobileOnly>
         </NavButton>
         <NavButton
           selected={activeTab === "reviews"}
           onClick={() => handleTabClick("reviews", resetInputFields)}>
-          후기 목록
+          <PcOnly>후기 목록</PcOnly>
+          <MobileOnly>
+            <MdRateReview />
+          </MobileOnly>
         </NavButton>
         <NavButton
           selected={activeTab === "changepw"}
           onClick={() => handleTabClick("changepw", resetInputFields)}>
-          비밀번호 변경
+          <PcOnly>비밀번호 변경</PcOnly>
+          <MobileOnly>
+            <RiLockPasswordFill />
+          </MobileOnly>
         </NavButton>
         <NavButton
           selected={activeTab === "withdrawal"}
           onClick={() => handleTabClick("withdrawal", resetInputFields)}>
-          회원 탈퇴
+          <PcOnly>회원 탈퇴</PcOnly>
+          <MobileOnly>
+            <FiTrash2 />
+          </MobileOnly>
         </NavButton>
       </Header>
       <Container>
