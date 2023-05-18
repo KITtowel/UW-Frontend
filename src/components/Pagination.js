@@ -26,6 +26,7 @@ const Button = styled.button`
 
   &[disabled] {
     cursor: not-allowed;
+    color: #929292;
   }
 
   &[aria-current] {
