@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAuth } from "../../contexts/AuthContext";
 // import { useNavigate } from "react-router-dom";
@@ -20,14 +20,7 @@ const NearStore = () => {
   const [storeList, setStoreList] = useState([]);
   const [detailPageInfo, setDetailPageInfo] = useState(null);
   const [isOpen, setIsOpen] = useState(true);
-
-  const getStoreDetail = async (id) => {
-    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/detail/${id}/`);
-    let item = res;
-    setIsOpen(true);
-    setDetailPageInfo(res.data);
-  }
-
+  const [clickedTag, setClickedTag] = useState(['전체']);
   const [state, setState] = useState({
     center: {
       lat: 35.854795175382435,
@@ -43,6 +36,29 @@ const NearStore = () => {
     neLng: null,
   })
 
+  const getStoreDetail = async (id) => {
+    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/detail/${id}/`);
+    let item = res;
+    setIsOpen(true);
+    setDetailPageInfo(res.data);
+  }
+
+  useEffect(() => {
+    async function getStoreTagList() {
+      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/category_distance_order/?page=${1}`, {
+        "latitude": state.center.lat,
+        "longitude": state.center.lng,
+        "ne_latitude": state.neLat,
+        "ne_longitude": state.neLng,
+        "sw_latitude": state.swLat,
+        "sw_longitude": state.swLng,
+        "category": `${clickedTag.join(" ")}`
+      })
+      setStoreList(listRes.data);
+    }
+    getStoreTagList();
+  }, [clickedTag])
+
   return (
     <Container>
       <InfoBar />
@@ -55,6 +71,8 @@ const NearStore = () => {
         detailPageInfo={detailPageInfo}
         setDetailPageInfo={setDetailPageInfo}
         getStoreDetail={getStoreDetail}
+        clickedTag={clickedTag}
+        setClickedTag={setClickedTag}
       />
       <KakaoMap
         state={state}

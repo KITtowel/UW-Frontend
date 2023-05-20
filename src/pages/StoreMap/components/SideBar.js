@@ -269,11 +269,10 @@ const Star = styled(AiTwotoneStar)`
   margin-right: 2px;
 `;
 
-function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, setIsOpen}) {
+function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, setIsOpen, clickedTag, setClickedTag}) {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(1);
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
-  const [clickedTag, setClickedTag] = useState(['전체']);
   const [keyword, setKeyword] = useState('');
   const [keyType, setKeyType] = useState('가게명');
 
@@ -295,10 +294,6 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
     }
     getStoreList();
   }, [page])
-
-  useEffect(() => {
-
-  }, [clickedTag]);
 
   const tagClickHandler = (e) => {
     let temp = [...clickedTag];
