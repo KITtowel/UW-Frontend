@@ -51,7 +51,8 @@ const StoreInfo = styled.div`
 const Name = styled.h1`
   font-size: 1.5em;
   margin-right: 3px;
-  max-width: 280px;
+  max-width: 250px;
+  text-align: center;
 `;
 
 const Rate = styled.h2`
@@ -64,6 +65,7 @@ const Loc = styled.h2`
   display: flex;
   font-size: 0.9em;
   margin: 13px 0 5px 0;
+  text-align: left;
 `;
 
 const Tag = styled.h3`

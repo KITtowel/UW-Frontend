@@ -26,7 +26,8 @@ const CurPosBtn = styled.button`
 
 function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail}) {
   const [markerList, setMarkerList] = useState([]);
-  const [curPos, setCurPos] = useState({ lat: 35.854795175382435, lng: 128.54823034227059 });
+  const [curPos, setCurPos] = useState(
+    () => JSON.parse(window.localStorage.getItem("curPos")) || { lat: 35.854795175382435, lng: 128.54823034227059 });
   const [randValue, setRandValue] = useState(0.000001);
   const [isCenter, setIsCenter] = useState(false);
 
@@ -49,6 +50,7 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
             lng: position.coords.longitude, // 경도
           });
           setIsCenter(true);
+          localStorage.setItem('curPos'. JSON.stringify({lat: position.coords.latitude, lng: position.coords.longitude}))
         },
         (err) => {
           setState((prev) => ({
@@ -81,30 +83,30 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
     setIsCenter(true);
   }
 
-  // 가맹점 정보를 받아옴
-  useEffect(() => {
-    async function getStoreMakerList()  {
-      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/map_mark/`, {
-        "latitude": state.center.lat,
-        "longitude": state.center.lng,
-        "ne_latitude": state.neLat,
-        "ne_longitude": state.neLng,
-        "sw_latitude": state.swLat,
-        "sw_longitude": state.swLng
-      })
-      setMarkerList(res.data.data);
-      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
-        "latitude": state.center.lat,
-        "longitude": state.center.lng,
-        "ne_latitude": state.neLat,
-        "ne_longitude": state.neLng,
-        "sw_latitude": state.swLat,
-        "sw_longitude": state.swLng
-      })
-      setStoreList(listRes.data);
-    }
-    state.level <= 2 && getStoreMakerList();
-  }, [state, isCenter]);
+    // 가맹점 정보를 받아옴
+    useEffect(() => {
+      async function getStoreMakerList()  {
+        const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/map_mark/`, {
+          "latitude": state.center.lat,
+          "longitude": state.center.lng,
+          "ne_latitude": state.neLat,
+          "ne_longitude": state.neLng,
+          "sw_latitude": state.swLat,
+          "sw_longitude": state.swLng
+        })
+        setMarkerList(res.data.data);
+        const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
+          "latitude": state.center.lat,
+          "longitude": state.center.lng,
+          "ne_latitude": state.neLat,
+          "ne_longitude": state.neLng,
+          "sw_latitude": state.swLat,
+          "sw_longitude": state.swLng
+        })
+        setStoreList(listRes.data);
+      }
+      state.level <= 2 && getStoreMakerList();
+    }, [state]);
 
   //지도의 중심이 현재위치인지를 판단
   const getIsCenter = (moveLat, moveLng) => {

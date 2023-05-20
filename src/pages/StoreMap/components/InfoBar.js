@@ -66,7 +66,7 @@ const Btn = styled(Button)`
   }
 `;
 
-function InfoBar(props) {
+function InfoBar() {
   const storedUserId = localStorage.getItem("userId");
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
@@ -84,9 +84,7 @@ function InfoBar(props) {
 
   return (
     <Container>
-      <Link to="/">
-        <Logo />
-      </Link>
+      <Logo onClick={() => window.location.reload()}/>
       <Icon title="잔액 조회">
         <AiFillCreditCard onClick={() => handleCheck()} />
       </Icon>

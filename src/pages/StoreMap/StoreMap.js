@@ -38,26 +38,9 @@ const NearStore = () => {
 
   const getStoreDetail = async (id) => {
     const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/detail/${id}/`);
-    let item = res;
     setIsOpen(true);
     setDetailPageInfo(res.data);
   }
-
-  useEffect(() => {
-    async function getStoreTagList() {
-      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/category_distance_order/?page=${1}`, {
-        "latitude": state.center.lat,
-        "longitude": state.center.lng,
-        "ne_latitude": state.neLat,
-        "ne_longitude": state.neLng,
-        "sw_latitude": state.swLat,
-        "sw_longitude": state.swLng,
-        "category": `${clickedTag.join(" ")}`
-      })
-      setStoreList(listRes.data);
-    }
-    getStoreTagList();
-  }, [clickedTag])
 
   return (
     <Container>

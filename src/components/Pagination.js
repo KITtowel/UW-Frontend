@@ -1,21 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
+import { BiFirstPage, BiLastPage, BiChevronLeft, BiChevronRight } from 'react-icons/bi'
 
 const Nav = styled.nav`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-  margin: 10px;
+  justify-content: space-around;
+  margin-top: 7px;
+  width: 265px;
 `;
 
 const Button = styled.button`
+  background-color: white;
   border: none;
   border-radius: 8px;
-  padding: 8px;
-  margin: 0;
   color: #24A1E8;
-  font-size: 1rem;
+  font-size: 20px;
 
   &:hover:not([disabled]) {
     background: #24A1E8;
@@ -44,12 +43,17 @@ function Pagination({ total, limit, page, setPage }) {
   return (
     <>
       <Nav>
+        <Button onClick={() => setPage(1)} disabled={page === 1}>
+          <BiFirstPage style={{paddingTop: '3px'}}/>
+        </Button>
         <Button onClick={() => setPage(page - 1)} disabled={page === 1}>
-          &lt;
+          <BiChevronLeft style={{paddingTop: '3px'}}/>
         </Button>
         {Array(numPages)
           .fill()
           .map((_, i) => (
+            numPages >= 7 && ![page-1, page, page+1].includes(i+1) ?
+            <div>.</div> : 
             <Button
               key={i + 1}
               onClick={() => setPage(i + 1)}
@@ -59,7 +63,10 @@ function Pagination({ total, limit, page, setPage }) {
             </Button>
           ))}
         <Button onClick={() => setPage(page + 1)} disabled={page === numPages}>
-          &gt;
+          <BiChevronRight style={{paddingTop: '3px'}}/>
+        </Button>
+        <Button onClick={() => setPage(numPages)} disabled={page === numPages}>
+          <BiLastPage style={{paddingTop: '3px'}}/>
         </Button>
       </Nav>
     </>

@@ -80,7 +80,6 @@ const SearchInput = styled.input`
   padding-right: 25px;
   height: 25px;
   background: #f9f9fa;
-  color: #9dc3e6;
   border-radius: 0 4px 4px 0;
   border: 1px solid rgba(245, 245, 245, 0.7);
   border-left: 0;
@@ -186,7 +185,7 @@ const Tag = styled.li`
 `;
 
 const StoreList = styled.ul`
-  height: calc(100vh - 190px);
+  height: calc(100vh - 185px);
   width: 100%;
   overflow: auto;
   border-bottom: 1.5px solid #aeaeae;
@@ -196,7 +195,7 @@ const StoreItem = styled.li`
   height: 80px;
   width: 100%;
   border-bottom: 1px solid #D9D9D9;
-  padding: 50px 15px 50px 15px;
+  padding: 55px 15px 55px 15px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -292,8 +291,24 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
       })
       setStoreList(listRes.data);
     }
-    getStoreList();
-  }, [page])
+    async function getStoreTagList() {
+      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/category_distance_order/?page=${page}`, {
+        "latitude": state.center.lat,
+        "longitude": state.center.lng,
+        "ne_latitude": state.neLat,
+        "ne_longitude": state.neLng,
+        "sw_latitude": state.swLat,
+        "sw_longitude": state.swLng,
+        "category": `${clickedTag.join(" ")}`
+      })
+      setStoreList(listRes.data);
+    }
+    clickedTag[0] === '전체' ? getStoreList() : getStoreTagList();
+  }, [page, clickedTag])
+
+  useEffect(() => {
+    setPage(1);
+  }, [state])
 
   const tagClickHandler = (e) => {
     let temp = [...clickedTag];
@@ -307,6 +322,7 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
     }
     if (temp.length === 0) temp = ['전체'];
     setClickedTag(temp);
+    setPage(1);
   }
 
   const handleOpen = () => {
@@ -329,12 +345,23 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
     setKeyType(e.target.value);
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (keyword === '') {
       alert('검색할 단어를 입력해주세요.');
+      return;
     }
-    console.log(keyword, keyType);
+    const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/search_distance_order/`, {
+      "latitude": state.center.lat,
+      "longitude": state.center.lng,
+      "ne_latitude": state.neLat,
+      "ne_longitude": state.neLng,
+      "sw_latitude": state.swLat,
+      "sw_longitude": state.swLng,
+      "search_type": keyType,
+      "search": keyword
+    })
+    setStoreList(listRes.data);
   }
 
   return (
@@ -386,7 +413,7 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
           </StoreItem>
         ))}
       </StoreList>
-      <Pagination total={total} limit={20} page={page} setPage={setPage} />
+      <Pagination total={total} limit={20} page={page} setPage={setPage}/>
     </Container>
   );
 }
