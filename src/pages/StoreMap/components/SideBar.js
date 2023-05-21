@@ -307,7 +307,9 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
   }, [page, clickedTag])
 
   useEffect(() => {
-    setPage(1);
+    if(page !== 1) {
+      setPage(1);
+    }
   }, [state])
 
   const tagClickHandler = (e) => {
@@ -360,7 +362,7 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
       "sw_longitude": state.swLng,
       "search_type": keyType,
       "search": keyword
-    })
+    });
     setStoreList(listRes.data);
   }
 
