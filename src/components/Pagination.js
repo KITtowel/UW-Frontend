@@ -39,6 +39,15 @@ const Button = styled.button`
 
 function Pagination({ total, limit, page, setPage }) {
   const numPages = Math.ceil(total / limit);
+  let pageGroup = Math.ceil(page / 5);
+  let lastPage = pageGroup * 5;
+  if (lastPage > numPages) lastPage = numPages;
+  let startPage = (pageGroup - 1) * 5 + 1;
+  let pageList = [];
+
+  for (let i = startPage; i <= lastPage; i++) {
+    pageList.push(i);
+  }
 
   return (
     <>
@@ -49,7 +58,7 @@ function Pagination({ total, limit, page, setPage }) {
         <Button onClick={() => setPage(page - 1)} disabled={page === 1}>
           <BiChevronLeft style={{paddingTop: '3px'}}/>
         </Button>
-        {Array(numPages)
+        {/* {Array(numPages)
           .fill()
           .map((_, i) => (
             numPages >= 7 && ![page-1, page, page+1].includes(i+1) ?
@@ -60,6 +69,16 @@ function Pagination({ total, limit, page, setPage }) {
               aria-current={page === i + 1 ? "page" : null}
             >
               {i + 1}
+            </Button>
+          ))} */}
+          {pageList
+          .map((num, i) => (
+            <Button
+              key={i + 1}
+              onClick={() => setPage(num)}
+              aria-current={page === num ? "page" : null}
+            >
+              {num}
             </Button>
           ))}
         <Button onClick={() => setPage(page + 1)} disabled={page === numPages}>

@@ -7,6 +7,7 @@ import { MdLocationOn } from "react-icons/md";
 import { Pagination } from '../../../components';
 import DetailStore from './DetailStore';
 import axios from 'axios';
+import { get } from 'react-scroll/modules/mixins/scroller';
 
 const Container = styled.div`
   position: fixed;
@@ -191,6 +192,14 @@ const StoreList = styled.ul`
   border-bottom: 1.5px solid #aeaeae;
 `;
 
+const NoStoreList = styled.div`
+  line-height: calc(100vh - 200px);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none; 
+`;
+
 const StoreItem = styled.li`
   height: 80px;
   width: 100%;
@@ -270,14 +279,28 @@ const Star = styled(AiTwotoneStar)`
 
 function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, setIsOpen, clickedTag, setClickedTag}) {
   const [page, setPage] = useState(1);
-  const [tagPage, setTagPage] = useState(1);
   const [total, setTotal] = useState(1);
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
   const [keyword, setKeyword] = useState('');
   const [keyType, setKeyType] = useState('가게명');
+
+  async function getStoreSearchList() {
+    const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/search_distance_order/?page=${page}`, {
+      "latitude": state.center.lat,
+      "longitude": state.center.lng,
+      "ne_latitude": state.neLat,
+      "ne_longitude": state.neLng,
+      "sw_latitude": state.swLat,
+      "sw_longitude": state.swLng,
+      "search_type": keyType,
+      "search": keyword
+    })
+    setStoreList(listRes.data);
+  }
   
   useEffect(() => {
     storeList.results && setTotal(storeList.count);
+    console.log(storeList);
   }, [storeList])
 
   useEffect(() => {
@@ -304,7 +327,12 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
       })
       setStoreList(listRes.data);
     }
-    clickedTag[0] === '전체' ? getStoreList() : getStoreTagList();
+    if (clickedTag[0] === '전체') {
+      keyword === '' ? getStoreList() : getStoreSearchList();
+    } else {
+      getStoreTagList();
+    }
+    // clickedTag[0] === '전체' ? getStoreList() : getStoreTagList();
   }, [page, clickedTag])
 
   useEffect(() => {
@@ -314,6 +342,7 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
   }, [state])
 
   const tagClickHandler = (e) => {
+    setKeyword('');
     let temp = [...clickedTag];
     if (temp[0] === '전체' && e.target.textContent !== '전체') {
       temp = [];
@@ -354,17 +383,8 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
       alert('검색할 단어를 입력해주세요.');
       return;
     }
-    const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/search_distance_order/`, {
-      "latitude": state.center.lat,
-      "longitude": state.center.lng,
-      "ne_latitude": state.neLat,
-      "ne_longitude": state.neLng,
-      "sw_latitude": state.swLat,
-      "sw_longitude": state.swLng,
-      "search_type": keyType,
-      "search": keyword
-    });
-    setStoreList(listRes.data);
+    setClickedTag(['전체']);
+    getStoreSearchList();
   }
 
   return (
@@ -401,7 +421,7 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
         {tagList.map((tag) => <Tag key={tag.toString()} onClick={tagClickHandler} isClicked={clickedTag.includes(tag)}>{tag}</Tag>)}
       </TagList>
       <StoreList>
-        {storeList.results && storeList.results.map((store, idx) => (
+        {storeList.results && storeList.results.length >= 1 ? storeList.results.map((store, idx) => (
           <StoreItem key={idx}>
             <StoreInfo>
               <StoreHeader onClick={() => getStoreDetail(store.store_id)}>
@@ -414,7 +434,7 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
               <StoreRate onClick={() => getStoreDetail(store.store_id)}><Star /> {`${store.rating_mean} (리뷰 ${store.reviews_count} 개)`}</StoreRate>
             </StoreInfo>
           </StoreItem>
-        ))}
+        )) : <NoStoreList>가맹점 데이터가 존재하지 않아요...</NoStoreList>}
       </StoreList>
       <Pagination total={total} limit={20} page={page} setPage={setPage}/>
     </Container>
