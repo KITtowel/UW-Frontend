@@ -210,6 +210,7 @@ function Login() {
       const receivedUserId = response.data.user_id;
       setUserId(receivedUserId);
       login();
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
@@ -227,6 +228,7 @@ function Login() {
       const receivedUserId = response.data.user_id;
       setUserId(receivedUserId);
       login();
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
@@ -309,14 +311,15 @@ function Login() {
           </Button>
           <div>
             <NaverLogin
-              clientId="UQKWCQnjAl4O9UKKnuCW"
+              clientId="rVPk557GGXAVOFzBIcCK"
               callbackUrl="{}"
               onSuccess={handleNaverLogin}
               onFailure={error => console.error(error)}
               render={({ onClick }) => <NaverIcon onClick={onClick} />}
             />
             <KakaoLogin
-              token="40d14ddbb06cd1b64fabd08d69c9c951"
+              token="80ce118f2250d6342436cb0f233a5afb"
+              redirectUri="http://13.209.7.234:8000/users/kakao/callback"
               onSuccess={handleKakaoLogin}
               onFail={console.error}
               onLogout={console.info}

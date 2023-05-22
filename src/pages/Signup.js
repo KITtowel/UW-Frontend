@@ -199,6 +199,36 @@ function Signup() {
     setLocation2(e.target.value);
   };
 
+  const handleNaverSignup = async naverUser => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/users/register/naver`,
+        {
+          naverUser,
+        }
+      );
+      console.log(response);
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleKakaoSignup = async response => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/users/register/kakao`,
+        {
+          response,
+        }
+      );
+      console.log(response);
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleSubmit = async e => {
     e.preventDefault();
     const response = await axios.post(
@@ -214,7 +244,7 @@ function Signup() {
       }
     );
     console.log(response);
-    navigate("/");
+    navigate("/login");
   };
 
   return (
@@ -225,21 +255,26 @@ function Signup() {
       <form onSubmit={handleSubmit}>
         <Container>
           <NaverLogin
-            clientId="UQKWCQnjAl4O9UKKnuCW"
-            callbackUrl="{}"
+            clientId="rVPk557GGXAVOFzBIcCK"
+            callbackUrl="http://13.209.7.234:8000/users/naver/login/"
             render={props => (
               <NaverButton onClick={props.onClick}>
                 네이버로 회원가입
               </NaverButton>
             )}
+            onSuccess={handleNaverSignup}
+            onFailure={error => console.error(error)}
           />
           <KakaoLogin
-            token="40d14ddbb06cd1b64fabd08d69c9c951"
+            token="80ce118f2250d6342436cb0f233a5afb"
+            redirectUri="http://13.209.7.234:8000/users/kakao/callback"
             render={props => (
               <KakaoButton onClick={props.onClick}>
                 카카오로 회원가입
               </KakaoButton>
             )}
+            onSuccess={handleKakaoSignup}
+            onFail={error => console.error(error)}
           />
           <Hr>또는</Hr>
           <div>
