@@ -199,12 +199,14 @@ function Signup() {
     setLocation2(e.target.value);
   };
 
-  const handleNaverSignup = async naverUser => {
+  const handleNaverSignup = async ({ access_token, code, id_token }) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/register/naver`,
+        `${process.env.REACT_APP_API_BASE_URL}/users/naver/login/`,
         {
-          naverUser,
+          access_token,
+          code,
+          id_token,
         }
       );
       console.log(response);
@@ -214,12 +216,14 @@ function Signup() {
     }
   };
 
-  const handleKakaoSignup = async response => {
+  const handleKakaoSignup = async ({ access_token, code, id_token }) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/register/kakao`,
+        `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/kakao/`,
         {
-          response,
+          access_token,
+          code,
+          id_token,
         }
       );
       console.log(response);
@@ -256,24 +260,32 @@ function Signup() {
         <Container>
           <NaverLogin
             clientId="rVPk557GGXAVOFzBIcCK"
-            callbackUrl="http://13.209.7.234:8000/users/naver/login/"
+            callbackUrl={`${process.env.REACT_APP_API_BASE_URL}/users/naver/login/`}
             render={props => (
               <NaverButton onClick={props.onClick}>
                 네이버로 회원가입
               </NaverButton>
             )}
-            onSuccess={handleNaverSignup}
+            onSuccess={({ access_token, code, id_token }) =>
+              handleNaverSignup({ access_token, code, id_token })
+            }
             onFailure={error => console.error(error)}
           />
           <KakaoLogin
             token="80ce118f2250d6342436cb0f233a5afb"
-            redirectUri="http://13.209.7.234:8000/users/kakao/callback"
+            redirectUri={`${process.env.REACT_APP_API_BASE_URL}/users/kakao/callback`}
             render={props => (
               <KakaoButton onClick={props.onClick}>
                 카카오로 회원가입
               </KakaoButton>
             )}
-            onSuccess={handleKakaoSignup}
+            onSuccess={({ response }) =>
+              handleKakaoSignup({
+                access_token: response.access_token,
+                code: response.code,
+                id_token: response.id_token,
+              })
+            }
             onFail={error => console.error(error)}
           />
           <Hr>또는</Hr>

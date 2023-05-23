@@ -312,14 +312,14 @@ function Login() {
           <div>
             <NaverLogin
               clientId="rVPk557GGXAVOFzBIcCK"
-              callbackUrl="{}"
+              callbackUrl="http://192.168.116.213:8000/users/naver/callback"
               onSuccess={handleNaverLogin}
               onFailure={error => console.error(error)}
               render={({ onClick }) => <NaverIcon onClick={onClick} />}
             />
             <KakaoLogin
               token="80ce118f2250d6342436cb0f233a5afb"
-              redirectUri="http://13.209.7.234:8000/users/kakao/callback"
+              redirectUri="http://192.168.116.213:8000/users/kakao/callback"
               onSuccess={handleKakaoLogin}
               onFail={console.error}
               onLogout={console.info}
