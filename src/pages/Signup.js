@@ -199,14 +199,13 @@ function Signup() {
     setLocation2(e.target.value);
   };
 
-  const handleNaverSignup = async ({ access_token, code, id_token }) => {
+  const handleNaverSignup = async ({ access_token, state }) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/naver/login/`,
+        `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/naver/`,
         {
           access_token,
-          code,
-          id_token,
+          state,
         }
       );
       console.log(response);
@@ -260,14 +259,14 @@ function Signup() {
         <Container>
           <NaverLogin
             clientId="rVPk557GGXAVOFzBIcCK"
-            callbackUrl={`${process.env.REACT_APP_API_BASE_URL}/users/naver/login/`}
+            callbackUrl={`${process.env.REACT_APP_API_BASE_URL}/users/naver/callback/`}
             render={props => (
               <NaverButton onClick={props.onClick}>
                 네이버로 회원가입
               </NaverButton>
             )}
-            onSuccess={({ access_token, code, id_token }) =>
-              handleNaverSignup({ access_token, code, id_token })
+            onSuccess={({ access_token }) =>
+              handleNaverSignup({ access_token })
             }
             onFailure={error => console.error(error)}
           />

@@ -208,26 +208,35 @@ function Login() {
       );
       const receivedToken = response.data.token;
       const receivedUserId = response.data.user_id;
-      setUserId(receivedUserId);
-      login();
+
+      localStorage.setItem("token", receivedToken);
+      localStorage.setItem("userId", receivedUserId);
+
+      login(receivedToken);
       navigate("/");
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleKakaoLogin = async response => {
+  const handleKakaoLogin = async ({ access_token, code, id_token }) => {
     try {
       const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/login/kakao`,
+        `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/kakao/`,
         {
-          response,
+          access_token,
+          code,
+          id_token,
         }
       );
       const receivedToken = response.data.token;
       const receivedUserId = response.data.user_id;
-      setUserId(receivedUserId);
-      login();
+
+      localStorage.setItem("token", receivedToken);
+      localStorage.setItem("userId", receivedUserId);
+
+      console.log(response);
+      login(receivedToken);
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -252,6 +261,7 @@ function Login() {
       localStorage.setItem("userId", receivedUserId);
 
       login(receivedToken);
+      navigate("/");
     } catch (error) {
       console.error(error);
     }
@@ -312,15 +322,21 @@ function Login() {
           <div>
             <NaverLogin
               clientId="rVPk557GGXAVOFzBIcCK"
-              callbackUrl="http://192.168.116.213:8000/users/naver/callback"
+              callbackUrl={`${process.env.REACT_APP_API_BASE_URL}/users/naver/callback`}
               onSuccess={handleNaverLogin}
               onFailure={error => console.error(error)}
               render={({ onClick }) => <NaverIcon onClick={onClick} />}
             />
             <KakaoLogin
               token="80ce118f2250d6342436cb0f233a5afb"
-              redirectUri="http://192.168.116.213:8000/users/kakao/callback"
-              onSuccess={handleKakaoLogin}
+              redirectUri={`${process.env.REACT_APP_API_BASE_URL}/users/kakao/callback`}
+              onSuccess={({ response }) =>
+                handleKakaoLogin({
+                  access_token: response.access_token,
+                  code: response.code,
+                  id_token: response.id_token,
+                })
+              }
               onFail={console.error}
               onLogout={console.info}
               render={({ onClick }) => <KakaoIcon onClick={onClick} />}
