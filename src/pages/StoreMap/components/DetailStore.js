@@ -4,6 +4,7 @@ import { HiOutlinePencilAlt } from 'react-icons/hi';
 import { AiOutlineLike, AiFillLike, AiOutlineAlert, AiTwotoneStar } from 'react-icons/ai';
 import { MdLocationOn } from "react-icons/md";
 import { Pagination } from '../../../components';
+import axios from 'axios';
 
 const LocationIcon = styled(MdLocationOn)`
   font-size: 1.3em;
@@ -223,6 +224,7 @@ const Contour = styled.div`
 `;
 
 function DetailStore({detailPageInfo}) {
+  const storedToken = localStorage.getItem("token");
   const [isLike, setIsLike] = useState(detailPageInfo.liked_by_user);
   const [page, setPage] = useState(1);
   const [reviewHeight, setReviewHeight] = useState(100);
@@ -231,7 +233,8 @@ function DetailStore({detailPageInfo}) {
   const menuRef = useRef();
 
   const handleLikeBtn = () => {
-    setIsLike((prev) => !prev)
+    setIsLike((prev) => !prev);
+
   }
 
   useEffect(() => {
@@ -245,6 +248,19 @@ function DetailStore({detailPageInfo}) {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    async function changeIsLike() {
+      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/like/${1}/`,
+      null,
+      {
+        headers: {
+          Authorization: `Token ${storedToken}`,
+        },
+      })
+      setIsLike(listRes);
+    }
+  })
 
   return (
     <Container>
