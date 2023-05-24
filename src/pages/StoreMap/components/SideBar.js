@@ -300,7 +300,6 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
   
   useEffect(() => {
     storeList.results && setTotal(storeList.count);
-    console.log(storeList);
   }, [storeList])
 
   useEffect(() => {

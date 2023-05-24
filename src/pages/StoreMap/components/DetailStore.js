@@ -225,17 +225,21 @@ const Contour = styled.div`
 
 function DetailStore({detailPageInfo}) {
   const storedToken = localStorage.getItem("token");
-  const [isLike, setIsLike] = useState(detailPageInfo.liked_by_user);
+  const [isLike, setIsLike] = useState(false);
   const [page, setPage] = useState(1);
   const [reviewHeight, setReviewHeight] = useState(100);
-
+  
   const headerRef = useRef();
   const menuRef = useRef();
 
   const handleLikeBtn = () => {
+    changeIsLike();
     setIsLike((prev) => !prev);
-
   }
+
+  useEffect(() => {
+    setIsLike(detailPageInfo.liked_by_user);
+  })
 
   useEffect(() => {
     menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 50);
@@ -249,18 +253,16 @@ function DetailStore({detailPageInfo}) {
     };
   }, []);
 
-  useEffect(() => {
-    async function changeIsLike() {
-      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/like/${1}/`,
-      null,
-      {
-        headers: {
-          Authorization: `Token ${storedToken}`,
-        },
-      })
-      setIsLike(listRes);
-    }
-  })
+  async function changeIsLike() {
+    const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/like/${detailPageInfo.store_id}/`,
+    null,
+    {
+      headers: {
+        Authorization: `Token ${storedToken}`,
+      },
+    })
+    console.log(listRes);
+  }
 
   return (
     <Container>

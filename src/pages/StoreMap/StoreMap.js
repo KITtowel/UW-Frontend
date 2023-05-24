@@ -21,6 +21,7 @@ const NearStore = () => {
   const [detailPageInfo, setDetailPageInfo] = useState(null);
   const [isOpen, setIsOpen] = useState(true);
   const [clickedTag, setClickedTag] = useState(['전체']);
+  const storedToken = localStorage.getItem("token");
   const [state, setState] = useState({
     center: {
       lat: 35.854795175382435,
@@ -37,7 +38,13 @@ const NearStore = () => {
   })
 
   const getStoreDetail = async (id) => {
-    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/detail/${id}/`);
+    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/detail/${id}/`,
+    null,
+      {
+        headers: {
+          Authorization: `Token ${storedToken}`,
+        },
+      })
     setIsOpen(true);
     setDetailPageInfo(res.data);
   }
