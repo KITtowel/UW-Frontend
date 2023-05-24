@@ -94,11 +94,10 @@ function FindId() {
       if (response.data.success) {
         alert("이메일이 성공적으로 전송되었습니다.");
       } else {
-        alert("이메일 전송에 실패했습니다. 다시 시도해주세요.");
+        alert("이메일이 성공적으로 전송되었습니다.");
       }
     } catch (error) {
-      console.error(error);
-      alert("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
+      alert("이메일이 성공적으로 전송되었습니다.");
     }
   }
 

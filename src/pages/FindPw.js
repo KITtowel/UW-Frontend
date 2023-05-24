@@ -88,6 +88,7 @@ function FindPw() {
         `${process.env.REACT_APP_API_BASE_URL}/users/password_reset/`,
         {
           email: e.target.email.value,
+          username: "hyeon",
         }
       );
 

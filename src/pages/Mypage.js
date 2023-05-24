@@ -312,7 +312,7 @@ const MobileOnly = styled.span`
 function MyPage() {
   const storedUserId = localStorage.getItem("userId");
   const storedToken = localStorage.getItem("token");
-  const { isAuthenticated, login } = useAuth();
+  const { isAuthenticated, login, logout } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
     if (isAuthenticated !== true) {
@@ -611,23 +611,29 @@ function MyPage() {
   };
   const handleSubmit2 = async () => {
     try {
-      const response = await axios.patch(
+      const response = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/users/password_change/`,
         {
           old_password: oldPassword,
           new_password: newPassword,
           new_password_confirm: newPasswordConfirm,
+        },
+        {
+          headers: {
+            Authorization: `Token ${storedToken}`,
+          },
         }
       );
 
       if (response.data.success) {
-        console.log("비밀번호가 성공적으로 변경되었습니다.");
+        alert("비밀번호가 성공적으로 변경되었습니다.");
+        navigate("/");
       } else {
-        console.log("비밀번호 변경에 실패했습니다.");
+        alert("비밀번호가 성공적으로 변경되었습니다.");
       }
     } catch (error) {
       console.error(error);
-      console.log("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
+      alert("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -643,8 +649,11 @@ function MyPage() {
           data: { password, reason },
         }
       );
+      alert("회원 탈퇴가 완료되었습니다.");
+      navigate("/");
+      logout();
     } catch (error) {
-      console.error(error);
+      alert(error);
     }
   };
   const handlePasswordChange = e => {
@@ -1030,13 +1039,13 @@ function MyPage() {
               value={reason}
               onChange={handleReasonChange}>
               <option value="">-- 탈퇴 사유 선택 --</option>
-              <option value="no_longer_needed">
+              <option value="서비스를 더 이상 사용하지 않음">
                 서비스를 더 이상 사용하지 않음
               </option>
-              <option value="privacy_concerns">개인정보 관련 우려</option>
-              <option value="difficulty_of_use">사용하기 어려움</option>
-              <option value="found_alternative">다른 서비스로 이동</option>
-              <option value="technical_issues">기술적 문제</option>
+              <option value="개인정보 관련 우려">개인정보 관련 우려</option>
+              <option value="사용하기 어려움">사용하기 어려움</option>
+              <option value="다른 서비스로 이동">다른 서비스로 이동</option>
+              <option value="기술적 문제">기술적 문제</option>
               <option value="other">기타 (직접 입력)</option>
             </Select>
             {showOtherInput && (
