@@ -47,12 +47,16 @@ const cityOptions = {
   대구광역시: ["남구", "동구", "북구", "서구", "수성구", "달서구", "달성군"],
 };
 
+const Center = styled.div`
+  text-align: center;
+`;
+
 const Header = styled.div`
   z-index: 999;
   position: fixed;
   top: 0;
   left: 10%;
-  width: 80%;
+  width: 80vw;
   height: 80px;
   background: #fff;
   border-bottom: 1px solid #969696;
@@ -63,8 +67,12 @@ const Header = styled.div`
   }
 `;
 
-const Center = styled.div`
-  text-align: center;
+const LogoIcon = styled.img`
+  width: 50px;
+  margin: 15px 30px;
+  @media (max-width: 768px) {
+    width: 30px;
+  }
 `;
 
 const NavButton = styled.button`
@@ -74,7 +82,7 @@ const NavButton = styled.button`
   text-decoration: ${props => (props.selected ? "underline" : "none")};
   cursor: pointer;
   font-size: 1rem;
-  margin: 30px 1rem;
+  margin: 30px 2%;
   vertical-align: top;
 `;
 
@@ -139,7 +147,7 @@ const EditButton = styled.button`
 
 const Container = styled.div`
   text-align: left;
-  width: 80%;
+  width: 80vw;
   margin: 80px auto;
   border-bottom: 1px solid #969696;
   background: #ffffff;
@@ -148,15 +156,6 @@ const Container = styled.div`
 const Wrapper = styled.div`
   padding: 50px;
   text-align: center;
-`;
-
-const LogoIcon = styled.img`
-  width: 50px;
-  margin: 15px 50px;
-  @media (max-width: 768px) {
-    width: 30px;
-    margin: 15px 30px;
-  }
 `;
 
 const ProfilePicture = styled.img`
@@ -170,6 +169,7 @@ const ProfilePicture = styled.img`
 const Input = styled.input`
   display: block;
   width: 300px;
+  max-width: 80%;
   padding: 11px 13px;
   background: #f9f9fa;
   color: #9dc3e6;
@@ -215,7 +215,7 @@ const TableRow = styled.tr`
 `;
 
 const TableHeader = styled.th`
-  padding: 0.5rem;
+  padding: 10px;
   border-right: 1px solid #ddd;
   background: #eef4f7;
   vertical-align: middle;
@@ -225,7 +225,7 @@ const TableHeader = styled.th`
 `;
 
 const TableCell = styled.td`
-  padding: 0.5rem;
+  padding: 10px;
   width: 70%;
 `;
 
@@ -314,11 +314,11 @@ function MyPage() {
   const storedToken = localStorage.getItem("token");
   const { isAuthenticated, login, logout } = useAuth();
   const navigate = useNavigate();
-  useEffect(() => {
-    if (isAuthenticated !== true) {
-      navigate("/");
-    }
-  }, [isAuthenticated]);
+  // useEffect(() => {
+  //   if (isAuthenticated !== true) {
+  //     navigate("/");
+  //   }
+  // }, [isAuthenticated]);
   const [isChanged, setIsChanged] = useState(false);
   const handleCancel = () => {
     navigate(-1);

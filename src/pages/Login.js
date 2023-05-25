@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import LogoBtn from "../components/LogoBtn";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { RiUser6Line, RiLockLine } from "react-icons/ri";
-import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { BsCheckCircleFill, BsCheckCircle } from "react-icons/bs";
 import Logo2 from "../assets/logo2.png";
 import Kakao from "../assets/kakao.png";
@@ -14,7 +12,8 @@ import KakaoLogin from "react-kakao-login";
 import NaverLogin from "react-naver-login";
 
 const Button = styled.button`
-  padding: 11px 130px;
+  padding: 11px 0;
+  width: 100%;
   color: rgb(253, 249, 243);
   font-weight: 600;
   text-transform: uppercase;
@@ -44,36 +43,6 @@ const Icon = styled.span`
   color: #636363;
 `;
 
-const KakaoIcon = ({ onClick }) => (
-  <div
-    style={{
-      fontSize: "50px",
-      display: "inline-block",
-      margin: "30px 15px",
-      textAlign: "right",
-      color: "#ffe810",
-      cursor: "pointer",
-    }}
-    onClick={onClick}>
-    <img src={Kakao} width="60px" />
-  </div>
-);
-
-const NaverIcon = ({ onClick }) => (
-  <div
-    style={{
-      fontSize: "50px",
-      display: "inline-block",
-      margin: "30px 15px",
-      textAlign: "left",
-      color: "#03bf19",
-      cursor: "pointer",
-    }}
-    onClick={onClick}>
-    <img src={Naver} width="60px" />
-  </div>
-);
-
 const Logo = styled.img`
   width: 100px;
   display: block;
@@ -82,16 +51,12 @@ const Logo = styled.img`
 
 const InputIconTop = styled.div`
   position: absolute;
-  top: calc(50% - 105px);
-  left: 85px;
-  transform: translateY(-45%);
+  margin: 10px;
 `;
 
 const InputIconBottom = styled.div`
   position: absolute;
-  top: calc(50% - 65px);
-  left: 85px;
-  transform: translateY(-45%);
+  margin: 10px;
 `;
 
 const InputTop = styled.input`
@@ -137,7 +102,7 @@ const Container = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 90%;
   justify-content: center;
   align-items: center;
   max-width: 28rem;
@@ -162,6 +127,7 @@ const Bottom = styled.div`
     color: #000;
     text-decoration: none;
     margin: 0 10px;
+    font-size: 13px;
   }
 `;
 
@@ -174,11 +140,35 @@ function Login() {
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAuthenticated === true) {
-      navigate("/");
-    }
-  }, [isAuthenticated]);
+  const KakaoIcon = ({ onClick }) => (
+    <div
+      style={{
+        fontSize: "50px",
+        display: "inline-block",
+        margin: "30px 15px",
+        textAlign: "right",
+        color: "#ffe810",
+        cursor: "pointer",
+      }}
+      onClick={onClick}>
+      <img src={Kakao} width="60px" />
+    </div>
+  );
+
+  const NaverIcon = ({ onClick }) => (
+    <div
+      style={{
+        fontSize: "50px",
+        display: "inline-block",
+        margin: "30px 15px",
+        textAlign: "left",
+        color: "#03bf19",
+        cursor: "pointer",
+      }}
+      onClick={onClick}>
+      <img src={Naver} width="60px" />
+    </div>
+  );
 
   const handleChecked = e => {
     setIsChecked(e.target.checked);
@@ -216,6 +206,10 @@ function Login() {
       navigate("/");
     } catch (error) {
       console.error(error);
+      if (error.response.status === 404) {
+        alert("네이버 회원가입이 되지 않았습니다.");
+        navigate("/signup");
+      }
     }
   };
 
@@ -240,6 +234,10 @@ function Login() {
       navigate("/");
     } catch (error) {
       console.error(error);
+      if (error.response.status === 404) {
+        alert("카카오 회원가입이 되지 않았습니다.");
+        navigate("/signup");
+      }
     }
   };
 
@@ -263,9 +261,16 @@ function Login() {
       login(receivedToken);
       navigate("/");
     } catch (error) {
+      alert("아이디 또는 비밀번호를 다시 확인해주세요.");
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated === true) {
+      navigate("/");
+    }
+  }, [isAuthenticated]);
 
   return (
     <>

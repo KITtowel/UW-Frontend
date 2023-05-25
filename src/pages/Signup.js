@@ -42,7 +42,7 @@ const Container = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 90%;
   justify-content: center;
   align-items: center;
   max-width: 28rem;
@@ -141,15 +141,19 @@ const Input = styled.input`
 const NaverButton = styled(Button)`
   background-color: #1ec800;
   margin: 10px;
+  padding: 10px;
+  width: 100%;
 `;
 
 const KakaoButton = styled(Button)`
   background-color: #ffeb00;
   color: #000;
   margin: 10px;
+  padding: 10px;
+  width: 100%;
 `;
 
-function Signup() {
+const Signup = () => {
   const locate = useLocation();
   const navigate = useNavigate();
 
@@ -163,10 +167,16 @@ function Signup() {
   const [location2, setLocation2] = useState("");
 
   useEffect(() => {
-    if (locate.state && locate.state.userData) {
+    if (
+      locate.state &&
+      locate.state.userData &&
+      locate.state.userData.nickname
+    ) {
       setUserData(locate.state.userData);
       setNickname(locate.state.userData.nickname);
       setEmail(locate.state.userData.email);
+      setUsername(locate.state.userData.username || "");
+      setNickname(locate.state.userData.nickname || "");
     }
   }, [locate.state]);
 
@@ -199,55 +209,107 @@ function Signup() {
     setLocation2(e.target.value);
   };
 
-  const handleNaverSignup = async ({ access_token, state }) => {
+  const handleNaverSignup = async ({ code, state, profile }) => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/naver/`,
-        {
-          access_token,
-          state,
-        }
-      );
-      console.log(response);
-      navigate("/login");
+      const nickname = profile.nickname;
+      const email = profile.email;
+
+      setUserData({
+        nickname,
+        email,
+      });
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleKakaoSignup = async ({ access_token, code, id_token }) => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/kakao/`,
-        {
-          access_token,
-          code,
-          id_token,
-        }
-      );
-      console.log(response);
-      navigate("/login");
-    } catch (error) {
-      console.error(error);
+  const handleKakaoSignup = async res => {
+    const idToken = res.response.id_token || "";
+    if (!idToken) {
+      alert("카카오 로그인 응답에 id_token이 없습니다.");
+      return;
+    }
+
+    const payload = idToken.split(".")[1];
+    const decodedPayload = JSON.parse(window.atob(payload));
+    console.log(decodedPayload);
+
+    const nickname = res.profile.kakao_account.profile.nickname;
+    const email = res.profile.kakao_account.email;
+
+    if (nickname && email) {
+      setUserData({
+        access_token: res.response.access_token,
+        code: res.response.code,
+        id_token: res.response.id_token,
+        nickname,
+        email,
+      });
+    } else {
+      console.error("프로필 데이터 없음");
     }
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_BASE_URL}/users/register/`,
-      {
-        nickname: nickname,
-        username: username,
-        password: password,
-        password2: password2,
-        email: email,
-        location: location,
-        location2: location2,
-      }
-    );
-    console.log(response);
-    navigate("/login");
+
+    if (
+      !nickname ||
+      !username ||
+      !password ||
+      !password2 ||
+      !email ||
+      !location ||
+      !location2
+    ) {
+      alert("모든 필드를 채워주세요.");
+      return;
+    }
+
+    if (password.length < 8) {
+      alert("비밀번호는 8자 이상이어야 합니다.");
+      return;
+    }
+
+    if (password !== password2) {
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    let userPayload;
+    if (userData) {
+      userPayload = {
+        ...userData,
+        username,
+        location,
+        location2,
+      };
+    } else {
+      userPayload = {
+        nickname,
+        username,
+        password,
+        password2,
+        email,
+        location,
+        location2,
+      };
+    }
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/users/register/`,
+        userPayload
+      );
+
+      const { key, user_id } = response.data;
+      localStorage.setItem("accessToken", key);
+      localStorage.setItem("userId", user_id);
+
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -265,8 +327,8 @@ function Signup() {
                 네이버로 회원가입
               </NaverButton>
             )}
-            onSuccess={({ access_token }) =>
-              handleNaverSignup({ access_token })
+            onSuccess={({ code, state, profile }) =>
+              handleNaverSignup({ code, state, profile })
             }
             onFailure={error => console.error(error)}
           />
@@ -278,15 +340,10 @@ function Signup() {
                 카카오로 회원가입
               </KakaoButton>
             )}
-            onSuccess={({ response }) =>
-              handleKakaoSignup({
-                access_token: response.access_token,
-                code: response.code,
-                id_token: response.id_token,
-              })
-            }
+            onSuccess={handleKakaoSignup}
             onFail={error => console.error(error)}
           />
+
           <Hr>또는</Hr>
           <div>
             <Label>닉네임</Label>
@@ -362,6 +419,6 @@ function Signup() {
       </form>
     </>
   );
-}
+};
 
 export default Signup;
