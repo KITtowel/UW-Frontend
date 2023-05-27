@@ -24,8 +24,9 @@ const CurPosBtn = styled.button`
   cursor: pointer;
 `;
 
-function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail}) {
+function KakaoMap({state, setState, storeList, setStoreList, detailPageInfo, getStoreDetail, clickedTag}) {
   const [markerList, setMarkerList] = useState([]);
+  const [filterList, setFilterList] = useState([]);
   const [curPos, setCurPos] = useState(
     () => JSON.parse(window.localStorage.getItem("curPos")) || { lat: 35.854795175382435, lng: 128.54823034227059 });
   const [randValue, setRandValue] = useState(0.000001);
@@ -50,7 +51,7 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
             lng: position.coords.longitude, // 경도
           });
           setIsCenter(true);
-          localStorage.setItem('curPos'. JSON.stringify({lat: position.coords.latitude, lng: position.coords.longitude}))
+          localStorage.setItem('curPos', JSON.stringify({lat: position.coords.latitude, lng: position.coords.longitude}))
         },
         (err) => {
           setState((prev) => ({
@@ -108,6 +109,16 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
       state.level <= 2 && getStoreMakerList();
     }, [state]);
 
+    useEffect(() => {
+      let temp = markerList;
+      if (clickedTag[0] !== '전체') {
+        temp = temp.filter((store) => clickedTag.includes(store.category));
+        setFilterList(temp);
+      } else {
+        setFilterList(markerList);
+      }
+    }, [storeList])
+
   //지도의 중심이 현재위치인지를 판단
   const getIsCenter = (moveLat, moveLng) => {
     let tempLat = Math.abs(curPos.lat - moveLat);
@@ -161,9 +172,9 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
         )}
         <MarkerClusterer
           averageCenter={true}
-          minLevel={4}
+          minLevel={3}
         >
-          {markerList.map((store) => (
+          {filterList.map((store) => (
             <MapMarker
               key={store.store_id}
               position={{
