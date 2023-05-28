@@ -193,6 +193,10 @@ function Login() {
   };
 
   const handleNaverLogin = async naverUser => {
+    console.log("access_token:", naverUser.access_token);
+    console.log("code:", naverUser.code);
+    console.log("nickname:", naverUser.nickname);
+    console.log("email:", naverUser.email);
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/naver/`,

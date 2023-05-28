@@ -6,6 +6,7 @@ import FindId from "./pages/FindId";
 import FindPw from "./pages/FindPw";
 import Mypage from "./pages/Mypage";
 import { StoreMap } from "./pages";
+import Callback from "./pages/Callback";
 // import { MyPage } from "./pages";
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/findid" element={<FindId />} />
         <Route path="/findpw" element={<FindPw />} />
         <Route path="/mypage" element={<Mypage />} />
+        <Route path="/callback" element={<Callback />} />
       </Routes>
     </BrowserRouter>
   );

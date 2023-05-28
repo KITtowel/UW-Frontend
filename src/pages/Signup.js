@@ -214,37 +214,6 @@ const Signup = () => {
     setLocation2(e.target.value);
   };
 
-  const handleNaverLogin = async naverUser => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/naver/`,
-        {
-          access_token: naverUser.access_token,
-          code: naverUser.code,
-          nickname: naverUser.nickname,
-          email: naverUser.email,
-        }
-      );
-
-      if (response.status !== 200) {
-        throw new Error("네이버 회원가입이 되지 않았습니다.");
-      }
-
-      const receivedToken = response.data.key;
-      const receivedUserId = response.data.user_id;
-
-      localStorage.setItem("token", receivedToken);
-      localStorage.setItem("userId", receivedUserId);
-
-      login(receivedToken);
-      alert("마이페이지에서 거주지 정보를 입력해주세요.");
-      navigate("/mypage");
-    } catch (error) {
-      console.error(error);
-      console.log(error.response.data);
-    }
-  };
-
   const handleKakaoLogin = async ({ response }) => {
     try {
       const access_token = response?.access_token;
@@ -357,8 +326,11 @@ const Signup = () => {
         <Container>
           <NaverLogin
             clientId="rVPk557GGXAVOFzBIcCK"
-            callbackUrl={`${process.env.REACT_APP_API_BASE_URL}/users/naver/callback`}
-            onSuccess={handleNaverLogin}
+            callbackUrl="http://localhost:3000/callback"
+            onSuccess={() =>
+              (window.location.href =
+                "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=rVPk557GGXAVOFzBIcCK&state=false&redirect_uri=http://localhost:3000/callback")
+            }
             onFailure={error => console.error(error)}
             render={props => (
               <NaverButton onClick={props.onClick}>
@@ -366,6 +338,7 @@ const Signup = () => {
               </NaverButton>
             )}
           />
+
           <KakaoLogin
             token="80ce118f2250d6342436cb0f233a5afb"
             redirectUri={`${process.env.REACT_APP_API_BASE_URL}/users/kakao/callback`}
