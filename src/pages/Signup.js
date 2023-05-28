@@ -156,7 +156,7 @@ const KakaoButton = styled(Button)`
 const Signup = () => {
   const locate = useLocation();
   const navigate = useNavigate();
-
+  const { isAuthenticated, login } = useAuth();
   const [userData, setUserData] = useState(null);
   const [nickname, setNickname] = useState("");
   const [username, setUsername] = useState("");
@@ -165,6 +165,11 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [location, setLocation] = useState("");
   const [location2, setLocation2] = useState("");
+  useEffect(() => {
+    if (isAuthenticated === true) {
+      navigate("/");
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (
@@ -209,44 +214,75 @@ const Signup = () => {
     setLocation2(e.target.value);
   };
 
-  const handleNaverSignup = async ({ code, state, profile }) => {
+  const handleNaverLogin = async naverUser => {
     try {
-      const nickname = profile.nickname;
-      const email = profile.email;
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/naver/`,
+        {
+          access_token: naverUser.access_token,
+          code: naverUser.code,
+          nickname: naverUser.nickname,
+          email: naverUser.email,
+        }
+      );
 
-      setUserData({
-        nickname,
-        email,
-      });
+      if (response.status !== 200) {
+        throw new Error("네이버 회원가입이 되지 않았습니다.");
+      }
+
+      const receivedToken = response.data.key;
+      const receivedUserId = response.data.user_id;
+
+      localStorage.setItem("token", receivedToken);
+      localStorage.setItem("userId", receivedUserId);
+
+      login(receivedToken);
+      alert("마이페이지에서 거주지 정보를 입력해주세요.");
+      navigate("/mypage");
     } catch (error) {
       console.error(error);
+      console.log(error.response.data);
     }
   };
 
-  const handleKakaoSignup = async res => {
-    const idToken = res.response.id_token || "";
-    if (!idToken) {
-      alert("카카오 로그인 응답에 id_token이 없습니다.");
-      return;
-    }
+  const handleKakaoLogin = async ({ response }) => {
+    try {
+      const access_token = response?.access_token;
+      const code = response?.code;
+      const profile = response?.profile;
+      const nickname = profile?.kakao_account?.profile?.nickname;
+      const email = profile?.kakao_account?.email;
 
-    const payload = idToken.split(".")[1];
-    const decodedPayload = JSON.parse(window.atob(payload));
-    console.log(decodedPayload);
+      console.log("Access Token:", access_token);
+      console.log("Code:", code);
 
-    const nickname = res.profile.kakao_account.profile.nickname;
-    const email = res.profile.kakao_account.email;
+      const axiosResponse = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/kakao/`,
+        {
+          access_token,
+          code,
+          nickname,
+          email,
+        }
+      );
 
-    if (nickname && email) {
-      setUserData({
-        access_token: res.response.access_token,
-        code: res.response.code,
-        id_token: res.response.id_token,
-        nickname,
-        email,
-      });
-    } else {
-      console.error("프로필 데이터 없음");
+      if (axiosResponse.status !== 200) {
+        throw new Error("카카오 회원가입이 되지 않았습니다.");
+      }
+
+      const receivedKey = axiosResponse.data.key;
+      const receivedUserId = axiosResponse.data.user_id;
+
+      localStorage.setItem("key", receivedKey);
+      localStorage.setItem("userId", receivedUserId);
+
+      console.log(axiosResponse);
+      login(receivedKey);
+      alert("마이페이지에서 거주지 정보를 입력해주세요.");
+      navigate("/mypage");
+    } catch (error) {
+      console.error(error);
+      console.log(error.response.data);
     }
   };
 
@@ -321,27 +357,26 @@ const Signup = () => {
         <Container>
           <NaverLogin
             clientId="rVPk557GGXAVOFzBIcCK"
-            callbackUrl={`${process.env.REACT_APP_API_BASE_URL}/users/naver/callback/`}
+            callbackUrl={`${process.env.REACT_APP_API_BASE_URL}/users/naver/callback`}
+            onSuccess={handleNaverLogin}
+            onFailure={error => console.error(error)}
             render={props => (
               <NaverButton onClick={props.onClick}>
                 네이버로 회원가입
               </NaverButton>
             )}
-            onSuccess={({ code, state, profile }) =>
-              handleNaverSignup({ code, state, profile })
-            }
-            onFailure={error => console.error(error)}
           />
           <KakaoLogin
             token="80ce118f2250d6342436cb0f233a5afb"
             redirectUri={`${process.env.REACT_APP_API_BASE_URL}/users/kakao/callback`}
+            onSuccess={handleKakaoLogin}
+            onFail={console.error}
+            onLogout={console.info}
             render={props => (
               <KakaoButton onClick={props.onClick}>
                 카카오로 회원가입
               </KakaoButton>
             )}
-            onSuccess={handleKakaoSignup}
-            onFail={error => console.error(error)}
           />
 
           <Hr>또는</Hr>

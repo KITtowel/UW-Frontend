@@ -314,11 +314,11 @@ function MyPage() {
   const storedToken = localStorage.getItem("token");
   const { isAuthenticated, login, logout } = useAuth();
   const navigate = useNavigate();
-  // useEffect(() => {
-  //   if (isAuthenticated !== true) {
-  //     navigate("/");
-  //   }
-  // }, [isAuthenticated]);
+  useEffect(() => {
+    if (isAuthenticated !== true) {
+      navigate("/");
+    }
+  }, [isAuthenticated]);
   const [isChanged, setIsChanged] = useState(false);
   const handleCancel = () => {
     navigate(-1);
