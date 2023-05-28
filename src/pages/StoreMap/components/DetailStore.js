@@ -225,21 +225,21 @@ const Contour = styled.div`
 
 function DetailStore({detailPageInfo}) {
   const storedToken = localStorage.getItem("token");
-  const [isLike, setIsLike] = useState(false);
+  const [isLike, setIsLike] = useState(detailPageInfo.liked_by_user);
   const [page, setPage] = useState(1);
   const [reviewHeight, setReviewHeight] = useState(100);
-  
+
   const headerRef = useRef();
   const menuRef = useRef();
+
+  useEffect(() => {
+    setIsLike(detailPageInfo.liked_by_user);
+  }, [detailPageInfo])
 
   const handleLikeBtn = () => {
     changeIsLike();
     setIsLike((prev) => !prev);
   }
-
-  useEffect(() => {
-    setIsLike(detailPageInfo.liked_by_user);
-  })
 
   useEffect(() => {
     menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 50);
@@ -261,7 +261,6 @@ function DetailStore({detailPageInfo}) {
         Authorization: `Token ${storedToken}`,
       },
     })
-    console.log(listRes);
   }
 
   return (

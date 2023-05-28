@@ -67,9 +67,11 @@ const NearStore = () => {
       <KakaoMap
         state={state}
         setState={setState}
+        storeList={storeList}
         setStoreList={setStoreList}
         detailPageInfo={detailPageInfo}
         getStoreDetail={getStoreDetail}
+        clickedTag={clickedTag}
       />
     </Container>
   );
