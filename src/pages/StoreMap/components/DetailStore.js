@@ -263,6 +263,10 @@ function DetailStore({detailPageInfo}) {
     })
   }
 
+  function handleReview() {
+    console.log('click');
+  }
+
   return (
     <Container>
       <StoreHeader ref={headerRef}>
@@ -296,7 +300,10 @@ function DetailStore({detailPageInfo}) {
       <StoreReview>
         <div style={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
           <Title>리뷰</Title>
-          <div style={{ display: 'flex', alignItems: 'center', paddingRight: '15px', gap: '5px' }}>
+          <div
+            onClick={handleReview}
+            style={{ display: 'flex', alignItems: 'center', paddingRight: '15px', gap: '5px', cursor: 'pointer'}}
+          >
             <HiOutlinePencilAlt style={{ color: '#24A1E8' }} />
             <div style={{ fontSize: '0.8em', color: '#aeaeae' }}>리뷰 쓰기</div>
           </div>
