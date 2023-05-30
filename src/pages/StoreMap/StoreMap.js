@@ -21,6 +21,8 @@ const NearStore = () => {
   const [detailPageInfo, setDetailPageInfo] = useState(null);
   const [isOpen, setIsOpen] = useState(true);
   const [clickedTag, setClickedTag] = useState(['전체']);
+  const [keyword, setKeyword] = useState('');
+  const [keyType, setKeyType] = useState('가게명');
   const storedToken = localStorage.getItem("token");
   const [state, setState] = useState({
     center: {
@@ -63,15 +65,20 @@ const NearStore = () => {
         getStoreDetail={getStoreDetail}
         clickedTag={clickedTag}
         setClickedTag={setClickedTag}
+        keyword={keyword}
+        setKeyword={setKeyword}
+        keyType={keyType}
+        setKeyType={setKeyType}
       />
       <KakaoMap
         state={state}
         setState={setState}
-        storeList={storeList}
         setStoreList={setStoreList}
         detailPageInfo={detailPageInfo}
         getStoreDetail={getStoreDetail}
         clickedTag={clickedTag}
+        keyword={keyword}
+        keyType={keyType}
       />
     </Container>
   );

@@ -144,6 +144,22 @@ const StoreReview = styled(StoreHeader)`
   padding: 0;
 `;
 
+const ReviewButton = styled.div`
+  display: flex;
+  align-items: center;
+  padding-right: 15px;
+  gap: 5px;
+  color: #aeaeae;
+  cursor: pointer;
+  :hover {
+    color: #24A1E8;
+  }
+`;
+
+const ReviewText = styled.div`
+  font-size: 0.8em;
+`;
+
 const NoReview = styled.div`
   height: 100%;
   display: flex;
@@ -223,7 +239,7 @@ const Contour = styled.div`
   color: #D9D9D9; 
 `;
 
-function DetailStore({detailPageInfo}) {
+function DetailStore({detailPageInfo, setReviewing}) {
   const storedToken = localStorage.getItem("token");
   const [isLike, setIsLike] = useState(detailPageInfo.liked_by_user);
   const [page, setPage] = useState(1);
@@ -264,7 +280,7 @@ function DetailStore({detailPageInfo}) {
   }
 
   function handleReview() {
-    console.log('click');
+    setReviewing(true);
   }
 
   return (
@@ -300,13 +316,10 @@ function DetailStore({detailPageInfo}) {
       <StoreReview>
         <div style={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'space-between' }}>
           <Title>리뷰</Title>
-          <div
-            onClick={handleReview}
-            style={{ display: 'flex', alignItems: 'center', paddingRight: '15px', gap: '5px', cursor: 'pointer'}}
-          >
-            <HiOutlinePencilAlt style={{ color: '#24A1E8' }} />
-            <div style={{ fontSize: '0.8em', color: '#aeaeae' }}>리뷰 쓰기</div>
-          </div>
+          <ReviewButton onClick={handleReview}>
+            <HiOutlinePencilAlt />
+            <ReviewText>리뷰 쓰기</ReviewText>
+          </ReviewButton>
         </div>
         <Contour />
         <ReviewLists reviewHeight={reviewHeight}>

@@ -24,7 +24,7 @@ const CurPosBtn = styled.button`
   cursor: pointer;
 `;
 
-function KakaoMap({state, setState, storeList, setStoreList, detailPageInfo, getStoreDetail, clickedTag}) {
+function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail, clickedTag, keyword, keyType}) {
   const [markerList, setMarkerList] = useState([]);
   const [curPos, setCurPos] = useState(
     () => JSON.parse(window.localStorage.getItem("curPos")) || { lat: 35.854795175382435, lng: 128.54823034227059 });
@@ -117,14 +117,27 @@ function KakaoMap({state, setState, storeList, setStoreList, detailPageInfo, get
       })
       setMarkerList(listRes.data.data);
     }
+
+    async function getStoreSearchList() {
+      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/search_map_mark/`, {
+        "latitude": state.center.lat,
+        "longitude": state.center.lng,
+        "ne_latitude": state.neLat,
+        "ne_longitude": state.neLng,
+        "sw_latitude": state.swLat,
+        "sw_longitude": state.swLng,
+        "search_type": keyType,
+        "search": keyword
+      })
+      setMarkerList(listRes.data.data);
+    }
     
     if (state.level <= 2) {
       if (clickedTag[0] === '전체') {
-        getStoreMakerList();
+        keyword === '' ? getStoreMakerList() : getStoreSearchList();
       } else {
         getStoreTagList();
       }
-      
     }
   }, [state, clickedTag]);
 
