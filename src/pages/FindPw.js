@@ -6,14 +6,15 @@ import axios from "axios";
 import Logo2 from "../assets/logo2.png";
 
 const Container = styled.div`
+  position: relative;
   text-align: center;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 90%;
   justify-content: center;
   align-items: center;
   max-width: 28rem;
-  margin: 3rem auto;
+  margin: 60px auto;
   padding: 2rem 2.5rem;
   border: none;
   outline: none;
@@ -112,23 +113,19 @@ function FindPw() {
         <Title>비밀번호 재설정</Title>
         <form onSubmit={handleEmailSubmit}>
           <div>
+            <Label htmlFor="username">아이디</Label>
+            <Input
+              type="text"
+              name="username"
+              style={{ display: "inline", width: "100%" }}
+            />
             <Label htmlFor="email">이메일</Label>
             <Input
               type="email"
               name="email"
-              style={{ display: "inline", width: "75%", marginRight: "10px" }}
+              style={{ display: "inline", width: "100%" }}
             />
-            <Button
-              type="submit"
-              style={{
-                display: "inline",
-                width: "20%",
-                padding: "13px 0",
-                borderRadius: "3px",
-                margin: "0",
-              }}>
-              확인
-            </Button>
+            <Button type="submit">확인</Button>
           </div>
         </form>
       </Container>
