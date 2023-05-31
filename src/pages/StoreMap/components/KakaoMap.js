@@ -24,9 +24,8 @@ const CurPosBtn = styled.button`
   cursor: pointer;
 `;
 
-function KakaoMap({state, setState, storeList, setStoreList, detailPageInfo, getStoreDetail, clickedTag}) {
+function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail, clickedTag, keyword, keyType}) {
   const [markerList, setMarkerList] = useState([]);
-  const [filterList, setFilterList] = useState([]);
   const [curPos, setCurPos] = useState(
     () => JSON.parse(window.localStorage.getItem("curPos")) || { lat: 35.854795175382435, lng: 128.54823034227059 });
   const [randValue, setRandValue] = useState(0.000001);
@@ -84,40 +83,63 @@ function KakaoMap({state, setState, storeList, setStoreList, detailPageInfo, get
     setIsCenter(true);
   }
 
-    // 가맹점 정보를 받아옴
-    useEffect(() => {
-      async function getStoreMakerList()  {
-        const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/map_mark/`, {
-          "latitude": state.center.lat,
-          "longitude": state.center.lng,
-          "ne_latitude": state.neLat,
-          "ne_longitude": state.neLng,
-          "sw_latitude": state.swLat,
-          "sw_longitude": state.swLng
-        })
-        setMarkerList(res.data.data);
-        const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
-          "latitude": state.center.lat,
-          "longitude": state.center.lng,
-          "ne_latitude": state.neLat,
-          "ne_longitude": state.neLng,
-          "sw_latitude": state.swLat,
-          "sw_longitude": state.swLng
-        })
-        setStoreList(listRes.data);
-      }
-      state.level <= 2 && getStoreMakerList();
-    }, [state]);
+  // 가맹점 정보를 받아옴
+  useEffect(() => {
+    async function getStoreMakerList()  {
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/map_mark/`, {
+        "latitude": state.center.lat,
+        "longitude": state.center.lng,
+        "ne_latitude": state.neLat,
+        "ne_longitude": state.neLng,
+        "sw_latitude": state.swLat,
+        "sw_longitude": state.swLng
+      })
+      setMarkerList(res.data.data);
+      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
+        "latitude": state.center.lat,
+        "longitude": state.center.lng,
+        "ne_latitude": state.neLat,
+        "ne_longitude": state.neLng,
+        "sw_latitude": state.swLat,
+        "sw_longitude": state.swLng
+      })
+      setStoreList(listRes.data);
+    }
+    async function getStoreTagList() {
+      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/category_map_mark/`, {
+        "latitude": state.center.lat,
+        "longitude": state.center.lng,
+        "ne_latitude": state.neLat,
+        "ne_longitude": state.neLng,
+        "sw_latitude": state.swLat,
+        "sw_longitude": state.swLng,
+        "category": `${clickedTag.join(" ")}`
+      })
+      setMarkerList(listRes.data.data);
+    }
 
-    useEffect(() => {
-      let temp = markerList;
-      if (clickedTag[0] !== '전체') {
-        temp = temp.filter((store) => clickedTag.includes(store.category));
-        setFilterList(temp);
+    async function getStoreSearchList() {
+      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/search_map_mark/`, {
+        "latitude": state.center.lat,
+        "longitude": state.center.lng,
+        "ne_latitude": state.neLat,
+        "ne_longitude": state.neLng,
+        "sw_latitude": state.swLat,
+        "sw_longitude": state.swLng,
+        "search_type": keyType,
+        "search": keyword
+      })
+      setMarkerList(listRes.data.data);
+    }
+    
+    if (state.level <= 2) {
+      if (clickedTag[0] === '전체') {
+        keyword === '' ? getStoreMakerList() : getStoreSearchList();
       } else {
-        setFilterList(markerList);
+        getStoreTagList();
       }
-    }, [storeList])
+    }
+  }, [state, clickedTag]);
 
   //지도의 중심이 현재위치인지를 판단
   const getIsCenter = (moveLat, moveLng) => {
@@ -174,7 +196,7 @@ function KakaoMap({state, setState, storeList, setStoreList, detailPageInfo, get
           averageCenter={true}
           minLevel={3}
         >
-          {filterList.map((store) => (
+          {markerList.map((store) => (
             <MapMarker
               key={store.store_id}
               position={{

@@ -74,7 +74,7 @@ function InfoBar() {
   const handleCheck = async e => {
     console.log(storedUserId);
     try {
-      const response = await axios.post(
+      const response = await axios.get(
         `${process.env.REACT_APP_API_BASE_URL}/users/moneycheck/${storedUserId}/`
       );
       window.location.href = `${response.data.url}`;

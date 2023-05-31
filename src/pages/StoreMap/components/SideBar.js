@@ -7,7 +7,7 @@ import { MdLocationOn } from "react-icons/md";
 import { Pagination } from '../../../components';
 import DetailStore from './DetailStore';
 import axios from 'axios';
-import { get } from 'react-scroll/modules/mixins/scroller';
+import ReviewWrite from './ReviewWrite';
 
 const Container = styled.div`
   position: fixed;
@@ -21,13 +21,13 @@ const Container = styled.div`
   left: 80px;
   transition: 0.4s ease;
   z-index: 4;
-  transform: ${(props) => props.isOpen  ? "translateX(0px)" : props.detailPageInfo ? "translateX(-619px)" : "translateX(-269px)"};
+  transform: ${(props) => props.isOpen  ? "translateX(0px)" : props.detailPageInfo ? props.reviewing ? "translateX(-969px)" : "translateX(-619px)" : "translateX(-269px)"};
 `;
 
 const SideButton = styled.button`
   position: fixed;
   padding: 0;
-  left: ${(props) => props.detailPageInfo ? '619px' : '269px'};
+  left: ${(props) => props.detailPageInfo ? props.reviewing ? '969px' : '619px' : '269px'};
   top: 50%;
   width: 20px;
   height: 50px;
@@ -41,7 +41,7 @@ const SideButton = styled.button`
 `;
 
 const CloseDetailBtn = styled(SideButton)`
-  left: 619px;
+  left: ${(props) => props.reviewing ? '969px' : '619px'};
   top: 3%;
   width: 45px;
   height: 45px;
@@ -277,12 +277,28 @@ const Star = styled(AiTwotoneStar)`
   margin-right: 2px;
 `;
 
-function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageInfo, getStoreDetail, isOpen, setIsOpen, clickedTag, setClickedTag}) {
+function SideBar({
+  state,
+  storeList,
+  setStoreList,
+  detailPageInfo,
+  setDetailPageInfo,
+  getStoreDetail,
+  isOpen,
+  setIsOpen,
+  clickedTag,
+  setClickedTag,
+  keyword,
+  setKeyword,
+  keyType,
+  setKeyType
+}) {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(1);
+  const [reviewing, setReviewing] = useState(false);
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
-  const [keyword, setKeyword] = useState('');
-  const [keyType, setKeyType] = useState('가게명');
+  // const [keyword, setKeyword] = useState('');
+  // const [keyType, setKeyType] = useState('가게명');
 
   async function getStoreSearchList() {
     const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/search_distance_order/?page=${page}`, {
@@ -331,7 +347,6 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
     } else {
       getStoreTagList();
     }
-    // clickedTag[0] === '전체' ? getStoreList() : getStoreTagList();
   }, [page, clickedTag])
 
   useEffect(() => {
@@ -365,7 +380,7 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
   }
 
   const closeDetailPage = () => {
-    setDetailPageInfo(null);
+    reviewing ? setReviewing(false) : setDetailPageInfo(null);
   }
 
   const handleInputChange = (e) => {
@@ -387,19 +402,21 @@ function SideBar({state, storeList, setStoreList, detailPageInfo, setDetailPageI
   }
 
   return (
-    <Container isOpen={isOpen} detailPageInfo={detailPageInfo}>
-      <SideButton onClick={handleOpen} detailPageInfo={detailPageInfo}>
+    <Container isOpen={isOpen} detailPageInfo={detailPageInfo} reviewing={reviewing}>
+      <SideButton onClick={handleOpen} detailPageInfo={detailPageInfo} reviewing={reviewing}>
         <ArrowIcon>
           {isOpen ? <IoIosArrowBack /> : <IoIosArrowForward />}
         </ArrowIcon>
       </SideButton>
-      {detailPageInfo && <DetailStore detailPageInfo={detailPageInfo}/>}
+      {detailPageInfo && <DetailStore detailPageInfo={detailPageInfo} setReviewing={setReviewing}/>}
       {detailPageInfo && isOpen &&
-      <CloseDetailBtn>
-        <CloseIcon onClick={closeDetailPage}>
-          <IoIosClose />
-        </CloseIcon>
-      </CloseDetailBtn>}
+        <CloseDetailBtn reviewing={reviewing}>
+          <CloseIcon onClick={closeDetailPage}>
+            <IoIosClose />
+          </CloseIcon>
+        </CloseDetailBtn>
+      }
+      {reviewing && <ReviewWrite />}
       <SearchWrapper onSubmit={handleSubmit}>
         <SearchSelect value={keyType} onChange={handleSelectChange}>
           <option label="가게명" value="가게명" />
