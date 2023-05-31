@@ -385,6 +385,7 @@ const Signup = () => {
               type="password"
               value={password}
               onChange={handlePasswordChange}
+              minLength={8}
             />
           </div>
           <div>
@@ -393,6 +394,7 @@ const Signup = () => {
               type="password"
               value={password2}
               onChange={handlePassword2Change}
+              minLength={8}
             />
           </div>
           <div>
