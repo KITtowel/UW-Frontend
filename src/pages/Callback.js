@@ -6,7 +6,7 @@ import axios from "axios";
 const Callback = () => {
   const locate = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, login } = useAuth();
+  const { isAuthenticated, login, setIsAuthenticated } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated === true) {
@@ -30,7 +30,7 @@ const Callback = () => {
         if (naverResponse.status === 200) {
           const receivedToken = naverResponse.data.key;
           const receivedUserId = naverResponse.data.user_id;
-          const receivedLocation = naverResponse.location;
+          const receivedLocation = naverResponse.data.location;
 
           console.log(receivedToken);
           console.log(receivedUserId);
@@ -39,7 +39,9 @@ const Callback = () => {
           localStorage.setItem("token", receivedToken);
           localStorage.setItem("userId", receivedUserId);
           localStorage.setItem("location", receivedLocation);
+
           login(receivedToken);
+          setIsAuthenticated(true);
 
           window.close();
         } else {
@@ -52,7 +54,7 @@ const Callback = () => {
     };
 
     getNaverUserData();
-  }, [locate.hash, navigate]);
+  }, [locate.hash, navigate, setIsAuthenticated]);
 
   return null;
 };

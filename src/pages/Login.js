@@ -139,11 +139,7 @@ function Login() {
   const [userId, setUserId] = useState("");
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
-  useEffect(() => {
-    if (isAuthenticated === true) {
-      navigate("/");
-    }
-  }, [isAuthenticated]);
+
   const KakaoIcon = ({ onClick }) => (
     <div
       style={{
@@ -219,9 +215,15 @@ function Login() {
 
       const receivedKey = axiosResponse.data.key;
       const receivedUserId = axiosResponse.data.user_id;
+      const receivedLocation = axiosResponse.data.location;
+
+      console.log(receivedKey);
+      console.log(receivedUserId);
+      console.log(receivedLocation);
 
       localStorage.setItem("key", receivedKey);
       localStorage.setItem("userId", receivedUserId);
+      localStorage.setItem("location", receivedLocation);
 
       console.log(axiosResponse);
       login(receivedKey);
