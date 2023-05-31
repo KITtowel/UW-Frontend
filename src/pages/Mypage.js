@@ -46,11 +46,9 @@ const cityOptions = {
   ],
   대구광역시: ["남구", "동구", "북구", "서구", "수성구", "달서구", "달성군"],
 };
-
 const Center = styled.div`
   text-align: center;
 `;
-
 const Header = styled.div`
   z-index: 999;
   position: fixed;
@@ -66,7 +64,6 @@ const Header = styled.div`
     text-align: right;
   }
 `;
-
 const LogoIcon = styled.img`
   width: 50px;
   margin: 15px 30px;
@@ -74,7 +71,6 @@ const LogoIcon = styled.img`
     width: 30px;
   }
 `;
-
 const NavButton = styled.button`
   background: transparent;
   color: ${props => (props.selected ? "#24A1E8" : "#000000")};
@@ -85,7 +81,6 @@ const NavButton = styled.button`
   margin: 30px 2%;
   vertical-align: top;
 `;
-
 const DisableButton = styled.button`
   display: inline-block;
   margin: 5px;
@@ -104,7 +99,6 @@ const DisableButton = styled.button`
     cursor: not-allowed;
   }
 `;
-
 const AbleButton = styled.button`
   display: inline-block;
   margin: 30px 5px;
@@ -124,7 +118,6 @@ const AbleButton = styled.button`
     color: #fff;
   }
 `;
-
 const EditButton = styled.button`
   display: inline-block;
   margin: 20px 35px;
@@ -144,7 +137,6 @@ const EditButton = styled.button`
     color: #fff;
   }
 `;
-
 const Container = styled.div`
   text-align: left;
   width: 80vw;
@@ -152,12 +144,10 @@ const Container = styled.div`
   border-bottom: 1px solid #969696;
   background: #ffffff;
 `;
-
 const Wrapper = styled.div`
   padding: 50px;
   text-align: center;
 `;
-
 const ProfilePicture = styled.img`
   margin: 10px 55px;
   width: 80px;
@@ -165,7 +155,6 @@ const ProfilePicture = styled.img`
   border-radius: 50%;
   object-fit: cover;
 `;
-
 const Input = styled.input`
   display: block;
   width: 300px;
@@ -185,7 +174,6 @@ const Input = styled.input`
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
 `;
-
 const InputCenter = styled.input`
   display: block;
   width: 220px;
@@ -204,16 +192,13 @@ const InputCenter = styled.input`
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
 `;
-
 const Table = styled.table`
   border-collapse: collapse;
   width: 100%;
 `;
-
 const TableRow = styled.tr`
   border-bottom: 1px solid #ddd;
 `;
-
 const TableHeader = styled.th`
   padding: 10px;
   border-right: 1px solid #ddd;
@@ -223,19 +208,16 @@ const TableHeader = styled.th`
   width: 30%;
   text-align: center;
 `;
-
 const TableCell = styled.td`
   padding: 10px;
   width: 70%;
 `;
-
 const Label = styled.label`
   display: block;
   color: #656565;
   text-align: center;
   margin: 10px;
 `;
-
 const List = styled.div`
   padding: 30px;
   max-width: 700px;
@@ -290,7 +272,6 @@ const Star = styled(FaStar)`
   color: ${props => (props.active ? "gold" : "#ccc")};
   cursor: pointer;
 `;
-
 const PcOnly = styled.span`
   display: none;
 
@@ -298,7 +279,6 @@ const PcOnly = styled.span`
     display: inline;
   }
 `;
-
 const MobileOnly = styled.span`
   @media (max-width: 768px) {
     display: inline;
@@ -314,18 +294,22 @@ function MyPage() {
   const storedToken = localStorage.getItem("token");
   const { isAuthenticated, login, logout } = useAuth();
   const navigate = useNavigate();
-  useEffect(() => {
-    if (isAuthenticated !== true) {
-      navigate("/");
-    }
-  }, [isAuthenticated]);
+
+  // useEffect(() => {
+  //   if (isAuthenticated !== true) {
+  //     navigate("/");
+  //   }
+  // }, [isAuthenticated, navigate]);
+
   const [isChanged, setIsChanged] = useState(false);
+
   const handleCancel = () => {
     navigate(-1);
   };
 
   // 탭
   const [activeTab, setActiveTab] = useState("myinfo");
+
   const handleTabClick = tab => {
     resetInputFields();
     if (tab !== "myinfo") {
@@ -334,25 +318,10 @@ function MyPage() {
     setActiveTab(tab);
 
     if (tab === "likes") {
-      const fetchData = async () => {
-        try {
-          const response = await axios.post(
-            `${process.env.REACT_APP_API_BASE_URL}/stores/liked_list/?page=${likePage}`,
-            null,
-            {
-              headers: {
-                Authorization: `Token ${storedToken}`,
-              },
-            }
-          );
-          setLikedStores(response.data);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      fetchData();
+      fetchLikedStores();
     }
   };
+
   const resetInputFields = () => {
     setOldPassword("");
     setNewPassword("");
@@ -376,6 +345,7 @@ function MyPage() {
   const [location, setLocation] = useState("");
   const [location2, setLocation2] = useState("");
   const [image, setImage] = useState(null);
+
   const getProfileData = async () => {
     try {
       const response = await axios.get(
@@ -386,27 +356,34 @@ function MyPage() {
       console.error(error);
     }
   };
+
   const handleCityChange = e => {
     setSelectedCity(e.target.value);
   };
+
   const handleProvinceChange = e => {
     setSelectedProvince(e.target.value);
     setSelectedCity("");
   };
+
   const handleImageChange = e => {
     setImage(e.target.files[0]);
     setIsImageChanged(true);
   };
+
   const handleNicknameChange = e => {
     setNickname(e.target.value);
   };
+
   const handleLocationChange = e => {
     setLocation(e.target.value);
     setSelectedProvince(e.target.value);
   };
+
   const handleLocation2Change = e => {
     setLocation2(e.target.value);
   };
+
   const handleSubmit1 = async () => {
     try {
       const formData = new FormData();
@@ -444,6 +421,7 @@ function MyPage() {
       console.error(error);
     }
   };
+
   useEffect(() => {
     getProfileData();
   }, []);
@@ -451,25 +429,28 @@ function MyPage() {
   // 좋아요
   const [likePage, setLikePage] = useState(1);
   const [likedStores, setLikedStores] = useState({ results: [] });
+
+  const fetchLikedStores = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/stores/liked_list/?page=${likePage}`,
+        null,
+        {
+          headers: {
+            Authorization: `Token ${storedToken}`,
+          },
+        }
+      );
+      setLikedStores(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_BASE_URL}/stores/liked_list/?page=${likePage}`,
-          null,
-          {
-            headers: {
-              Authorization: `Token ${storedToken}`,
-            },
-          }
-        );
-        setLikedStores(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
+    fetchLikedStores();
   }, [likePage, storedToken]);
+
   const handleLike = async (id, isLiked) => {
     try {
       const newData = likedStores.results.map(item => {
@@ -481,7 +462,11 @@ function MyPage() {
         }
         return item;
       });
-      setLikedStores(prevState => ({ ...prevState, results: newData }));
+
+      setLikedStores(prevState => ({
+        ...prevState,
+        results: newData,
+      }));
 
       const response = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/stores/like/${id}/`,
@@ -506,6 +491,7 @@ function MyPage() {
   const [selectedReviewId, setSelectedReviewId] = useState(null);
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(0);
+
   const handleEditModal = id => {
     const selectedReview = reviews.find(review => review.id === id);
     if (selectedReview) {
@@ -569,7 +555,6 @@ function MyPage() {
       );
       setReviews(response.data.results);
       setReviewsCount(response.data.count);
-      console.log(response.data.results);
     } catch (error) {
       console.error(error);
     }
@@ -600,15 +585,19 @@ function MyPage() {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
+
   const handleOldPasswordChange = e => {
     setOldPassword(e.target.value);
   };
+
   const handleNewPasswordChange = e => {
     setNewPassword(e.target.value);
   };
+
   const handleNewPasswordConfirmChange = e => {
     setNewPasswordConfirm(e.target.value);
   };
+
   const handleSubmit2 = async () => {
     try {
       const response = await axios.post(
@@ -629,7 +618,7 @@ function MyPage() {
         alert("비밀번호가 성공적으로 변경되었습니다.");
         navigate("/");
       } else {
-        alert("비밀번호가 성공적으로 변경되었습니다.");
+        alert("비밀번호 변경에 실패했습니다.");
       }
     } catch (error) {
       console.error(error);
@@ -641,6 +630,7 @@ function MyPage() {
   const [password, setPassword] = useState("");
   const [reason, setReason] = useState("");
   const [showOtherInput, setShowOtherInput] = useState(false);
+
   const handleSubmit3 = async () => {
     try {
       await axios.delete(
@@ -656,9 +646,11 @@ function MyPage() {
       alert(error);
     }
   };
+
   const handlePasswordChange = e => {
     setPassword(e.target.value);
   };
+
   const handleReasonChange = e => {
     setReason(e.target.value);
     if (e.target.value === "other") {
@@ -667,6 +659,7 @@ function MyPage() {
       setShowOtherInput(false);
     }
   };
+
   useEffect(() => {
     let hasChanges = false;
     if (
@@ -913,7 +906,10 @@ function MyPage() {
                   <div style={{}}>
                     <div style={{ position: "absolute", right: "30%" }}>
                       <FiEdit
-                        style={{ marginRight: "0.5rem", cursor: "pointer" }}
+                        style={{
+                          marginRight: "0.5rem",
+                          cursor: "pointer",
+                        }}
                         onClick={() => handleEditModal(review.id)}
                       />
                       <FiTrash2

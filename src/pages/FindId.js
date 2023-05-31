@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { useAuth } from "../contexts/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import Logo2 from "../assets/logo2.png";
 
@@ -80,7 +79,7 @@ const Title = styled.h1`
 `;
 
 function FindId() {
-  async function handleEmailSubmit(e) {
+  const handleEmailSubmit = async e => {
     e.preventDefault();
 
     try {
@@ -92,14 +91,14 @@ function FindId() {
       );
 
       if (response.data.success) {
-        alert("이메일이 성공적으로 전송되었습니다.");
+        alert("아이디가 성공적으로 전송되었습니다.");
       } else {
-        alert("이메일이 성공적으로 전송되었습니다.");
+        alert("아이디를 찾을 수 없습니다. 입력한 이메일을 확인해주세요.");
       }
     } catch (error) {
-      alert("이메일이 성공적으로 전송되었습니다.");
+      alert("이메일 전송 중 문제가 발생했습니다. 다시 시도해주세요.");
     }
-  }
+  };
 
   return (
     <>
@@ -116,17 +115,7 @@ function FindId() {
               name="email"
               style={{ display: "inline", width: "75%", marginRight: "10px" }}
             />
-            <Button
-              type="submit"
-              style={{
-                display: "inline",
-                width: "20%",
-                padding: "13px 0",
-                borderRadius: "3px",
-                margin: "0",
-              }}>
-              확인
-            </Button>
+            <Button type="submit">확인</Button>
           </div>
         </form>
       </Container>

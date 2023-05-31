@@ -342,7 +342,11 @@ const Signup = () => {
                 "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=rVPk557GGXAVOFzBIcCK&state=false&redirect_uri=http://127.0.0.1:3000/callback")
             }
             onFailure={error => console.error(error)}
-            render={({ onClick }) => <NaverIcon onClick={onClick} />}
+            render={props => (
+              <NaverButton onClick={props.onClick}>
+                네이버로 회원가입
+              </NaverButton>
+            )}
           />
 
           <KakaoLogin

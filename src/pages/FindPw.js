@@ -87,8 +87,8 @@ function FindPw() {
       const response = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/users/password_reset/`,
         {
+          username: e.target.username.value,
           email: e.target.email.value,
-          username: "hyeon",
         }
       );
 
