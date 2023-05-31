@@ -200,8 +200,8 @@ function Login() {
       const nickname = profile?.kakao_account?.profile?.nickname;
       const email = profile?.kakao_account?.email;
 
-      console.log("Access Token:", access_token);
-      console.log("Code:", code);
+      console.log(access_token);
+      console.log(code);
 
       const axiosResponse = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/kakao/`,

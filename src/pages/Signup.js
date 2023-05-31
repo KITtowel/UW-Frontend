@@ -244,8 +244,6 @@ const Signup = () => {
 
       console.log(axiosResponse);
       login(receivedKey);
-      alert("마이페이지에서 거주지 정보를 입력해주세요.");
-      navigate("/mypage");
     } catch (error) {
       console.error(error);
       console.log(error.response.data);
@@ -336,9 +334,16 @@ const Signup = () => {
       </Link>
       <form onSubmit={handleSubmit}>
         <Container>
-          <NaverButton onClick={handleNaverLogin}>
-            네이버로 회원가입
-          </NaverButton>
+          <NaverLogin
+            clientId="rVPk557GGXAVOFzBIcCK"
+            callbackUrl="http://127.0.0.1:3000/callback"
+            onSuccess={() =>
+              (window.location.href =
+                "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=rVPk557GGXAVOFzBIcCK&state=false&redirect_uri=http://127.0.0.1:3000/callback")
+            }
+            onFailure={error => console.error(error)}
+            render={({ onClick }) => <NaverIcon onClick={onClick} />}
+          />
 
           <KakaoLogin
             token="80ce118f2250d6342436cb0f233a5afb"
