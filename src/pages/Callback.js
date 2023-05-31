@@ -9,6 +9,12 @@ const Callback = () => {
   const { isAuthenticated, login } = useAuth();
 
   useEffect(() => {
+    if (isAuthenticated === true) {
+      window.close();
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
     const getNaverUserData = async () => {
       try {
         const searchParams = new URLSearchParams(locate.hash.substring(1));

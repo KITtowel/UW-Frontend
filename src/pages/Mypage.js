@@ -295,11 +295,11 @@ function MyPage() {
   const { isAuthenticated, login, logout } = useAuth();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (isAuthenticated !== true) {
-  //     navigate("/");
-  //   }
-  // }, [isAuthenticated, navigate]);
+  useEffect(() => {
+    if (isAuthenticated !== true) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const [isChanged, setIsChanged] = useState(false);
 
