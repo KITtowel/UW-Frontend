@@ -229,9 +229,6 @@ const Signup = () => {
         `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/kakao/`,
         {
           access_token,
-          code,
-          nickname,
-          email,
         }
       );
 
@@ -317,6 +314,21 @@ const Signup = () => {
     }
   };
 
+  const handleNaverLogin = () => {
+    const naverPopup = window.open(
+      "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=rVPk557GGXAVOFzBIcCK&state=false&redirect_uri=http://127.0.0.1:3000/callback",
+      "_blank",
+      "width=500,height=700"
+    );
+
+    const checkPopupClosed = setInterval(() => {
+      if (naverPopup.closed) {
+        clearInterval(checkPopupClosed);
+        navigate("/mypage");
+      }
+    }, 500);
+  };
+
   return (
     <>
       <Link to="/">
@@ -324,20 +336,9 @@ const Signup = () => {
       </Link>
       <form onSubmit={handleSubmit}>
         <Container>
-          <NaverLogin
-            clientId="rVPk557GGXAVOFzBIcCK"
-            callbackUrl="http://localhost:3000/callback"
-            onSuccess={() =>
-              (window.location.href =
-                "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=rVPk557GGXAVOFzBIcCK&state=false&redirect_uri=http://localhost:3000/callback")
-            }
-            onFailure={error => console.error(error)}
-            render={props => (
-              <NaverButton onClick={props.onClick}>
-                네이버로 회원가입
-              </NaverButton>
-            )}
-          />
+          <NaverButton onClick={handleNaverLogin}>
+            네이버로 회원가입
+          </NaverButton>
 
           <KakaoLogin
             token="80ce118f2250d6342436cb0f233a5afb"

@@ -192,41 +192,6 @@ function Login() {
     setPassword(event.target.value);
   };
 
-  const handleNaverLogin = async naverUser => {
-    console.log("access_token:", naverUser.access_token);
-    console.log("code:", naverUser.code);
-    console.log("nickname:", naverUser.nickname);
-    console.log("email:", naverUser.email);
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/naver/`,
-        {
-          access_token: naverUser.access_token,
-          code: naverUser.code,
-          nickname: naverUser.nickname,
-          email: naverUser.email,
-        }
-      );
-
-      if (response.status !== 200) {
-        throw new Error("네이버 회원가입이 되지 않았습니다.");
-      }
-
-      const receivedToken = response.data.key;
-      const receivedUserId = response.data.user_id;
-
-      localStorage.setItem("token", receivedToken);
-      localStorage.setItem("userId", receivedUserId);
-
-      login(receivedToken);
-      alert("마이페이지에서 거주지 정보를 입력해주세요.");
-      navigate("/mypage");
-    } catch (error) {
-      console.error(error);
-      console.log(error.response.data);
-    }
-  };
-
   const handleKakaoLogin = async ({ response }) => {
     try {
       const access_token = response?.access_token;
@@ -260,8 +225,6 @@ function Login() {
 
       console.log(axiosResponse);
       login(receivedKey);
-      alert("마이페이지에서 거주지 정보를 입력해주세요.");
-      navigate("/mypage");
     } catch (error) {
       console.error(error);
       console.log(error.response.data);
@@ -354,8 +317,11 @@ function Login() {
           <div>
             <NaverLogin
               clientId="rVPk557GGXAVOFzBIcCK"
-              callbackUrl={`${process.env.REACT_APP_API_BASE_URL}/users/naver/callback`}
-              onSuccess={handleNaverLogin}
+              callbackUrl="http://127.0.0.1:3000/callback"
+              onSuccess={() =>
+                (window.location.href =
+                  "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=rVPk557GGXAVOFzBIcCK&state=false&redirect_uri=http://127.0.0.1:3000/callback")
+              }
               onFailure={error => console.error(error)}
               render={({ onClick }) => <NaverIcon onClick={onClick} />}
             />
