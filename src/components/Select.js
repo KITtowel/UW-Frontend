@@ -15,7 +15,11 @@ const Slt = styled.select`
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
-}
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin: 5px auto;
+  }
 `;
 
 const Select = props => <Slt {...props} />;

@@ -49,6 +49,7 @@ const cityOptions = {
 const Center = styled.div`
   text-align: center;
 `;
+
 const Header = styled.div`
   z-index: 999;
   position: fixed;
@@ -60,17 +61,25 @@ const Header = styled.div`
   border-bottom: 1px solid #969696;
   display: flex;
   align-items: center;
-  * {
-    text-align: right;
+  justify-content: space-between;
+
+  @media (max-width: 768px) {
+    left: 0;
+    width: 100%;
+    padding: 0 20px;
   }
 `;
+
 const LogoIcon = styled.img`
   width: 50px;
-  margin: 15px 30px;
+  margin: 15px 100%;
+
   @media (max-width: 768px) {
     width: 30px;
+    margin: 15px 10px;
   }
 `;
+
 const NavButton = styled.button`
   background: transparent;
   color: ${props => (props.selected ? "#24A1E8" : "#000000")};
@@ -78,9 +87,14 @@ const NavButton = styled.button`
   text-decoration: ${props => (props.selected ? "underline" : "none")};
   cursor: pointer;
   font-size: 1rem;
-  margin: 30px 2%;
+  margin: 30px 6% 30px 2%;
   vertical-align: top;
+
+  @media (max-width: 768px) {
+    margin: 30px 1%;
+  }
 `;
+
 const DisableButton = styled.button`
   display: inline-block;
   margin: 5px;
@@ -95,10 +109,12 @@ const DisableButton = styled.button`
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-out;
+
   :hover {
     cursor: not-allowed;
   }
 `;
+
 const AbleButton = styled.button`
   display: inline-block;
   margin: 30px 5px;
@@ -113,11 +129,13 @@ const AbleButton = styled.button`
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-out;
+
   :hover {
     background: #000;
     color: #fff;
   }
 `;
+
 const EditButton = styled.button`
   display: inline-block;
   margin: 20px 35px;
@@ -132,33 +150,54 @@ const EditButton = styled.button`
   cursor: pointer;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-out;
+
   :hover {
     background: #636363;
     color: #fff;
   }
+
+  @media (max-width: 768px) {
+    margin: 20px 15px;
+  }
 `;
+
 const Container = styled.div`
   text-align: left;
   width: 80vw;
   margin: 80px auto;
   border-bottom: 1px solid #969696;
   background: #ffffff;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin: 80px auto;
+  }
 `;
+
 const Wrapper = styled.div`
   padding: 50px;
   text-align: center;
+
+  @media (max-width: 768px) {
+    padding: 30px;
+  }
 `;
+
 const ProfilePicture = styled.img`
   margin: 10px 55px;
   width: 80px;
   height: 80px;
   border-radius: 50%;
   object-fit: cover;
+
+  @media (max-width: 768px) {
+    margin: 10px 40px;
+  }
 `;
+
 const Input = styled.input`
   display: block;
   width: 300px;
-  max-width: 80%;
   padding: 11px 13px;
   background: #f9f9fa;
   color: #9dc3e6;
@@ -169,11 +208,17 @@ const Input = styled.input`
   font-size: 14px;
   transition: all 0.3s ease-out;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
+
   :focus,
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
+
 const InputCenter = styled.input`
   display: block;
   width: 220px;
@@ -187,18 +232,27 @@ const InputCenter = styled.input`
   font-size: 14px;
   transition: all 0.3s ease-out;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
+
   :focus,
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-bottom: 25px;
+  }
 `;
+
 const Table = styled.table`
   border-collapse: collapse;
   width: 100%;
 `;
+
 const TableRow = styled.tr`
   border-bottom: 1px solid #ddd;
 `;
+
 const TableHeader = styled.th`
   padding: 10px;
   border-right: 1px solid #ddd;
@@ -208,26 +262,31 @@ const TableHeader = styled.th`
   width: 30%;
   text-align: center;
 `;
+
 const TableCell = styled.td`
   padding: 10px;
   width: 70%;
 `;
+
 const Label = styled.label`
   display: block;
   color: #656565;
   text-align: center;
   margin: 10px;
 `;
+
 const List = styled.div`
   padding: 30px;
   max-width: 700px;
   margin: auto;
   border-bottom: 1px solid #d9d9d9;
   line-height: 2;
+
   * {
     vertical-align: middle;
   }
 `;
+
 const Button = styled.button`
   padding: 11px 130px;
   color: rgb(253, 249, 243);
@@ -241,10 +300,17 @@ const Button = styled.button`
   margin-top: 0.6rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-out;
+
   :hover {
     background: #2e75b6;
   }
+
+  @media (max-width: 768px) {
+    padding: 11px 40px;
+    font-size: 14px;
+  }
 `;
+
 const EditModal = styled.div`
   position: fixed;
   top: 0;
@@ -254,6 +320,7 @@ const EditModal = styled.div`
   background-color: rgba(0, 0, 0, 0.6);
   z-index: 999;
 `;
+
 const EditModalContent = styled.div`
   position: fixed;
   top: calc(50% - 180px);
@@ -265,27 +332,29 @@ const EditModalContent = styled.div`
   padding: 1rem;
   text-align: center;
 `;
+
 const StarContainer = styled.div`
   margin: 20px;
 `;
+
 const Star = styled(FaStar)`
   color: ${props => (props.active ? "gold" : "#ccc")};
   cursor: pointer;
 `;
-const PcOnly = styled.span`
-  display: none;
 
-  @media (min-width: 769px) {
-    display: inline;
+const PcOnly = styled.span`
+  display: inline;
+
+  @media (max-width: 768px) {
+    display: none;
   }
 `;
+
 const MobileOnly = styled.span`
+  display: none;
+
   @media (max-width: 768px) {
     display: inline;
-  }
-
-  @media (min-width: 769px) {
-    display: none;
   }
 `;
 
@@ -697,9 +766,11 @@ function MyPage() {
   return (
     <>
       <Header>
-        <Link to="/">
-          <LogoIcon src={Logo2} />
-        </Link>
+        <NavButton>
+          <Link to="/">
+            <LogoIcon src={Logo2} />
+          </Link>
+        </NavButton>
         <NavButton
           selected={activeTab === "myinfo"}
           onClick={() => handleTabClick("myinfo", resetInputFields)}>
@@ -1029,11 +1100,7 @@ function MyPage() {
               onChange={handlePasswordChange}
             />
             <Label htmlFor="reason">탈퇴 사유</Label>
-            <Select
-              style={{ width: "220px" }}
-              id="reason"
-              value={reason}
-              onChange={handleReasonChange}>
+            <Select id="reason" value={reason} onChange={handleReasonChange}>
               <option value="">-- 탈퇴 사유 선택 --</option>
               <option value="서비스를 더 이상 사용하지 않음">
                 서비스를 더 이상 사용하지 않음
