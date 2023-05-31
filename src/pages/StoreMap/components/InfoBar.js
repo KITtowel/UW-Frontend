@@ -68,10 +68,15 @@ const Btn = styled(Button)`
 
 function InfoBar() {
   const storedUserId = localStorage.getItem("userId");
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, login, logout } = useAuth();
   const navigate = useNavigate();
+  const receivedLocation = localStorage.getItem("receivedLocation");
 
   const handleCheck = async e => {
+    if (isAuthenticated !== true) {
+      alert("로그인 후 이용해주세요.");
+      navigate("/login");
+    }
     console.log(storedUserId);
     try {
       const response = await axios.get(
@@ -79,13 +84,15 @@ function InfoBar() {
       );
       window.location.href = `${response.data.url}`;
     } catch (error) {
+      if (receivedLocation === "거주지_선택") {
+        alert("마이페이지에서 거주지 정보를 입력해주세요.");
+        navigate("/mypage");
+      }
       console.error(error);
     }
   };
 
   useEffect(() => {
-    const receivedLocation = localStorage.getItem("receivedLocation");
-
     if (receivedLocation === "거주지_선택") {
       alert("마이페이지에서 거주지 정보를 입력해주세요.");
       navigate("/mypage");
