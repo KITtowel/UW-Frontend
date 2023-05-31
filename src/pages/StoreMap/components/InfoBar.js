@@ -83,9 +83,18 @@ function InfoBar() {
     }
   };
 
+  useEffect(() => {
+    const receivedLocation = localStorage.getItem("receivedLocation");
+
+    if (receivedLocation === "거주지_선택") {
+      alert("마이페이지에서 거주지 정보를 입력해주세요.");
+      navigate("/mypage");
+    }
+  }, []);
+
   return (
     <Container>
-      <Logo onClick={() => window.location.reload()}/>
+      <Logo onClick={() => window.location.reload()} />
       <Icon title="잔액 조회">
         <AiFillCreditCard onClick={() => handleCheck()} />
       </Icon>
