@@ -22,6 +22,7 @@ export function AuthProvider({ children }) {
     setToken(null);
     setIsAuthenticated(false);
     localStorage.removeItem("authToken");
+    localStorage.removeItem("key");
     localStorage.removeItem("rememberMe");
   };
 

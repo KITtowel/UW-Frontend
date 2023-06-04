@@ -364,11 +364,11 @@ function MyPage() {
   const { isAuthenticated, login, logout } = useAuth();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (isAuthenticated !== true) {
-  //     navigate("/");
-  //   }
-  // }, [isAuthenticated, navigate]);
+  useEffect(() => {
+    if (isAuthenticated !== true) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const [isChanged, setIsChanged] = useState(false);
 
@@ -696,7 +696,6 @@ function MyPage() {
   };
 
   // 회원 탈퇴
-  const [password, setPassword] = useState("");
   const [reason, setReason] = useState("");
   const [showOtherInput, setShowOtherInput] = useState(false);
 
@@ -705,7 +704,7 @@ function MyPage() {
       await axios.delete(
         `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`,
         {
-          data: { password, reason },
+          data: { reason },
         }
       );
       alert("회원 탈퇴가 완료되었습니다.");
@@ -714,10 +713,6 @@ function MyPage() {
     } catch (error) {
       alert(error);
     }
-  };
-
-  const handlePasswordChange = e => {
-    setPassword(e.target.value);
   };
 
   const handleReasonChange = e => {
@@ -1092,13 +1087,6 @@ function MyPage() {
         )}
         {activeTab === "withdrawal" && (
           <Wrapper>
-            <Label htmlFor="password">비밀번호 입력</Label>
-            <InputCenter
-              type="password"
-              id="password"
-              value={password}
-              onChange={handlePasswordChange}
-            />
             <Label htmlFor="reason">탈퇴 사유</Label>
             <Select id="reason" value={reason} onChange={handleReasonChange}>
               <option value="">-- 탈퇴 사유 선택 --</option>
