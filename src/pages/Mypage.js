@@ -357,6 +357,93 @@ const MobileOnly = styled.span`
     display: inline;
   }
 `;
+const LikedStoresContainer = styled.div`
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+const LikedStoreItem = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+`;
+
+const StoreTitle = styled.h2`
+  margin-right: 1rem;
+  @media (max-width: 768px) {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+`;
+
+const StoreCategory = styled.h3`
+  margin-right: 1rem;
+  color: #666;
+  @media (max-width: 768px) {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
+`;
+
+const ThumbUpIcon = styled(RiThumbUpFill)`
+  color: ${({ liked }) => (liked ? "#000" : "#24A1E8")};
+  position: absolute;
+  right: 30%;
+  cursor: pointer;
+  @media (max-width: 768px) {
+    position: relative;
+    right: 0;
+    margin-top: 1rem;
+  }
+`;
+
+const Rating = styled.p`
+  color: #666;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  @media (max-width: 768px) {
+    margin-bottom: 0.5rem;
+  }
+`;
+
+const StarIcon = styled(FaStar)`
+  color: #f7ca46;
+  margin-right: 0.2rem;
+`;
+
+const LocationContainer = styled.div`
+  display: flex;
+  align-items: center;
+  color: #666;
+  @media (max-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+`;
+
+const LocationText = styled.p`
+  margin-left: 0.5rem;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
+`;
+
+const StoreList = styled.div`
+  text-align: center;
+  padding: 2.5rem;
+`;
 
 function MyPage() {
   const storedUserId = localStorage.getItem("userId");
@@ -396,12 +483,12 @@ function MyPage() {
     setNewPassword("");
     setNewPasswordConfirm("");
     setProfilePicture(userData.image || DefaultProfilePicture);
-    setNickname("");
     setSelectedProvince("");
     setIsChanged(false);
     setPassword("");
     setReason("");
     setShowOtherInput(false);
+    setNickname("");
   };
 
   // 내 정보
@@ -441,7 +528,7 @@ function MyPage() {
   };
 
   const handleNicknameChange = e => {
-    setNickname(e.target.value);
+    setNickname(e.target.value === "" ? "" : e.target.value);
   };
 
   const handleLocationChange = e => {
@@ -455,32 +542,20 @@ function MyPage() {
 
   const handleSubmit1 = async () => {
     try {
-      const formData = new FormData();
-      if (nickname) {
-        formData.append("nickname", nickname);
-      }
-      if (location) {
-        formData.append("location", location);
-      }
-      if (location2) {
-        formData.append("location2", location2);
-      }
-      if (image) {
-        formData.append("image", image);
-        setIsImageChanged(true);
-      }
-
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Token ${storedToken}`,
-        },
-      };
-
       await axios.put(
         `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`,
-        formData,
-        config
+        {
+          nickname: nickname !== "" ? nickname : undefined,
+          location: location,
+          location2: location2,
+          image: image,
+        },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Token ${storedToken}`,
+          },
+        }
       );
 
       getProfileData();
@@ -696,6 +771,7 @@ function MyPage() {
   };
 
   // 회원 탈퇴
+  const [password, setPassword] = useState("");
   const [reason, setReason] = useState("");
   const [showOtherInput, setShowOtherInput] = useState(false);
 
@@ -713,6 +789,10 @@ function MyPage() {
     } catch (error) {
       alert(error);
     }
+  };
+
+  const handlePasswordChange = e => {
+    setPassword(e.target.value);
   };
 
   const handleReasonChange = e => {
@@ -900,59 +980,41 @@ function MyPage() {
           </div>
         )}
         {activeTab === "likes" && (
-          <div>
+          <LikedStoresContainer>
             {likedStores.count > 0 ? (
               likedStores.results.map(item => (
                 <List key={item.store_id}>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <h2 style={{ marginRight: "1rem" }}>{item.store_name}</h2>
-                    <h3 style={{ marginRight: "1rem", color: "#666" }}>
-                      {item.category}
-                    </h3>
+                  <LikedStoreItem>
+                    <StoreTitle>{item.store_name}</StoreTitle>
+                    <StoreCategory>{item.category}</StoreCategory>
                     {item.liked ? (
-                      <RiThumbUpLine
-                        style={{
-                          color: "#24A1E8",
-                          position: "absolute",
-                          right: "30%",
-                          cursor: "pointer",
-                        }}
+                      <ThumbUpIcon
+                        as={RiThumbUpLine}
+                        liked={true}
                         onClick={() => handleLike(item.store_id, false)}
                       />
                     ) : (
-                      <RiThumbUpFill
-                        style={{
-                          color: "#666",
-                          position: "absolute",
-                          right: "30%",
-                          cursor: "pointer",
-                        }}
+                      <ThumbUpIcon
+                        as={RiThumbUpFill}
+                        liked={false}
                         onClick={() => handleLike(item.store_id, true)}
                       />
                     )}
-                  </div>
-                  <p style={{ color: "#666" }}>
-                    <FaStar color="#F7CA46" size={15} /> {item.rating_mean} / 5
-                  </p>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      color: "#666",
-                    }}>
-                    <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
-                    <p>{item.store_address}</p>
-                  </div>
+                  </LikedStoreItem>
+                  <Rating>
+                    <StarIcon />
+                    {item.rating_mean} / 5
+                  </Rating>
+                  <LocationContainer>
+                    <MdOutlineLocationOn />
+                    <LocationText>{item.store_address}</LocationText>
+                  </LocationContainer>
                 </List>
               ))
             ) : (
-              <p
-                style={{
-                  textAlign: "center",
-                  padding: "2.5rem",
-                }}>
-                좋아요한 가게가 없습니다.
-              </p>
+              <StoreList>
+                <p>좋아요한 가게가 없습니다.</p>
+              </StoreList>
             )}
             {likedStores.count > 0 && (
               <Pagination
@@ -962,7 +1024,7 @@ function MyPage() {
                 setPage={setLikePage}
               />
             )}
-          </div>
+          </LikedStoresContainer>
         )}
         {activeTab === "reviews" && (
           <div>
@@ -990,6 +1052,29 @@ function MyPage() {
                         alignItems: "center",
                         color: "#666",
                       }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginRight: "0.5rem",
+                        }}>
+                        {[...Array(5)].map((_, index) => (
+                          <FaStar
+                            key={index}
+                            size={16}
+                            color={
+                              index < review.rating ? "#ffd700" : "#dcdcdc"
+                            }
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        color: "#666",
+                      }}>
                       <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
                       <p>{review.store_address}</p>
                     </div>
@@ -998,11 +1083,7 @@ function MyPage() {
                 </List>
               ))
             ) : (
-              <p
-                style={{
-                  textAlign: "center",
-                  padding: "2.5rem",
-                }}>
+              <p style={{ textAlign: "center", padding: "2.5rem" }}>
                 리뷰가 없습니다.
               </p>
             )}
@@ -1018,7 +1099,7 @@ function MyPage() {
               <EditModal>
                 <EditModalContent>
                   <StarContainer>
-                    {[...Array(5)].map((star, index) => {
+                    {[...Array(5)].map((_, index) => {
                       const ratingValue = index + 1;
                       return (
                         <Star
