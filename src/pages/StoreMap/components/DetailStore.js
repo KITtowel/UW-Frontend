@@ -248,6 +248,8 @@ function DetailStore({detailPageInfo, setReviewing}) {
   const headerRef = useRef();
   const menuRef = useRef();
 
+  console.log(detailPageInfo);
+
   useEffect(() => {
     setIsLike(detailPageInfo.liked_by_user);
   }, [detailPageInfo])

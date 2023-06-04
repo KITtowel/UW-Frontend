@@ -416,7 +416,7 @@ function SideBar({
           </CloseIcon>
         </CloseDetailBtn>
       }
-      {reviewing && <ReviewWrite />}
+      {reviewing && <ReviewWrite store_id={detailPageInfo.store_id} />}
       <SearchWrapper onSubmit={handleSubmit}>
         <SearchSelect value={keyType} onChange={handleSelectChange}>
           <option label="가게명" value="가게명" />

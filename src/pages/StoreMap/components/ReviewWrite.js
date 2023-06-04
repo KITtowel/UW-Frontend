@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -15,10 +16,37 @@ const Container = styled.div`
   background-color: white;
 `;
 
-const ReviewWrite = () => {
+const ReviewBox = styled.textarea`
+
+`;
+
+const Button = styled.button`
+
+`;
+
+
+const ReviewWrite = ({store_id}) => {
+  const storedToken = localStorage.getItem("token");
+  console.log(store_id);
+
+  const handleSubmit = async () => {
+    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/detail/${store_id}/reviews/`,
+    {
+      "content": "살면서 먹어본 김밥집 중에 제일 맛있어요!",
+      "rating": 3,
+    },
+    {
+      headers: {
+        Authorization: `Token ${storedToken}`,
+      },
+    })
+    console.log(res);
+  }
+
   return (
     <Container>
-      
+      <ReviewBox placeholder='후기를 작성해주세요.'/>
+      <Button onClick={handleSubmit}>완료</Button>
     </Container>
   );
 };
