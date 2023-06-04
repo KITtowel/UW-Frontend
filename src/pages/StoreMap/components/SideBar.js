@@ -150,6 +150,8 @@ const Tag = styled.li`
           return '#fefecc';
         case '기타':
           return '#cccccc';
+        default:
+          return 'black';
       }
     }
   }};
@@ -180,6 +182,8 @@ const Tag = styled.li`
           return '#fefecc';
         case '기타':
           return '#cccccc';
+        default:
+          return 'black';
       }
     }};
   }
@@ -350,9 +354,10 @@ function SideBar({
   }, [page, clickedTag])
 
   useEffect(() => {
-    if(page !== 1) {
-      setPage(1);
-    }
+    // if(page !== 1) {
+    //   setPage(1);
+    // }
+    setPage(1);
   }, [state])
 
   const tagClickHandler = (e) => {
@@ -416,7 +421,7 @@ function SideBar({
           </CloseIcon>
         </CloseDetailBtn>
       }
-      {reviewing && <ReviewWrite store_id={detailPageInfo.store_id} />}
+      {reviewing && <ReviewWrite getStoreDetail={getStoreDetail} store_id={detailPageInfo.store_id} setReviewing={setReviewing} />}
       <SearchWrapper onSubmit={handleSubmit}>
         <SearchSelect value={keyType} onChange={handleSelectChange}>
           <option label="가게명" value="가게명" />
@@ -447,7 +452,7 @@ function SideBar({
               <div style={{display: 'flex'}}>
                 <StoreLoc><LocationIcon />{store.store_address}</StoreLoc>
               </div>
-              <StoreRate onClick={() => getStoreDetail(store.store_id)}><Star /> {`${store.rating_mean} (리뷰 ${store.reviews_count} 개)`}</StoreRate>
+              <StoreRate onClick={() => getStoreDetail(store.store_id)}><Star /> {`${Number.parseFloat(store.rating_mean).toFixed(1)} (리뷰 ${store.reviews_count} 개)`}</StoreRate>
             </StoreInfo>
           </StoreItem>
         )) : <NoStoreList>가맹점 데이터가 존재하지 않아요...</NoStoreList>}

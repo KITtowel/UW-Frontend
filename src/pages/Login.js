@@ -150,7 +150,8 @@ function Login() {
         color: "#ffe810",
         cursor: "pointer",
       }}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       <img src={Kakao} width="60px" />
     </div>
   );
@@ -165,14 +166,14 @@ function Login() {
         color: "#03bf19",
         cursor: "pointer",
       }}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       <img src={Naver} width="60px" />
     </div>
   );
 
-  const handleChecked = e => {
+  const handleChecked = (e) => {
     setIsChecked(e.target.checked);
-    console.log("체크");
     if (e.target.checked) {
       localStorage.setItem("rememberMe", "true");
     } else {
@@ -180,11 +181,11 @@ function Login() {
     }
   };
 
-  const handleUsernameChange = event => {
+  const handleUsernameChange = (event) => {
     setUsername(event.target.value);
   };
 
-  const handlePasswordChange = event => {
+  const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
 
@@ -195,10 +196,6 @@ function Login() {
       const profile = response?.profile;
       const nickname = profile?.kakao_account?.profile?.nickname;
       const email = profile?.kakao_account?.email;
-
-      console.log(access_token);
-      console.log(code);
-
       const axiosResponse = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/kakao/`,
         {
@@ -217,23 +214,16 @@ function Login() {
       const receivedUserId = axiosResponse.data.user_id;
       const receivedLocation = axiosResponse.data.location;
 
-      console.log(receivedKey);
-      console.log(receivedUserId);
-      console.log(receivedLocation);
-
       localStorage.setItem("key", receivedKey);
       localStorage.setItem("userId", receivedUserId);
       localStorage.setItem("location", receivedLocation);
-
-      console.log(axiosResponse);
       login(receivedKey);
     } catch (error) {
       console.error(error);
-      console.log(error.response.data);
     }
   };
 
-  const handleSubmit = async event => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
@@ -271,7 +261,7 @@ function Login() {
       </Link>
       <Container>
         <Title>로그인</Title>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div>
             <InputIconTop>
               <RiUser6Line />
@@ -299,49 +289,47 @@ function Login() {
             />
           </div>
           <Check>
-            <form>
-              <label>
-                <Icon>
-                  {isChecked ? <BsCheckCircleFill /> : <BsCheckCircle />}
-                </Icon>
-                <None
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={handleChecked}
-                />
-                로그인 상태 유지
-              </label>
-            </form>
+            <label>
+              <Icon>
+                {isChecked ? <BsCheckCircleFill /> : <BsCheckCircle />}
+              </Icon>
+              <None
+                type="checkbox"
+                checked={isChecked}
+                onChange={handleChecked}
+              />
+              로그인 상태 유지
+            </label>
           </Check>
-          <Button type="button" onClick={handleSubmit}>
+          <Button type="submit" onClick={handleSubmit}>
             로그인
           </Button>
-          <div>
-            <NaverLogin
-              clientId="rVPk557GGXAVOFzBIcCK"
-              callbackUrl="http://127.0.0.1:3000/callback"
-              onSuccess={() =>
-                (window.location.href =
-                  "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=rVPk557GGXAVOFzBIcCK&state=false&redirect_uri=http://127.0.0.1:3000/callback")
-              }
-              onFailure={error => console.error(error)}
-              render={({ onClick }) => <NaverIcon onClick={onClick} />}
-            />
-            <KakaoLogin
-              token="80ce118f2250d6342436cb0f233a5afb"
-              redirectUri={`${process.env.REACT_APP_API_BASE_URL}/users/kakao/callback`}
-              onSuccess={handleKakaoLogin}
-              onFail={console.error}
-              onLogout={console.info}
-              render={({ onClick }) => <KakaoIcon onClick={onClick} />}
-            />
-          </div>
-          <Bottom>
-            <Link to="/findid">아이디 찾기</Link> |{" "}
-            <Link to="/findpw">비밀번호 찾기</Link> |
-            <Link to="/signup">회원가입</Link>
-          </Bottom>
         </form>
+        <div>
+          <NaverLogin
+            clientId="rVPk557GGXAVOFzBIcCK"
+            callbackUrl="http://127.0.0.1:3000/callback"
+            onSuccess={() =>
+              (window.location.href =
+                "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=rVPk557GGXAVOFzBIcCK&state=false&redirect_uri=http://127.0.0.1:3000/callback")
+            }
+            onFailure={(error) => console.error(error)}
+            render={({ onClick }) => <NaverIcon onClick={onClick} />}
+          />
+          <KakaoLogin
+            token="80ce118f2250d6342436cb0f233a5afb"
+            redirectUri={`${process.env.REACT_APP_API_BASE_URL}/users/kakao/callback`}
+            onSuccess={handleKakaoLogin}
+            onFail={console.error}
+            onLogout={console.info}
+            render={({ onClick }) => <KakaoIcon onClick={onClick} />}
+          />
+        </div>
+        <Bottom>
+          <Link to="/findid">아이디 찾기</Link> |{" "}
+          <Link to="/findpw">비밀번호 찾기</Link> |
+          <Link to="/signup">회원가입</Link>
+        </Bottom>
       </Container>
     </>
   );

@@ -6,7 +6,7 @@ const Nav = styled.nav`
   display: flex;
   justify-content: space-around;
   margin-top: 7px;
-  /* width: 265px; */
+  width: 100%;
 `;
 
 const Button = styled.button`

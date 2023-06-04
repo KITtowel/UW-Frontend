@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { HiOutlinePencilAlt } from 'react-icons/hi';
 import { AiOutlineLike, AiFillLike, AiOutlineAlert, AiTwotoneStar } from 'react-icons/ai';
 import { MdLocationOn } from "react-icons/md";
-import { Pagination } from '../../../components';
 import axios from 'axios';
 
 const LocationIcon = styled(MdLocationOn)`
@@ -242,13 +241,10 @@ const Contour = styled.div`
 function DetailStore({detailPageInfo, setReviewing}) {
   const storedToken = localStorage.getItem("token");
   const [isLike, setIsLike] = useState(detailPageInfo.liked_by_user);
-  const [page, setPage] = useState(1);
   const [reviewHeight, setReviewHeight] = useState(100);
 
   const headerRef = useRef();
   const menuRef = useRef();
-
-  console.log(detailPageInfo);
 
   useEffect(() => {
     setIsLike(detailPageInfo.liked_by_user);
@@ -260,9 +256,9 @@ function DetailStore({detailPageInfo, setReviewing}) {
   }
 
   useEffect(() => {
-    menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 50);
+    menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 51);
     const handleResize = () => {
-      menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 50);
+      menuRef.current && headerRef.current && setReviewHeight(window.innerHeight - menuRef.current.offsetHeight - headerRef.current.offsetHeight - 51);
     };
     window.addEventListener('resize', handleResize);
 
@@ -272,7 +268,7 @@ function DetailStore({detailPageInfo, setReviewing}) {
   }, []);
 
   async function changeIsLike() {
-    const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/like/${detailPageInfo.store_id}/`,
+    await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/like/${detailPageInfo.store_id}/`,
     null,
     {
       headers: {
@@ -293,7 +289,7 @@ function DetailStore({detailPageInfo, setReviewing}) {
           <Tag>{detailPageInfo.category}</Tag>
         </StoreInfo>
         <Loc><LocationIcon /> {detailPageInfo.store_address}</Loc>
-        <Rate><Star /> {detailPageInfo.rating_mean} (리뷰 {detailPageInfo.reviews_count}개)</Rate>
+        <Rate><Star /> {Number.parseFloat(detailPageInfo.rating_mean).toFixed(1)} (리뷰 {detailPageInfo.reviews_count}개)</Rate>
         <LikeIcon isLike={isLike} onClick={handleLikeBtn}>
           {isLike ? <AiFillLike /> : <AiOutlineLike />}
         </LikeIcon>

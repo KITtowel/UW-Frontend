@@ -7,12 +7,9 @@ import Logo2 from "../assets/logo2.png";
 import DefaultProfilePicture from "../assets/profile.png";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
-import {
-  RiThumbUpFill,
-  RiThumbUpLine,
-  RiLockPasswordFill,
-} from "react-icons/ri";
-import { MdOutlineLocationOn, MdRateReview } from "react-icons/md";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
+import { MdRateReview, MdLocationOn } from "react-icons/md";
 import { BsFillPersonFill } from "react-icons/bs";
 import { Pagination } from "../components";
 import axios from "axios";
@@ -100,7 +97,7 @@ const DisableButton = styled.button`
   display: inline-block;
   margin: 5px;
   padding: 6px 30px;
-  color: #969696;
+  color: #c7dff8;
   font-weight: 600;
   text-transform: uppercase;
   background: #fff;
@@ -120,11 +117,11 @@ const AbleButton = styled.button`
   display: inline-block;
   margin: 30px 5px;
   padding: 6px 30px;
-  color: #000;
+  color: #24A1E8;
   font-weight: 600;
   text-transform: uppercase;
   background: #fff;
-  border: 1px solid;
+  border: 1px solid #24A1E8;
   border-radius: 5px;
   outline: 0;
   cursor: pointer;
@@ -132,7 +129,7 @@ const AbleButton = styled.button`
   transition: all 0.3s ease-out;
 
   :hover {
-    background: #000;
+    background: #24A1E8;
     color: #fff;
   }
 `;
@@ -313,29 +310,29 @@ const List = styled.div`
   }
 `;
 
-const Button = styled.button`
-  padding: 11px 130px;
-  color: rgb(253, 249, 243);
-  font-weight: 600;
-  text-transform: uppercase;
-  background: #9dc3e6;
-  border: none;
-  border-radius: 50px;
-  outline: 0;
-  cursor: pointer;
-  margin-top: 0.6rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease-out;
+// const Button = styled.button`
+//   padding: 11px 130px;
+//   color: rgb(253, 249, 243);
+//   font-weight: 600;
+//   text-transform: uppercase;
+//   background: #9dc3e6;
+//   border: none;
+//   border-radius: 50px;
+//   outline: 0;
+//   cursor: pointer;
+//   margin-top: 0.6rem;
+//   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
+//   transition: all 0.3s ease-out;
 
-  :hover {
-    background: #2e75b6;
-  }
+//   :hover {
+//     background: #2e75b6;
+//   }
 
-  @media (max-width: 768px) {
-    padding: 11px 40px;
-    font-size: 14px;
-  }
-`;
+//   @media (max-width: 768px) {
+//     padding: 11px 40px;
+//     font-size: 14px;
+//   }
+// `;
 
 const EditModal = styled.div`
   position: fixed;
@@ -377,7 +374,7 @@ const RatingContainer = styled.div`
   color: #666;
 `;
 
-const LocationIcon = styled(MdOutlineLocationOn)`
+const LocationIcon = styled(MdLocationOn)`
   margin-right: 0.5rem;
 `;
 
@@ -423,12 +420,10 @@ const LikedStoresContainer = styled.div`
 const LikedStoreItem = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-bottom: 2rem;
   }
 `;
 
@@ -449,8 +444,9 @@ const StoreCategory = styled.h3`
   }
 `;
 
-const ThumbUpIcon = styled(RiThumbUpFill)`
+const ThumbUpIcon = styled(AiFillLike)`
   color: ${({ liked }) => (liked ? "#000" : "#24A1E8")};
+  /* color: #24A1E8; */
   position: absolute;
   right: 30%;
   cursor: pointer;
@@ -522,7 +518,7 @@ const DeleteIcon = styled(FiTrash2)`
 function MyPage() {
   const storedUserId = localStorage.getItem("userId");
   const storedToken = localStorage.getItem("token");
-  const { isAuthenticated, login, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -929,7 +925,7 @@ function MyPage() {
           onClick={() => handleTabClick("likes", resetInputFields)}>
           <PcOnly>좋아요 목록</PcOnly>
           <MobileOnly>
-            <RiThumbUpFill />
+            <AiFillLike />
           </MobileOnly>
         </NavButton>
         <NavButton
@@ -1059,13 +1055,13 @@ function MyPage() {
                     <StoreCategory>{item.category}</StoreCategory>
                     {item.liked ? (
                       <ThumbUpIcon
-                        as={RiThumbUpLine}
+                        as={AiOutlineLike}
                         liked={true}
                         onClick={() => handleLike(item.store_id, false)}
                       />
                     ) : (
                       <ThumbUpIcon
-                        as={RiThumbUpFill}
+                        as={AiFillLike}
                         liked={false}
                         onClick={() => handleLike(item.store_id, true)}
                       />
@@ -1076,7 +1072,7 @@ function MyPage() {
                     {item.rating_mean} / 5
                   </Rating>
                   <LocationContainer>
-                    <MdOutlineLocationOn />
+                    <MdLocationOn style={{color: '#ef877d'}}/>
                     <LocationText>{item.store_address}</LocationText>
                   </LocationContainer>
                 </List>
@@ -1086,14 +1082,16 @@ function MyPage() {
                 <p>좋아요한 가게가 없습니다.</p>
               </StoreList>
             )}
-            {likedStores.count > 0 && (
-              <Pagination
-                total={likedStores.count}
-                limit={20}
-                page={likePage}
-                setPage={setLikePage}
-              />
-            )}
+            <div style={{maxWidth : '400px', paddingBottom: '10px', margin: 'auto'}}>
+              {likedStores.count > 0 && (
+                <Pagination
+                  total={likedStores.count}
+                  limit={20}
+                  page={likePage}
+                  setPage={setLikePage}
+                />
+              )}
+            </div>
           </LikedStoresContainer>
         )}
         {activeTab === "reviews" && (
@@ -1101,42 +1099,56 @@ function MyPage() {
             {reviews && reviews.length > 0 ? (
               reviews.map(review => (
                 <List key={review.id}>
-                  <LikedStoreItem>
+                  <LikedStoreItem style={{flexDirection: 'column'}}>
                     <IconContainer>
                       <EditIcon onClick={() => handleEditModal(review.id)} />
                       <DeleteIcon onClick={() => handleDelete(review.id)} />
                     </IconContainer>
-                    <StoreTitle>{review.store_name}</StoreTitle>
-                    <RatingContainer>
-                      <StarContainer>
-                        {[...Array(5)].map((_, index) => (
-                          <Star
-                            key={index}
-                            size={16}
-                            active={index < review.rating}
-                          />
-                        ))}
-                      </StarContainer>
-                    </RatingContainer>
+                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                      <StoreTitle style={{height: '20px'}}>{review.store_name}</StoreTitle>
+                      <RatingContainer>
+                        <StarContainer>
+                          {[...Array(5)].map((_, index) => (
+                            <Star
+                              key={index}
+                              size={16}
+                              active={index < review.rating}
+                            />
+                          ))}
+                        </StarContainer>
+                      </RatingContainer>
+                    </div>
                     <LocationContainer>
-                      <LocationIcon style={{ marginRight: "0.5rem" }} />
+                      <LocationIcon style={{ marginRight: "0.5rem", color: '#ef877d' }} />
                       <p>{review.store_address}</p>
                     </LocationContainer>
+                    <div style={{
+                      marginTop: '15px',
+                      padding: '5px',
+                      border: '1px solid rgba(245, 245, 245, 0.7)',
+                      minWidth: '300px',
+                      background: '#f9f9fa',
+                      color: '#9dc3e6',
+                      borderRadius: '4px',
+                    }}>
+                      <p>{review.content}</p>
+                    </div>
                   </LikedStoreItem>
-                  <p>{review.content}</p>
                 </List>
               ))
             ) : (
-              <CenteredMessage>리뷰가 없습니다.</CenteredMessage>
+              <CenteredMessage>후기가 없습니다.</CenteredMessage>
             )}
-            {reviews.length > 0 && (
-              <Pagination
-                total={reviewsCount}
-                limit={20}
-                page={reviewPage}
-                setPage={() => {}}
-              />
-            )}
+            <div style={{maxWidth : '400px', paddingBottom: '10px', margin: 'auto'}}>
+              {reviews.length > 0 && (
+                <Pagination
+                  total={reviewsCount}
+                  limit={20}
+                  page={reviewPage}
+                  setPage={() => {}}
+                />
+              )}
+            </div>
             {showEditModal && (
               <EditModal>
                 <EditModalContent>
