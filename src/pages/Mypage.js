@@ -46,12 +46,13 @@ const cityOptions = {
   ],
   대구광역시: ["남구", "동구", "북구", "서구", "수성구", "달서구", "달성군"],
 };
+
 const Center = styled.div`
   text-align: center;
 `;
 
 const Header = styled.div`
-  z-index: 999;
+  z-index: 1;
   position: fixed;
   top: 0;
   left: 10%;
@@ -195,6 +196,31 @@ const ProfilePicture = styled.img`
   }
 `;
 
+const Textarea = styled.textarea`
+  resize: none;
+  display: block;
+  width: 300px;
+  padding: 11px 13px;
+  background: #f9f9fa;
+  color: #9dc3e6;
+  margin: 5px 3px;
+  border-radius: 4px;
+  outline: 0;
+  border: 1px solid rgba(245, 245, 245, 0.7);
+  font-size: 14px;
+  transition: all 0.3s ease-out;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.1);
+
+  :focus,
+  :hover {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.15), 0 1px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
 const Input = styled.input`
   display: block;
   width: 300px;
@@ -315,22 +341,49 @@ const EditModal = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
+
+  * {
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+  }
 `;
 
 const EditModalContent = styled.div`
-  position: fixed;
-  top: calc(50% - 180px);
-  left: calc(50% - 300px);
-  width: 600px;
-  height: 360px;
-  background-color: white;
-  border-radius: 10px;
-  padding: 1rem;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+`;
+
+const RatingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  color: #666;
+`;
+
+const LocationIcon = styled(MdOutlineLocationOn)`
+  margin-right: 0.5rem;
+`;
+
+const CenteredMessage = styled.p`
   text-align: center;
+  padding: 2.5rem;
 `;
 
 const StarContainer = styled.div`
@@ -357,6 +410,7 @@ const MobileOnly = styled.span`
     display: inline;
   }
 `;
+
 const LikedStoresContainer = styled.div`
   @media (max-width: 768px) {
     display: flex;
@@ -443,6 +497,26 @@ const LocationText = styled.p`
 const StoreList = styled.div`
   text-align: center;
   padding: 2.5rem;
+`;
+
+const IconContainer = styled.div`
+  position: absolute;
+  right: 30%;
+  cursor: pointer;
+  @media (max-width: 768px) {
+    position: relative;
+    right: 0;
+    margin-top: 1rem;
+  }
+`;
+
+const EditIcon = styled(FiEdit)`
+  margin-right: 0.5rem;
+  cursor: pointer;
+`;
+
+const DeleteIcon = styled(FiTrash2)`
+  cursor: pointer;
 `;
 
 function MyPage() {
@@ -1027,72 +1101,44 @@ function MyPage() {
           </LikedStoresContainer>
         )}
         {activeTab === "reviews" && (
-          <div>
+          <LikedStoresContainer>
             {reviews && reviews.length > 0 ? (
               reviews.map(review => (
                 <List key={review.id}>
-                  <div style={{}}>
-                    <div style={{ position: "absolute", right: "30%" }}>
-                      <FiEdit
-                        style={{
-                          marginRight: "0.5rem",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handleEditModal(review.id)}
-                      />
-                      <FiTrash2
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleDelete(review.id)}
-                      />
-                    </div>
-                    <h2 style={{ display: "block" }}>{review.store_name}</h2>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#666",
-                      }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          marginRight: "0.5rem",
-                        }}>
+                  <LikedStoreItem>
+                    <IconContainer>
+                      <EditIcon onClick={() => handleEditModal(review.id)} />
+                      <DeleteIcon onClick={() => handleDelete(review.id)} />
+                    </IconContainer>
+                    <StoreTitle>{review.store_name}</StoreTitle>
+                    <RatingContainer>
+                      <StarContainer>
                         {[...Array(5)].map((_, index) => (
-                          <FaStar
+                          <Star
                             key={index}
                             size={16}
-                            color={
-                              index < review.rating ? "#ffd700" : "#dcdcdc"
-                            }
+                            active={index < review.rating}
                           />
                         ))}
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: "#666",
-                      }}>
-                      <MdOutlineLocationOn style={{ marginRight: "0.5rem" }} />
+                      </StarContainer>
+                    </RatingContainer>
+                    <LocationContainer>
+                      <LocationIcon style={{ marginRight: "0.5rem" }} />
                       <p>{review.store_address}</p>
-                    </div>
-                  </div>
+                    </LocationContainer>
+                  </LikedStoreItem>
                   <p>{review.content}</p>
                 </List>
               ))
             ) : (
-              <p style={{ textAlign: "center", padding: "2.5rem" }}>
-                리뷰가 없습니다.
-              </p>
+              <CenteredMessage>리뷰가 없습니다.</CenteredMessage>
             )}
             {reviews.length > 0 && (
               <Pagination
                 total={reviewsCount}
                 limit={20}
                 page={reviewPage}
-                setPage={setReviewPage}
+                setPage={() => {}}
               />
             )}
             {showEditModal && (
@@ -1111,9 +1157,10 @@ function MyPage() {
                       );
                     })}
                   </StarContainer>
-                  <InputCenter
+                  <Textarea
                     style={{
-                      width: "400px",
+                      width: "550px",
+                      maxWidth: "85vw",
                       height: "150px",
                       marginTop: "20px",
                     }}
@@ -1128,7 +1175,7 @@ function MyPage() {
                 </EditModalContent>
               </EditModal>
             )}
-          </div>
+          </LikedStoresContainer>
         )}
 
         {activeTab === "changepw" && (
