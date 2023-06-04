@@ -865,10 +865,6 @@ function MyPage() {
     }
   };
 
-  const handlePasswordChange = e => {
-    setPassword(e.target.value);
-  };
-
   const handleReasonChange = e => {
     setReason(e.target.value);
     if (e.target.value === "other") {
@@ -895,7 +891,7 @@ function MyPage() {
     ) {
       hasChanges = true;
     }
-    if (password.length > 0 && reason !== "") {
+    if (reason !== "") {
       hasChanges = true;
     }
     setIsChanged(hasChanges);
