@@ -602,7 +602,7 @@ function MyPage() {
   };
 
   const handleNicknameChange = e => {
-    setNickname(e.target.value === "" ? "" : e.target.value);
+    setNickname(e.target.value);
   };
 
   const handleLocationChange = e => {
@@ -990,8 +990,8 @@ function MyPage() {
                   <TableHeader>닉네임</TableHeader>
                   <TableCell>
                     <Input
-                      placeholder={userData.nickname || ""}
-                      value={nickname || userData.nickname || ""}
+                      placeholder={userData.nickname}
+                      value={nickname}
                       onChange={handleNicknameChange}
                     />
                   </TableCell>
