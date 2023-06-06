@@ -30,6 +30,16 @@ const Container = styled.div`
   transition: 0.4s ease;
   z-index: 5;
   background-color: #D9D9D9;
+  @media (max-width: 768px) {
+    position: absolute;
+    bottom: ${(props) => `${props.windowHeight}px`};
+    height: 325px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    left: 0;
+    width: 100%;
+    overflow: auto;
+  }
 `;
 
 const StoreHeader = styled.div`
@@ -239,7 +249,7 @@ const Contour = styled.div`
   color: #D9D9D9; 
 `;
 
-function DetailStore({detailPageInfo, setReviewing}) {
+function DetailStore({detailPageInfo, setReviewing, windowHeight}) {
   const { isAuthenticated, logout } = useAuth();
   const storedToken = localStorage.getItem("token");
   const user_id = localStorage.getItem("userId");
@@ -293,21 +303,32 @@ function DetailStore({detailPageInfo, setReviewing}) {
   }
 
   async function handleReport(id) {
-    console.log(id)
-    console.log(user_id);
-    await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/reviews/${id}/report/`,
-    {
-      "reason": "욕설"
-    },
-    {
-      headers: {
-        Authorization: `Token ${storedToken}`,
-      },
-    })
+    const reason = prompt('신고 이유를 작성해주세요: ');
+
+    if (reason) {
+      try {
+        await axios.post(
+          `${process.env.REACT_APP_API_BASE_URL}/stores/reviews/${id}/report/`,
+          {
+            reason: reason,
+          },
+          {
+            headers: {
+              Authorization: `Token ${storedToken}`,
+            },
+          }
+        );
+        alert('신고가 완료되었습니다.');
+      } catch (error) {
+        console.error('신고 요청 중 오류가 발생했습니다.');
+      }
+    } else {
+      console.log('Report reason not provided.');
+    }
   }
 
   return (
-    <Container>
+    <Container windowHeight={windowHeight}>
       <StoreHeader ref={headerRef}>
         <StoreInfo>
           <Name>{detailPageInfo.store_name}</Name>
@@ -358,10 +379,12 @@ function DetailStore({detailPageInfo, setReviewing}) {
                     ))}
                   </ReviewRate>
                 </div>
-                <ReviewReport onClick={() => handleReport(review)}>
-                  <AiOutlineAlert style={{ marginRight: '3px', color: '#ef877d' }} />
-                  <div style={{ fontSize: '0.8em', color: '#D9D9D9' }}>리뷰 신고</div>
-                </ReviewReport>
+                {parseInt(user_id) !== parseInt(review.author) &&
+                  <ReviewReport onClick={() => handleReport(review.id)}>
+                    <AiOutlineAlert style={{ marginRight: '3px', color: '#ef877d' }} />
+                    <div style={{ fontSize: '0.8em', color: '#D9D9D9' }}>리뷰 신고</div>
+                  </ReviewReport>
+                }
 
               </ReviewUserInfo>
               <ReviewContent>

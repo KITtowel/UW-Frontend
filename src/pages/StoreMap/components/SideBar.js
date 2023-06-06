@@ -20,15 +20,27 @@ const Container = styled.div`
   box-shadow: 0 0 5px 0 rgba(0,0,0,.2), 5px 0 15px 0 rgba(0,0,0,.1);
   left: 80px;
   transition: 0.4s ease;
-  z-index: 4;
-  transform: ${(props) => props.isOpen  ? "translateX(0px)" : props.detailPageInfo ? props.reviewing ? "translateX(-969px)" : "translateX(-619px)" : "translateX(-269px)"};
+  z-index: 2;
+  /* transform: ${(props) => props.isOpen  ? "translateX(0px)" : props.detailPageInfo ? props.reviewing ? "translateX(-969px)" : "translateX(-619px)" : "translateX(-269px)"}; */
+  @media (max-width: 768px) {
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: ${(props) => `${props.windowHeight}px`};
+    transform: ${props => props.isOpen ? "translateY(0px)" : "translateY(320px)"};
+  }
+  @media (min-width: 769px) {
+    transform: ${(props) => props.isOpen  ? "translateX(0px)" : props.detailPageInfo ? props.reviewing ? "translateX(-969px)" : "translateX(-619px)" : "translateX(-269px)"};
+  }
 `;
 
 const SideButton = styled.button`
   position: fixed;
   padding: 0;
   left: ${(props) => props.detailPageInfo ? props.reviewing ? '969px' : '619px' : '269px'};
-  top: 50%;
   width: 20px;
   height: 50px;
   z-index: 99;
@@ -38,13 +50,31 @@ const SideButton = styled.button`
   border-bottom-right-radius: 5px;
   background-color: white;
   cursor: pointer;
+  @media (max-width: 768px) {
+    position: absolute;
+    left: 48%;
+    bottom: ${(props) => `${props.windowHeight+310}px`};
+    /* transform: ${(props) =>
+    `rotate(-90deg) ${props.isOpen ? "translateX(0px)" : "translateX(-320px)"}`}; */
+    transform: rotate(-90deg);
+    transition: 0.4s ease transform;
+  }
+  @media (min-width: 769px) {
+    top: 50%;
+  }
 `;
 
 const CloseDetailBtn = styled(SideButton)`
-  left: ${(props) => props.reviewing ? '969px' : '619px'};
-  top: 3%;
   width: 45px;
   height: 45px;
+  @media (max-width: 768px) {
+    left: 80%;
+    margin-bottom: 15px;
+  }
+  @media (min-width: 769px) {
+    left: ${(props) => props.reviewing ? '969px' : '619px'};
+    top: 3%;
+  }
 `
 
 const ArrowIcon = styled.div`
@@ -64,6 +94,16 @@ const SearchWrapper = styled.form`
   display: flex;
   padding: 10px;
   width: 100%;
+  @media (max-width: 768px) {
+    position: relative;
+    /* width: 250px; */
+    width: 100%;
+    padding-right: 145px;
+    top: ${(props) => `-${props.windowHeight}px`};
+    transform: ${(props) => props.isOpen  ? "translateY(0px)" :  "translateY(-320px)"};
+    transition: 0.4s ease;
+    left: 27px;
+  }
 `;
 
 const SearchSelect = styled.select`
@@ -111,6 +151,15 @@ const TagList = styled.ul`
   flex-wrap: wrap;
   padding-bottom: 10px;
   border-bottom: 1.5px solid #aeaeae;
+  @media (max-width: 768px) {
+    position: relative;
+    width: 100%;
+    top: ${(props) => `-${props.windowHeight}px`};
+    border: none;
+    padding-right: 15px;
+    transform: ${(props) => props.isOpen  ? "translateY(0px)" :  "translateY(-320px)"};
+    transition: 0.4s ease;
+  }
 `;
 
 const Tag = styled.li`
@@ -122,6 +171,7 @@ const Tag = styled.li`
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
   border: 0.3px solid rgba(var(--place-color-bg18), 1);
   cursor: pointer;
+  background-color: white;
   transition: background-color 0.3s;
   background-color: ${(props) => {
     if (props.isClicked) {
@@ -155,45 +205,57 @@ const Tag = styled.li`
       }
     }
   }};
-  :hover {
-    background-color: ${(props) => {
-      switch(props.children) {
-        case '전체':
-          return '#e5ecf0';
-        case '한식':
-          return '#FFDAB9';
-        case '중식':
-          return '#FFD700';
-        case '일식':
-          return '#cde7b6';
-        case '분식':
-          return '#ffb8b8';
-        case '아시안/양식':
-          return '#FFA07A';
-        case '치킨':
-          return '#f1b62e';
-        case '피자':
-          return '#e0e094';
-        case '패스트푸드':
-          return '#F9D1AD';
-        case '카페/디저트':
-          return '#CD853F';
-        case '편의점':
-          return '#fefecc';
-        case '기타':
-          return '#cccccc';
-        default:
-          return 'black';
-      }
-    }};
+  @media (min-width: 769px) {
+    :hover {
+      background-color: ${(props) => {
+        switch(props.children) {
+          case '전체':
+            return '#e5ecf0';
+          case '한식':
+            return '#FFDAB9';
+          case '중식':
+            return '#FFD700';
+          case '일식':
+            return '#cde7b6';
+          case '분식':
+            return '#ffb8b8';
+          case '아시안/양식':
+            return '#FFA07A';
+          case '치킨':
+            return '#f1b62e';
+          case '피자':
+            return '#e0e094';
+          case '패스트푸드':
+            return '#F9D1AD';
+          case '카페/디저트':
+            return '#CD853F';
+          case '편의점':
+            return '#fefecc';
+          case '기타':
+            return '#cccccc';
+          default:
+            return 'black';
+        }
+      }};
+    }
   }
+  
 `;
 
 const StoreList = styled.ul`
+  background-color: white;
   height: calc(100vh - 185px);
   width: 100%;
   overflow: auto;
   border-bottom: 1.5px solid #aeaeae;
+  @media (max-width: 768px) {
+    position: absolute;
+    bottom: ${(props) => `${props.windowHeight+25}px`};
+    height: 300px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    box-shadow: 0 -5px 5px 0 rgba(0,0,0,.2), 0 -5px 15px 0 rgba(0,0,0,.1);
+  }
 `;
 
 const NoStoreList = styled.div`
@@ -202,6 +264,9 @@ const NoStoreList = styled.div`
   -moz-user-select: none;
   -ms-use-select: none;
   user-select: none; 
+  @media (max-width: 768px) {
+    line-height: 290px;
+  }
 `;
 
 const StoreItem = styled.li`
@@ -301,6 +366,21 @@ function SideBar({
   const [total, setTotal] = useState(1);
   const [reviewing, setReviewing] = useState(false);
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
+  const [showMobile, setShowMobile] = useState(false);
+  const windowHeight = window.innerHeight;
+
+  useEffect(() => {
+    const handleResize = () => {
+      setShowMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   async function getStoreSearchList() {
     const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/search_distance_order/?page=${page}`, {
@@ -410,22 +490,22 @@ function SideBar({
   }
 
   return (
-    <Container isOpen={isOpen} detailPageInfo={detailPageInfo} reviewing={reviewing}>
-      <SideButton onClick={handleOpen} detailPageInfo={detailPageInfo} reviewing={reviewing}>
+    <Container isOpen={isOpen} detailPageInfo={detailPageInfo} reviewing={reviewing} windowHeight={windowHeight}>
+      <SideButton onClick={handleOpen} detailPageInfo={detailPageInfo} reviewing={reviewing} windowHeight={windowHeight}>
         <ArrowIcon>
           {isOpen ? <IoIosArrowBack /> : <IoIosArrowForward />}
         </ArrowIcon>
       </SideButton>
-      {detailPageInfo && <DetailStore detailPageInfo={detailPageInfo} setReviewing={setReviewing}/>}
+      {detailPageInfo && <DetailStore detailPageInfo={detailPageInfo} setReviewing={setReviewing} windowHeight={windowHeight}/>}
       {detailPageInfo && isOpen &&
-        <CloseDetailBtn reviewing={reviewing}>
+        <CloseDetailBtn reviewing={reviewing} windowHeight={windowHeight}>
           <CloseIcon onClick={closeDetailPage}>
             <IoIosClose />
           </CloseIcon>
         </CloseDetailBtn>
       }
-      {reviewing && <ReviewWrite getStoreDetail={getStoreDetail} store_id={detailPageInfo.store_id} setReviewing={setReviewing} />}
-      <SearchWrapper onSubmit={handleSubmit}>
+      {reviewing && <ReviewWrite getStoreDetail={getStoreDetail} store_id={detailPageInfo.store_id} setReviewing={setReviewing} windowHeight={windowHeight}/>}
+      <SearchWrapper onSubmit={handleSubmit} windowHeight={windowHeight} isOpen={isOpen}>
         <SearchSelect value={keyType} onChange={handleSelectChange}>
           <option label="전체" value="전체" />
           <option label="가게명" value="가게명" />
@@ -442,10 +522,10 @@ function SideBar({
           onChange={handleInputChange}
         />
       </SearchWrapper>
-      <TagList>
+      <TagList windowHeight={windowHeight} isOpen={isOpen}>
         {tagList.map((tag) => <Tag key={tag.toString()} onClick={tagClickHandler} isClicked={clickedTag.includes(tag)}>{tag}</Tag>)}
       </TagList>
-      <StoreList>
+      <StoreList windowHeight={windowHeight}>
         {storeList.results && storeList.results.length >= 1 ? storeList.results.map((store, idx) => (
           <StoreItem key={idx}>
             <StoreInfo>
@@ -461,7 +541,7 @@ function SideBar({
           </StoreItem>
         )) : <NoStoreList>가맹점 데이터가 존재하지 않아요...</NoStoreList>}
       </StoreList>
-      <Pagination total={total} limit={20} page={page} setPage={setPage}/>
+      <Pagination total={total} limit={20} page={page} setPage={setPage} showMobile={showMobile} windowHeight={windowHeight} isOpen={isOpen}/>
     </Container>
   );
 }

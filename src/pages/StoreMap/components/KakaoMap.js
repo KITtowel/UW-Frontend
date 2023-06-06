@@ -16,7 +16,7 @@ const CurPosBtn = styled.button`
   line-height: 35px;
   font-size: 18px;
   background-color: rgb(255, 255, 255);;
-  z-index: 9999;
+  z-index: 3;
   border-radius: 3px;
   border: 0;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 2px 0px;
@@ -42,6 +42,10 @@ const AlertFrame = styled.div`
   -moz-user-select:none;
   -ms-user-select:none;
   user-select:none;
+  @media (max-width: 768px) {
+    top: 50px;
+    left: 50px;
+  }
 `
 
 function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail, clickedTag, keyword, keyType}) {
@@ -173,7 +177,6 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
   }
 
   const selectMarker = (store) => {
-    console.log('hi')
     switch (store.category) {
       case '편의점':
         return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Convi2 : Convi1;

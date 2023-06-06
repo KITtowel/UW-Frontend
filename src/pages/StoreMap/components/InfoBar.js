@@ -1,21 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import Logo2 from "../../../assets/logo2.png";
 import { BsPersonFill } from "react-icons/bs";
-import { AiFillCreditCard } from "react-icons/ai";
+import { AiFillCreditCard, AiOutlineMenu } from "react-icons/ai";
 import Button from "../../../components/Button";
 import { useAuth } from "../../../contexts/AuthContext";
 import axios from "axios";
 
 const Container = styled.div`
-  position: relative;
-  display: flex;
+  display: ${props => (props.show ? "flex" : "none")};
+  position: fixed;
+  top: 0;
+  left: 0;
   flex-direction: column;
   align-items: center;
   gap: 20px;
   height: 100vh;
-  min-width: 80px;
+  width: 80px;
   background-color: white;
   z-index: 5;
 `;
@@ -66,11 +68,52 @@ const Btn = styled(Button)`
   }
 `;
 
+const MobileBtn = styled(AiOutlineMenu)`
+  position: fixed;
+  top: 7px;
+  left: 5px;
+  z-index: 999;
+  font-size: 30px;
+  color: black;
+`;
+
+const Background = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 4;
+  display: none;
+  @media (max-width: 768px) {
+    display: block;
+  }
+`;
+
 function InfoBar() {
   const storedUserId = localStorage.getItem("userId");
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const receivedLocation = localStorage.getItem("receivedLocation");
+  const [showInfoBar, setShowInfoBar] = useState(true);
+
+  const handleToggleInfoBar = () => {
+    setShowInfoBar(prevState => !prevState);
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setShowInfoBar(window.innerWidth > 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handleCheck = async e => {
     if (isAuthenticated !== true) {
@@ -82,7 +125,7 @@ function InfoBar() {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE_URL}/users/moneycheck/${storedUserId}/`
       );
-      window.open(response.data.url, '_blank');
+      window.open(response.data.url, "_blank");
     } catch (error) {
       if (receivedLocation === "거주지_선택") {
         alert("마이페이지에서 거주지 정보를 입력해주세요.");
@@ -92,31 +135,36 @@ function InfoBar() {
   };
 
   return (
-    <Container>
-      <Logo onClick={() => window.location.reload()} />
-      <Icon title="잔액 조회">
-        <AiFillCreditCard onClick={() => handleCheck()} />
-      </Icon>
-      {isAuthenticated && (
-        <Link to="/mypage">
-          <Icon>
-            <BsPersonFill />
-          </Icon>
-        </Link>
-      )}
+    <>
+      {!showInfoBar && <MobileBtn onClick={handleToggleInfoBar} />}
+      {showInfoBar && <Background show={showInfoBar} onClick={handleToggleInfoBar} />}
+      <Container show={showInfoBar}>
+        <Logo onClick={() => window.location.reload()} />
+        <Icon title="잔액 조회">
+          <AiFillCreditCard onClick={handleCheck} />
+        </Icon>
+        {isAuthenticated && (
+          <Link to="/mypage">
+            <Icon>
+              <BsPersonFill />
+            </Icon>
+          </Link>
+        )}
 
-      {isAuthenticated === true ? (
-        <Btn isAuthenticated={isAuthenticated} onClick={logout}>
-          로그아웃
-        </Btn>
-      ) : (
-        <Btn
-          isAuthenticated={isAuthenticated}
-          onClick={() => navigate("/login")}>
-          로그인
-        </Btn>
-      )}
-    </Container>
+        {isAuthenticated === true ? (
+          <Btn isAuthenticated={isAuthenticated} onClick={logout}>
+            로그아웃
+          </Btn>
+        ) : (
+          <Btn
+            isAuthenticated={isAuthenticated}
+            onClick={() => navigate("/login")}
+          >
+            로그인
+          </Btn>
+        )}
+      </Container>
+    </>
   );
 }
 

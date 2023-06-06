@@ -18,6 +18,16 @@ const Container = styled.div`
   flex-direction: column;
   padding: 20px;
   justify-content: center;
+  @media (max-width: 768px) {
+    position: absolute;
+    bottom: ${(props) => `${props.windowHeight}px`};
+    height: 325px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    left: 0;
+    width: 100%;
+    overflow: auto;
+  }
 `;
 
 const ReviewBox = styled.textarea`
@@ -86,7 +96,7 @@ const FilledStarIcon = styled(StarIcon)`
   color: #24A1E8;
 `;
 
-const ReviewWrite = ({getStoreDetail, store_id, setReviewing}) => {
+const ReviewWrite = ({getStoreDetail, store_id, setReviewing, windowHeight}) => {
   const [selectedRating, setSelectedRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [content, setContent] = useState('');
@@ -158,7 +168,7 @@ const ReviewWrite = ({getStoreDetail, store_id, setReviewing}) => {
   };
 
   return (
-    <Container>
+    <Container windowHeight={windowHeight}>
       <StarRatingContainer>
         {renderStars()}
       </StarRatingContainer>

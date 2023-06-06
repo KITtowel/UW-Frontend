@@ -3,10 +3,20 @@ import styled from 'styled-components';
 import { BiFirstPage, BiLastPage, BiChevronLeft, BiChevronRight } from 'react-icons/bi'
 
 const Nav = styled.nav`
+  position: relative;
   display: flex;
   justify-content: space-around;
   margin-top: 7px;
   width: 100%;
+  ${(props) =>
+    props.showMobile &&
+    `
+      background-color: white;
+      position: absolute;
+      bottom: ${props.windowHeight}px;
+      display: ${props.isOpen === false ? 'none' : 'flex'};
+    `
+  }
 `;
 
 const Button = styled.button`
@@ -37,7 +47,7 @@ const Button = styled.button`
   }
 `;
 
-function Pagination({ total, limit, page, setPage }) {
+function Pagination({ total, limit, page, setPage, showMobile, windowHeight, isOpen }) {
   const numPages = Math.ceil(total / limit);
   let pageGroup = Math.ceil(page / 5);
   let lastPage = pageGroup * 5;
@@ -51,7 +61,7 @@ function Pagination({ total, limit, page, setPage }) {
 
   return (
     <>
-      <Nav>
+      <Nav showMobile={showMobile} windowHeight={windowHeight} isOpen={isOpen}>
         <Button onClick={() => setPage(1)} disabled={page === 1}>
           <BiFirstPage style={{paddingTop: '3px'}}/>
         </Button>
