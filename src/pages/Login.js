@@ -182,9 +182,6 @@ function Login() {
       const email = decodedToken.email;
       const nickname = decodedToken.nickname;
   
-      console.log(nickname);
-      console.log(email);
-  
       const axiosResponse = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/kakao/`,
         {
@@ -201,7 +198,7 @@ function Login() {
       const receivedKey = axiosResponse.data.key;
       const receivedUserId = axiosResponse.data.user_id;
   
-      localStorage.setItem("key", receivedKey);
+      localStorage.setItem("token", receivedKey);
       localStorage.setItem("userId", receivedUserId);
   
       console.log(axiosResponse);
