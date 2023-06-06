@@ -11,18 +11,12 @@ const Container = styled.div`
 
 const NearStore = () => {
   const { isAuthenticated } = useAuth();
-  // const navigate = useNavigate();
-  // console.log("isAuthenticated: ", isAuthenticated);
-  if (!isAuthenticated) {
-    // navigate("/");
-    // return null;
-  }
   const [storeList, setStoreList] = useState([]);
   const [detailPageInfo, setDetailPageInfo] = useState(null);
   const [isOpen, setIsOpen] = useState(true);
   const [clickedTag, setClickedTag] = useState(['전체']);
   const [keyword, setKeyword] = useState('');
-  const [keyType, setKeyType] = useState('가게명');
+  const [keyType, setKeyType] = useState('전체');
   const storedToken = localStorage.getItem("token");
   const [state, setState] = useState({
     center: {

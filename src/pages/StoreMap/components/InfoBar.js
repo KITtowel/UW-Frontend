@@ -68,7 +68,7 @@ const Btn = styled(Button)`
 
 function InfoBar() {
   const storedUserId = localStorage.getItem("userId");
-  const { isAuthenticated, login, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const receivedLocation = localStorage.getItem("receivedLocation");
 

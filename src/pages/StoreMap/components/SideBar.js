@@ -424,6 +424,7 @@ function SideBar({
       {reviewing && <ReviewWrite getStoreDetail={getStoreDetail} store_id={detailPageInfo.store_id} setReviewing={setReviewing} />}
       <SearchWrapper onSubmit={handleSubmit}>
         <SearchSelect value={keyType} onChange={handleSelectChange}>
+          <option label="전체" value="전체" />
           <option label="가게명" value="가게명" />
           <option label="메뉴" value="메뉴" />
         </SearchSelect>

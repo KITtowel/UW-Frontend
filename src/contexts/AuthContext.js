@@ -7,7 +7,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("authToken") ? true : false);
   const [token, setToken] = useState(null);
 
   const login = receivedToken => {

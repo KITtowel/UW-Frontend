@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { MdGpsFixed } from 'react-icons/md'
 import { Map, MapMarker, MapTypeControl, MarkerClusterer, ZoomControl } from 'react-kakao-maps-sdk';
 import axios from 'axios';
-import { Current, Marker1, Marker2 } from '../../../assets/marker';
+import { Asian1, Asian2, Cafe1, Cafe2, Chicken1, Chicken2, China1, China2, Convi1, Convi2, Current, Etc1, Etc2, Fast1, Fast2, Half1, Half2, Japan1, Japan2, Korean1, Korean2, Marker1, Marker2, Pizza1, Pizza2 } from '../../../assets/marker';
 
 const CurPosBtn = styled.button`
   position: absolute;
@@ -152,6 +152,36 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
     }
   }
 
+  const selectMarker = (store) => {
+    console.log('hi')
+    switch (store.category) {
+      case '편의점':
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Convi2 : Convi1;
+      case '기타':
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Etc2 : Etc1;
+      case '한식':
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Korean2 : Korean1;
+      case '패스트푸드':
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Fast2 : Fast1;
+      case '카페/디저트':
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Cafe2 : Cafe1;
+      case '중식':
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? China2 : China1;
+      case '치킨':
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Chicken2 : Chicken1;
+      case '분식':
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Half2 : Half1;
+      case '일식':
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Japan2 : Japan1;
+      case '아시안/양식':
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Asian2 : Asian1;
+      case '피자':
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Pizza2 : Pizza1;
+      default:
+        return detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Marker2 : Marker1;
+    }
+  }
+
   return (
     <>
       <Map
@@ -206,7 +236,7 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
               clickable={true}
               onClick={() => getStoreDetail(store.store_id)}
               image={{
-                src: detailPageInfo && (detailPageInfo.latitude === store.latitude && detailPageInfo.longitude === store.longitude) ? Marker2 : Marker1,
+                src: selectMarker(store),
                 size: { wiidth: 48, height: 48 },
                 options: {
                   offset: {
