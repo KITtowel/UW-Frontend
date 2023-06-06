@@ -196,7 +196,7 @@ function Login() {
       const receivedUserId = axiosResponse.data.user_id;
       const receivedLocation = axiosResponse.data.location;
 
-      localStorage.setItem("key", receivedKey);
+      localStorage.setItem("token", receivedKey);
       localStorage.setItem("userId", receivedUserId);
       localStorage.setItem("location", receivedLocation);
       login(receivedKey);
