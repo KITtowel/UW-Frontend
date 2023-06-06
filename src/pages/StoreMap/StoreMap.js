@@ -22,8 +22,8 @@ const NearStore = () => {
 
   useEffect(() => {
     const storedLocation = localStorage.getItem("location");
-    alert("마이페이지에서 거주지 정보를 입력해주세요.");
     if (storedLocation === "거주지_선택") {
+      alert("마이페이지에서 거주지 정보를 입력해주세요.");
       navigate("/mypage");
     }
   }, []);
