@@ -22,8 +22,7 @@ export function AuthProvider({ children }) {
     setToken(null);
     setIsAuthenticated(false);
     localStorage.removeItem("authToken");
-    localStorage.removeItem("key");
-    localStorage.removeItem("rememberMe");
+    localStorage.removeItem("rememberMe"); // 로그아웃 시 rememberMe도 함께 제거
   };
 
   useEffect(() => {

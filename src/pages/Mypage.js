@@ -310,70 +310,6 @@ const List = styled.div`
   }
 `;
 
-// const Button = styled.button`
-//   padding: 11px 130px;
-//   color: rgb(253, 249, 243);
-//   font-weight: 600;
-//   text-transform: uppercase;
-//   background: #9dc3e6;
-//   border: none;
-//   border-radius: 50px;
-//   outline: 0;
-//   cursor: pointer;
-//   margin-top: 0.6rem;
-//   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.1);
-//   transition: all 0.3s ease-out;
-
-//   :hover {
-//     background: #2e75b6;
-//   }
-
-//   @media (max-width: 768px) {
-//     padding: 11px 40px;
-//     font-size: 14px;
-//   }
-// `;
-
-const EditModal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-
-  * {
-    text-align: center;
-  }
-
-  @media (max-width: 768px) {
-    width: 100%;
-    height: 100%;
-    padding: 1rem;
-  }
-`;
-
-const EditModalContent = styled.div`
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-  }
-`;
-
-const RatingContainer = styled.div`
-  display: flex;
-  align-items: center;
-  color: #666;
-`;
-
 const LocationIcon = styled(MdLocationOn)`
   margin-right: 0.5rem;
 `;
@@ -381,10 +317,6 @@ const LocationIcon = styled(MdLocationOn)`
 const CenteredMessage = styled.p`
   text-align: center;
   padding: 2.5rem;
-`;
-
-const StarContainer = styled.div`
-  margin: 20px;
 `;
 
 const Star = styled(FaStar)`
@@ -417,7 +349,26 @@ const LikedStoresContainer = styled.div`
   }
 `;
 
+const ReviewStoresContainer = styled.div`
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
 const LikedStoreItem = styled.div`
+  display: flex;
+  align-items: center;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+`;
+
+const ReviewStoreItem = styled.div`
   display: flex;
   align-items: center;
   @media (max-width: 768px) {
@@ -431,7 +382,7 @@ const StoreTitle = styled.h2`
   margin-right: 1rem;
   @media (max-width: 768px) {
     margin-right: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: 3px;
   }
 `;
 
@@ -440,20 +391,30 @@ const StoreCategory = styled.h3`
   color: #666;
   @media (max-width: 768px) {
     margin-right: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: 3px;
   }
 `;
 
 const ThumbUpIcon = styled(AiFillLike)`
   color: ${({ liked }) => (liked ? "#000" : "#24A1E8")};
-  /* color: #24A1E8; */
   position: absolute;
   right: 30%;
   cursor: pointer;
   @media (max-width: 768px) {
     position: relative;
     right: 0;
-    margin-top: 1rem;
+    margin-top: 5px;
+  }
+`;
+
+const EditIcons = styled.div`
+  position: absolute;
+  right: 30%;
+  cursor: pointer;
+  @media (max-width: 768px) {
+    position: relative;
+    right: 0;
+    margin: 0 0 10px 0;
   }
 `;
 
@@ -483,6 +444,38 @@ const LocationContainer = styled.div`
   }
 `;
 
+const ModalBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3;
+`;
+
+const ModalContainer = styled.div`
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 550px;
+  max-width: 85vw;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    width: 90vw;
+    padding: 10px;
+  }
+`;
+
+const DateText = styled.p`
+  color: #666;
+  font-size: 14px;
+`
+
 const LocationText = styled.p`
   margin-left: 0.5rem;
   @media (max-width: 768px) {
@@ -493,17 +486,6 @@ const LocationText = styled.p`
 const StoreList = styled.div`
   text-align: center;
   padding: 2.5rem;
-`;
-
-const IconContainer = styled.div`
-  position: absolute;
-  right: 30%;
-  cursor: pointer;
-  @media (max-width: 768px) {
-    position: relative;
-    right: 0;
-    margin-top: 1rem;
-  }
 `;
 
 const EditIcon = styled(FiEdit)`
@@ -599,8 +581,13 @@ function MyPage() {
 
   const handleNicknameChange = e => {
     setNickname(e.target.value);
+    if (!location) {
+      setLocation(userData.location);
+      setSelectedProvince(userData.location);
+      setLocation2(userData.location2);
+    }
   };
-
+  
   const handleLocationChange = e => {
     setLocation(e.target.value);
     setSelectedProvince(e.target.value);
@@ -612,14 +599,27 @@ function MyPage() {
 
   const handleSubmit1 = async () => {
     try {
+      if (!nickname && !location && !location2 && !isImageChanged) {
+        return;
+      }
+  
+      const formData = new FormData();
+      if (nickname) {
+        formData.append("nickname", nickname);
+      }
+      if (location) {
+        formData.append("location", location);
+      }
+      if (location2) {
+        formData.append("location2", location2);
+      }
+      if (isImageChanged) {
+        formData.append("image", image);
+      }
+  
       await axios.put(
         `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`,
-        {
-          nickname: nickname !== "" ? nickname : undefined,
-          location: location,
-          location2: location2,
-          image: image,
-        },
+        formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -627,7 +627,7 @@ function MyPage() {
           },
         }
       );
-
+  
       getProfileData();
       alert("내 정보가 변경되었습니다.");
       navigate("/");
@@ -635,6 +635,7 @@ function MyPage() {
       console.error(error);
     }
   };
+  
 
   useEffect(() => {
     getProfileData();
@@ -1095,49 +1096,41 @@ function MyPage() {
           </LikedStoresContainer>
         )}
         {activeTab === "reviews" && (
-          <LikedStoresContainer>
+          <ReviewStoresContainer>
             {reviews && reviews.length > 0 ? (
               reviews.map(review => (
                 <List key={review.id}>
-                  <LikedStoreItem style={{flexDirection: 'column'}}>
-                    <IconContainer>
+                  <ReviewStoreItem>
+                    <StoreTitle>{review.store_name}</StoreTitle>
+                    <StoreCategory>{review.category}</StoreCategory>
+                    <EditIcons>
                       <EditIcon onClick={() => handleEditModal(review.id)} />
                       <DeleteIcon onClick={() => handleDelete(review.id)} />
-                    </IconContainer>
-                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                      <StoreTitle style={{height: '20px'}}>{review.store_name}</StoreTitle>
-                      <RatingContainer>
-                        <StarContainer>
-                          {[...Array(5)].map((_, index) => (
-                            <Star
-                              key={index}
-                              size={16}
-                              active={index < review.rating}
-                            />
-                          ))}
-                        </StarContainer>
-                      </RatingContainer>
-                    </div>
-                    <LocationContainer>
-                      <LocationIcon style={{ marginRight: "0.5rem", color: '#ef877d' }} />
-                      <p>{review.store_address}</p>
-                    </LocationContainer>
-                    <div style={{
-                      marginTop: '15px',
-                      padding: '5px',
-                      border: '1px solid rgba(245, 245, 245, 0.7)',
-                      minWidth: '300px',
-                      background: '#f9f9fa',
-                      color: '#9dc3e6',
-                      borderRadius: '4px',
-                    }}>
+                    </EditIcons>
+                      <Rating>
+                        {[...Array(5)].map((_, index) => (
+                          <Star
+                            key={index}
+                            size={16}
+                            active={index < review.rating}
+                          />
+                        ))}
+                      </Rating>
+                  </ReviewStoreItem>
+                  <LocationContainer>
+                    <MdLocationOn style={{color: '#ef877d'}}/>
+                    <LocationText>{review.store_address}</LocationText>
+                  </LocationContainer>
+                  <DateText>등록일: {new Date(review.published_data).toLocaleDateString()} / 마지막 수정일: {new Date(review.modified_date).toLocaleDateString()}</DateText>
+                    <div>
                       <p>{review.content}</p>
                     </div>
-                  </LikedStoreItem>
                 </List>
               ))
             ) : (
-              <CenteredMessage>후기가 없습니다.</CenteredMessage>
+              <StoreList>
+                <p>후기가 없습니다.</p>
+              </StoreList>
             )}
             <div style={{maxWidth : '400px', paddingBottom: '10px', margin: 'auto'}}>
               {reviews.length > 0 && (
@@ -1150,9 +1143,9 @@ function MyPage() {
               )}
             </div>
             {showEditModal && (
-              <EditModal>
-                <EditModalContent>
-                  <StarContainer>
+              <ModalBackground>
+                <ModalContainer>
+                  <div style={{ margin: '20px' }}>
                     {[...Array(5)].map((_, index) => {
                       const ratingValue = index + 1;
                       return (
@@ -1164,26 +1157,23 @@ function MyPage() {
                         />
                       );
                     })}
-                  </StarContainer>
+                  </div>
                   <Textarea
-                    style={{
-                      width: "550px",
-                      maxWidth: "85vw",
-                      height: "150px",
-                      marginTop: "20px",
-                    }}
-                    type="text"
                     value={content}
                     onChange={handleContentChange}
+                    style={{
+                      width: 'calc(100% - 6px)',
+                      height: '150px',
+                    }}
                   />
                   <AbleButton type="submit" onClick={handleSubmit}>
                     확인
                   </AbleButton>
                   <AbleButton onClick={handleClose}>취소</AbleButton>
-                </EditModalContent>
-              </EditModal>
+                </ModalContainer>
+              </ModalBackground>
             )}
-          </LikedStoresContainer>
+          </ReviewStoresContainer>
         )}
 
         {activeTab === "changepw" && (
