@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAuth } from "../../contexts/AuthContext";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { InfoBar, KakaoMap, SideBar } from "./components";
 import axios from "axios";
 
@@ -18,6 +18,16 @@ const NearStore = () => {
   const [keyword, setKeyword] = useState('');
   const [keyType, setKeyType] = useState('전체');
   const storedToken = localStorage.getItem("token") || null;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedLocation = localStorage.getItem("location");
+    alert("마이페이지에서 거주지 정보를 입력해주세요.");
+    if (storedLocation === "거주지_선택") {
+      navigate("/mypage");
+    }
+  }, []);
+  
   const [state, setState] = useState({
     center: {
       lat: 35.854795175382435,

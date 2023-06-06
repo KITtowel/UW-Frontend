@@ -197,14 +197,14 @@ function Login() {
   
       const receivedKey = axiosResponse.data.key;
       const receivedUserId = axiosResponse.data.user_id;
-  
+      const receivedLocation = axiosResponse.data.location;
+
+      localStorage.setItem("location", receivedLocation);
       localStorage.setItem("token", receivedKey);
       localStorage.setItem("userId", receivedUserId);
   
       console.log(axiosResponse);
       login(receivedKey);
-      alert("마이페이지에서 거주지 정보를 입력해주세요.");
-      navigate("/mypage");
     } catch (error) {
       console.error(error);
       console.log(error.response.data);
