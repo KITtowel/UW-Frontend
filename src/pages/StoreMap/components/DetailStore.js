@@ -242,6 +242,7 @@ const Contour = styled.div`
 function DetailStore({detailPageInfo, setReviewing}) {
   const { isAuthenticated, logout } = useAuth();
   const storedToken = localStorage.getItem("token");
+  const user_id = localStorage.getItem("userId");
   const [isLike, setIsLike] = useState(detailPageInfo.liked_by_user);
   const [reviewHeight, setReviewHeight] = useState(100);
 
@@ -253,6 +254,10 @@ function DetailStore({detailPageInfo, setReviewing}) {
   }, [detailPageInfo])
 
   const handleLikeBtn = () => {
+    if (!isAuthenticated) {
+      alert('로그인 후 이용해주세요');
+      return;
+    }
     changeIsLike();
     setIsLike((prev) => !prev);
   }
@@ -280,7 +285,25 @@ function DetailStore({detailPageInfo, setReviewing}) {
   }
 
   function handleReview() {
+    if (!isAuthenticated) {
+      alert('로그인 후 이용해주세요');
+      return;
+    }
     setReviewing(true);
+  }
+
+  async function handleReport(id) {
+    console.log(id)
+    console.log(user_id);
+    await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/reviews/${id}/report/`,
+    {
+      "reason": "욕설"
+    },
+    {
+      headers: {
+        Authorization: `Token ${storedToken}`,
+      },
+    })
   }
 
   return (
@@ -335,7 +358,7 @@ function DetailStore({detailPageInfo, setReviewing}) {
                     ))}
                   </ReviewRate>
                 </div>
-                <ReviewReport>
+                <ReviewReport onClick={() => handleReport(review)}>
                   <AiOutlineAlert style={{ marginRight: '3px', color: '#ef877d' }} />
                   <div style={{ fontSize: '0.8em', color: '#D9D9D9' }}>리뷰 신고</div>
                 </ReviewReport>

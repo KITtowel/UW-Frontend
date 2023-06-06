@@ -301,8 +301,6 @@ function SideBar({
   const [total, setTotal] = useState(1);
   const [reviewing, setReviewing] = useState(false);
   const tagList = ['전체', '한식', '중식', '일식', '분식', '아시안/양식', '치킨', '피자', '패스트푸드', '카페/디저트', '편의점', '기타'];
-  // const [keyword, setKeyword] = useState('');
-  // const [keyType, setKeyType] = useState('가게명');
 
   async function getStoreSearchList() {
     const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/search_distance_order/?page=${page}`, {
@@ -406,6 +404,11 @@ function SideBar({
     getStoreSearchList();
   }
 
+  const handleStoreClick = (store_id) => {
+    setReviewing(false);
+    getStoreDetail(store_id)
+  }
+
   return (
     <Container isOpen={isOpen} detailPageInfo={detailPageInfo} reviewing={reviewing}>
       <SideButton onClick={handleOpen} detailPageInfo={detailPageInfo} reviewing={reviewing}>
@@ -446,14 +449,14 @@ function SideBar({
         {storeList.results && storeList.results.length >= 1 ? storeList.results.map((store, idx) => (
           <StoreItem key={idx}>
             <StoreInfo>
-              <StoreHeader onClick={() => getStoreDetail(store.store_id)}>
+              <StoreHeader onClick={() => handleStoreClick(store.store_id)}>
                 <StoreName>{store.store_name}</StoreName>
                 <StoreTag>{store.category}</StoreTag>
               </StoreHeader>
               <div style={{display: 'flex'}}>
                 <StoreLoc><LocationIcon />{store.store_address}</StoreLoc>
               </div>
-              <StoreRate onClick={() => getStoreDetail(store.store_id)}><Star /> {`${Number.parseFloat(store.rating_mean).toFixed(1)} (리뷰 ${store.reviews_count} 개)`}</StoreRate>
+              <StoreRate onClick={() => handleStoreClick(store.store_id)}><Star /> {`${Number.parseFloat(store.rating_mean).toFixed(1)} (리뷰 ${store.reviews_count} 개)`}</StoreRate>
             </StoreInfo>
           </StoreItem>
         )) : <NoStoreList>가맹점 데이터가 존재하지 않아요...</NoStoreList>}

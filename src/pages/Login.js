@@ -178,6 +178,10 @@ function Login() {
       const profile = response?.profile;
       const nickname = profile?.kakao_account?.profile?.nickname;
       const email = profile?.kakao_account?.email;
+      console.log(access_token);
+      console.log(code);
+      console.log(profile);
+      console.log(email);
       const axiosResponse = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/kakao/`,
         {
