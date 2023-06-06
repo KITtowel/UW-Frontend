@@ -300,6 +300,7 @@ const Label = styled.label`
 
 const List = styled.div`
   padding: 30px;
+  min-width: 400px;
   max-width: 700px;
   margin: auto;
   border-bottom: 1px solid #d9d9d9;
@@ -320,7 +321,7 @@ const CenteredMessage = styled.p`
 `;
 
 const Star = styled(FaStar)`
-  color: ${props => (props.active ? "gold" : "#ccc")};
+  color: ${props => (props.active ? "#24A1E8" : "#ccc")};
   cursor: pointer;
 `;
 
@@ -429,8 +430,8 @@ const Rating = styled.p`
 `;
 
 const StarIcon = styled(FaStar)`
-  color: #f7ca46;
-  margin-right: 0.2rem;
+  color: #24A1E8;
+  margin-right: 0.6rem;
 `;
 
 const LocationContainer = styled.div`
@@ -1070,7 +1071,7 @@ function MyPage() {
                   </LikedStoreItem>
                   <Rating>
                     <StarIcon />
-                    {item.rating_mean} / 5
+                    {Number.parseFloat(item.rating_mean).toFixed(1)} / 5
                   </Rating>
                   <LocationContainer>
                     <MdLocationOn style={{color: '#ef877d'}}/>

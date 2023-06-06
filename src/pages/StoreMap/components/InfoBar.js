@@ -77,12 +77,12 @@ function InfoBar() {
       alert("로그인 후 이용해주세요.");
       navigate("/login");
     }
-    console.log(storedUserId);
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_BASE_URL}/users/moneycheck/${storedUserId}/`
       );
-      window.location.href = `${response.data.url}`;
+      // window.location.href = `${response.data.url}`;
+      window.open(response.data.url, '_blank');
     } catch (error) {
       if (receivedLocation === "거주지_선택") {
         alert("마이페이지에서 거주지 정보를 입력해주세요.");

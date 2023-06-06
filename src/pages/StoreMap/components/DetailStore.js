@@ -4,6 +4,7 @@ import { HiOutlinePencilAlt } from 'react-icons/hi';
 import { AiOutlineLike, AiFillLike, AiOutlineAlert, AiTwotoneStar } from 'react-icons/ai';
 import { MdLocationOn } from "react-icons/md";
 import axios from 'axios';
+import { useAuth } from '../../../contexts/AuthContext';
 
 const LocationIcon = styled(MdLocationOn)`
   font-size: 1.3em;
@@ -239,6 +240,7 @@ const Contour = styled.div`
 `;
 
 function DetailStore({detailPageInfo, setReviewing}) {
+  const { isAuthenticated, logout } = useAuth();
   const storedToken = localStorage.getItem("token");
   const [isLike, setIsLike] = useState(detailPageInfo.liked_by_user);
   const [reviewHeight, setReviewHeight] = useState(100);
@@ -346,7 +348,6 @@ function DetailStore({detailPageInfo, setReviewing}) {
             </ReviewItem>
           )) : <NoReview>리뷰가 아직 없어요.</NoReview>}
         </ReviewLists>
-        {/* <Pagination total={30} limit={15} page={page} setPage={setPage} /> */}
       </StoreReview>
     </Container>
   );

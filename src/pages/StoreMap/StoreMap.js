@@ -17,7 +17,7 @@ const NearStore = () => {
   const [clickedTag, setClickedTag] = useState(['전체']);
   const [keyword, setKeyword] = useState('');
   const [keyType, setKeyType] = useState('전체');
-  const storedToken = localStorage.getItem("token");
+  const storedToken = localStorage.getItem("token") || null;
   const [state, setState] = useState({
     center: {
       lat: 35.854795175382435,
@@ -33,12 +33,20 @@ const NearStore = () => {
     neLng: null,
   })
 
+  const checkToken = () => {
+    if (storedToken) {
+      return `Token ${storedToken}`;
+    } else {
+      return null
+    }
+  }
+
   const getStoreDetail = async (id) => {
     const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/detail/${id}/`,
     null,
       {
         headers: {
-          Authorization: `Token ${storedToken}`,
+          Authorization: checkToken(),
         },
       })
     setIsOpen(true);
