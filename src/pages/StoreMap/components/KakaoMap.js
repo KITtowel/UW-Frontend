@@ -24,6 +24,26 @@ const CurPosBtn = styled.button`
   cursor: pointer;
 `;
 
+const AlertFrame = styled.div`
+  position: absolute;
+  right: 118px;
+  top: 4px;
+  z-index: 3;
+  width: 270px;
+  height: 36px;
+  background-color: rgb(51, 150, 255, 0.6);
+  color: white;
+  border-radius: 3px;
+  border: 0;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 2px 0px;
+  text-align: center;
+  line-height: 36px;
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+`
+
 function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail, clickedTag, keyword, keyType}) {
   const [markerList, setMarkerList] = useState([]);
   const [curPos, setCurPos] = useState(
@@ -252,6 +272,7 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
       <CurPosBtn onClick={setCenterToCurPos} isCenter={isCenter}>
         <MdGpsFixed />
       </CurPosBtn>
+      {state.level >2 && <AlertFrame>가맹점 조회를 위해 지도를 확대해주세요.</AlertFrame>}
     </>
 
   );

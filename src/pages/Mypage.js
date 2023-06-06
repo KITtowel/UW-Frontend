@@ -311,15 +311,6 @@ const List = styled.div`
   }
 `;
 
-const LocationIcon = styled(MdLocationOn)`
-  margin-right: 0.5rem;
-`;
-
-const CenteredMessage = styled.p`
-  text-align: center;
-  padding: 2.5rem;
-`;
-
 const Star = styled(FaStar)`
   color: ${props => (props.active ? "#24A1E8" : "#ccc")};
   cursor: pointer;
@@ -397,7 +388,8 @@ const StoreCategory = styled.h3`
 `;
 
 const ThumbUpIcon = styled(AiFillLike)`
-  color: ${({ liked }) => (liked ? "#000" : "#24A1E8")};
+  /* color: ${({ liked }) => (liked ? "#000" : "#24A1E8")}; */
+  color: #24A1E8;
   position: absolute;
   right: 30%;
   cursor: pointer;
@@ -492,10 +484,18 @@ const StoreList = styled.div`
 const EditIcon = styled(FiEdit)`
   margin-right: 0.5rem;
   cursor: pointer;
+  color: #aeaeae;
+  :hover {
+    color: #24A1E8;
+  }
 `;
 
 const DeleteIcon = styled(FiTrash2)`
   cursor: pointer;
+  color: #aeaeae;
+  :hover {
+    color: #ef877d;
+  }
 `;
 
 function MyPage() {
