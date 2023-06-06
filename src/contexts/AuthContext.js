@@ -7,26 +7,27 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem("token") ? true : false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState(null);
 
   const login = receivedToken => {
     setToken(receivedToken);
     setIsAuthenticated(true);
     if (localStorage.getItem("rememberMe") === "true") {
-      localStorage.setItem("token", receivedToken);
+      localStorage.setItem("authToken", receivedToken);
     }
   };
 
   const logout = () => {
     setToken(null);
     setIsAuthenticated(false);
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("rememberMe");
     localStorage.removeItem("token");
-    localStorage.removeItem("rememberMe"); // 로그아웃 시 rememberMe도 함께 제거
   };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = localStorage.getItem("authToken");
     const rememberMe = localStorage.getItem("rememberMe");
     if (storedToken && rememberMe === "true") {
       setToken(storedToken);
