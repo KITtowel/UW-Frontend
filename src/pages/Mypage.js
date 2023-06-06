@@ -429,7 +429,7 @@ const Rating = styled.p`
 `;
 
 const StarIcon = styled(FaStar)`
-  color: #24A1E8;
+  color: #f7ca46;
   margin-right: 0.2rem;
 `;
 
@@ -1070,7 +1070,7 @@ function MyPage() {
                   </LikedStoreItem>
                   <Rating>
                     <StarIcon />
-                    {Number.parseFloat(item.rating_mean).toFixed(1)} / 5
+                    {item.rating_mean} / 5
                   </Rating>
                   <LocationContainer>
                     <MdLocationOn style={{color: '#ef877d'}}/>
