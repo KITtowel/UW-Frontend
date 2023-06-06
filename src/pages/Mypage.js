@@ -592,7 +592,8 @@ function MyPage() {
   const handleLocationChange = e => {
     setLocation(e.target.value);
     setSelectedProvince(e.target.value);
-  };
+    localStorage.setItem("location", "거주지_변경");
+  };  
 
   const handleLocation2Change = e => {
     setLocation2(e.target.value);
