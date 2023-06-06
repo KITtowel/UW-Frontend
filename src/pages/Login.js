@@ -8,6 +8,7 @@ import { BsCheckCircleFill, BsCheckCircle } from "react-icons/bs";
 import Logo2 from "../assets/logo2.png";
 import Kakao from "../assets/kakao.png";
 import KakaoLogin from "react-kakao-login";
+import jwt_decode from "jwt-decode";
 
 const Button = styled.button`
   padding: 11px 0;
@@ -173,39 +174,43 @@ function Login() {
 
   const handleKakaoLogin = async ({ response }) => {
     try {
-      const access_token = response?.access_token;
-      const code = response?.code;
-      const profile = response?.profile;
-      const nickname = profile?.kakao_account?.profile?.nickname;
-      const email = profile?.kakao_account?.email;
-      console.log(access_token);
-      console.log(code);
-      console.log(profile);
+      const access_token = response.access_token;
+      const id_token = response?.id_token;
+  
+      // ID 토큰 디코드
+      const decodedToken = jwt_decode(id_token);
+      const email = decodedToken.email;
+      const nickname = decodedToken.nickname;
+  
+      console.log(nickname);
       console.log(email);
+  
       const axiosResponse = await axios.post(
         `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/kakao/`,
         {
           access_token,
-          code,
           nickname,
           email,
         }
       );
-
+  
       if (axiosResponse.status !== 200) {
         throw new Error("카카오 회원가입이 되지 않았습니다.");
       }
-
+  
       const receivedKey = axiosResponse.data.key;
       const receivedUserId = axiosResponse.data.user_id;
-      const receivedLocation = axiosResponse.data.location;
-
-      localStorage.setItem("token", receivedKey);
+  
+      localStorage.setItem("key", receivedKey);
       localStorage.setItem("userId", receivedUserId);
-      localStorage.setItem("location", receivedLocation);
+  
+      console.log(axiosResponse);
       login(receivedKey);
+      alert("마이페이지에서 거주지 정보를 입력해주세요.");
+      navigate("/mypage");
     } catch (error) {
       console.error(error);
+      console.log(error.response.data);
     }
   };
 
