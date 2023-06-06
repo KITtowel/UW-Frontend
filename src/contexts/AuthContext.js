@@ -24,6 +24,8 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("authToken");
     localStorage.removeItem("rememberMe");
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("location");
   };
 
   useEffect(() => {
