@@ -7,9 +7,7 @@ import { RiUser6Line, RiLockLine } from "react-icons/ri";
 import { BsCheckCircleFill, BsCheckCircle } from "react-icons/bs";
 import Logo2 from "../assets/logo2.png";
 import Kakao from "../assets/kakao.png";
-import Naver from "../assets/naver.png";
 import KakaoLogin from "react-kakao-login";
-import NaverLogin from "react-naver-login";
 
 const Button = styled.button`
   padding: 11px 0;
@@ -156,22 +154,6 @@ function Login() {
     </div>
   );
 
-  const NaverIcon = ({ onClick }) => (
-    <div
-      style={{
-        fontSize: "50px",
-        display: "inline-block",
-        margin: "30px 15px",
-        textAlign: "left",
-        color: "#03bf19",
-        cursor: "pointer",
-      }}
-      onClick={onClick}
-    >
-      <img src={Naver} width="60px" />
-    </div>
-  );
-
   const handleChecked = (e) => {
     setIsChecked(e.target.checked);
     if (e.target.checked) {
@@ -306,16 +288,6 @@ function Login() {
           </Button>
         </form>
         <div>
-          <NaverLogin
-            clientId="rVPk557GGXAVOFzBIcCK"
-            callbackUrl="http://127.0.0.1:3000/callback"
-            onSuccess={() =>
-              (window.location.href =
-                "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=rVPk557GGXAVOFzBIcCK&state=false&redirect_uri=http://127.0.0.1:3000/callback")
-            }
-            onFailure={(error) => console.error(error)}
-            render={({ onClick }) => <NaverIcon onClick={onClick} />}
-          />
           <KakaoLogin
             token="80ce118f2250d6342436cb0f233a5afb"
             redirectUri={`${process.env.REACT_APP_API_BASE_URL}/users/kakao/callback`}
