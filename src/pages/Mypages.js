@@ -520,8 +520,9 @@ function MyPage() {
   };
 
   function ImageComponent({imageUrl}) {
+    
     // const imageUrl = "http://13.209.7.234:8000/media/profile/logo2.b3c9259ee43360d3d14a_cTtKZDf.png";
-    const httpsUrl = `https://images.weserv.nl/?url=${encodeURIComponent(imageUrl.slice(imageUrl.indexOf('//') + 2))}`;
+    const httpsUrl = imageUrl ? `https://images.weserv.nl/?url=${encodeURIComponent(imageUrl.slice(imageUrl.indexOf('//') + 2))}` : null;
   
     return <ProfilePicture src={httpsUrl} />;
   }
