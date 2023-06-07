@@ -255,6 +255,7 @@ function DetailStore({detailPageInfo, setReviewing, windowHeight}) {
   const user_id = localStorage.getItem("userId");
   const [isLike, setIsLike] = useState(detailPageInfo.liked_by_user);
   const [reviewHeight, setReviewHeight] = useState(100);
+  const [profileImage, setProfileImage] = useState(null);
 
   const headerRef = useRef();
   const menuRef = useRef();
@@ -327,6 +328,13 @@ function DetailStore({detailPageInfo, setReviewing, windowHeight}) {
     }
   }
 
+  function ImageComponent({imageUrl}) {
+    // const imageUrl = "http://13.209.7.234:8000/media/profile/logo2.b3c9259ee43360d3d14a_cTtKZDf.png";
+    const httpsUrl = `https://images.weserv.nl/?url=${encodeURIComponent(imageUrl.slice(imageUrl.indexOf('//') + 2))}`;
+  
+    return <ReviewProfile src={httpsUrl} />;
+  }
+
   return (
     <Container windowHeight={windowHeight}>
       <StoreHeader ref={headerRef}>
@@ -370,7 +378,8 @@ function DetailStore({detailPageInfo, setReviewing, windowHeight}) {
           {detailPageInfo.reviews.length > 0 ? detailPageInfo.reviews.map((review) => (
             <ReviewItem>
               <ReviewUserInfo>
-                <ReviewProfile src={review.profile.image} />
+                {/* <ReviewProfile src={review.profile.image} /> */}
+                <ImageComponent imageUrl={review.profile.image}/>
                 <div>
                   <ReviewID>{review.profile.nickname}</ReviewID>
                   <ReviewRate>
