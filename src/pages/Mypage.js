@@ -831,12 +831,8 @@ function MyPage() {
         }
       );
 
-      if (response.data.success) {
-        alert("비밀번호가 성공적으로 변경되었습니다.");
-        navigate("/");
-      } else {
-        alert("비밀번호 변경에 실패했습니다.");
-      }
+      alert("비밀번호가 성공적으로 변경되었습니다.");
+      navigate("/");
     } catch (error) {
       console.error(error);
       alert("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");

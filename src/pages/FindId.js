@@ -91,11 +91,7 @@ function FindId() {
         }
       );
 
-      if (response.data.success) {
-        alert("아이디가 성공적으로 전송되었습니다.");
-      } else {
-        alert("아이디를 찾을 수 없습니다. 입력한 이메일을 확인해주세요.");
-      }
+      alert("아이디가 성공적으로 전송되었습니다.");
     } catch (error) {
       alert("이메일 전송 중 문제가 발생했습니다. 다시 시도해주세요.");
     }

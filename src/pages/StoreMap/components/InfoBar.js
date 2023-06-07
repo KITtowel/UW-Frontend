@@ -48,9 +48,8 @@ const Icon = styled.button`
   height: 60px;
   border: 0.3px solid rgba(var(--place-color-bg18), 1);
   font-size: 40px;
+  padding: 10px;
   transition: box-shadow 0.3s;
-  text-align: center;
-  line-height: 70px;
   color: #24a1e8;
   :hover {
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.3), 0 1px 10px rgba(0, 0, 0, 0.1);
@@ -59,7 +58,7 @@ const Icon = styled.button`
 
 const Btn = styled(Button)`
   position: absolute;
-  bottom: 15px;
+  top: calc(100vh - 55px);
   font-size: 12px;
   padding: 7px 12px;
   background-color: ${props => props.isAuthenticated === true && "#f08684"};

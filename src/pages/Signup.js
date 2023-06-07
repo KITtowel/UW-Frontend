@@ -5,6 +5,7 @@ import Select from "../components/Select";
 import { useAuth } from "../contexts/AuthContext";
 import Logo2 from "../assets/logo2.png";
 import apiClient from "../api";
+import { response } from "msw";
 
 const cityOptions = {
   경상북도: [
@@ -255,6 +256,7 @@ const Signup = () => {
 
       navigate("/login");
     } catch (error) {
+      alert(error.response.data.message);
       console.error(error);
     }
   };
