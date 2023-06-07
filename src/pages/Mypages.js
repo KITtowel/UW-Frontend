@@ -519,6 +519,13 @@ function MyPage() {
     navigate(-1);
   };
 
+  function ImageComponent({imageUrl}) {
+    // const imageUrl = "http://13.209.7.234:8000/media/profile/logo2.b3c9259ee43360d3d14a_cTtKZDf.png";
+    const httpsUrl = `https://images.weserv.nl/?url=${encodeURIComponent(imageUrl.slice(imageUrl.indexOf('//') + 2))}`;
+  
+    return <ProfilePicture src={httpsUrl} />;
+  }
+
   // 탭
   const [activeTab, setActiveTab] = useState("myinfo");
 
@@ -901,13 +908,14 @@ function MyPage() {
                 <TableRow>
                   <TableHeader>프로필 사진</TableHeader>
                   <TableCell>
-                    <ProfilePicture
+                    {/* <ProfilePicture
                       src={
                         image
                           ? URL.createObjectURL(image)
                           : userData.image || profilePicture
                       }
-                    />
+                    /> */}
+                    {userData && <ImageComponent imageUrl={userData.image}/>}
                     <div>
                       <label htmlFor="imageInput">
                         <EditButton as="span">이미지 선택</EditButton>
