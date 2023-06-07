@@ -505,8 +505,8 @@ function MyPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("location") !== null) {
-      navigate("/mypages");
+    if (localStorage.getItem("location") === null) {
+      navigate("/mypage");
     }
     if (isAuthenticated !== true) {
       navigate("/");
@@ -535,9 +535,6 @@ function MyPage() {
   };
 
   const resetInputFields = () => {
-    setOldPassword("");
-    setNewPassword("");
-    setNewPasswordConfirm("");
     setProfilePicture(userData.image || DefaultProfilePicture);
     setSelectedProvince("");
     setIsChanged(false);
@@ -801,47 +798,6 @@ function MyPage() {
     getReviews();
   }, [storedToken, reviewPage]);
 
-  // 비밀번호 변경
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
-
-  const handleOldPasswordChange = e => {
-    setOldPassword(e.target.value);
-  };
-
-  const handleNewPasswordChange = e => {
-    setNewPassword(e.target.value);
-  };
-
-  const handleNewPasswordConfirmChange = e => {
-    setNewPasswordConfirm(e.target.value);
-  };
-
-  const handleSubmit2 = async () => {
-    try {
-      const response = await apiClient.post(
-        `/users/password_change/`,
-        {
-          old_password: oldPassword,
-          new_password: newPassword,
-          new_password_confirm: newPasswordConfirm,
-        },
-        {
-          headers: {
-            Authorization: `Token ${storedToken}`,
-          },
-        }
-      );
-
-      alert("비밀번호가 성공적으로 변경되었습니다.");
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-      alert("서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.");
-    }
-  };
-
   // 회원 탈퇴
   const [password, setPassword] = useState("");
   const [reason, setReason] = useState("");
@@ -882,13 +838,6 @@ function MyPage() {
     ) {
       hasChanges = true;
     }
-    if (
-      oldPassword.length > 0 &&
-      newPassword.length > 0 &&
-      newPasswordConfirm.length > 0
-    ) {
-      hasChanges = true;
-    }
     if (reason !== "") {
       hasChanges = true;
     }
@@ -899,9 +848,6 @@ function MyPage() {
     location,
     location2,
     isImageChanged,
-    oldPassword,
-    newPassword,
-    newPasswordConfirm,
     password,
     reason,
   ]);
@@ -936,14 +882,6 @@ function MyPage() {
           <PcOnly>후기 목록</PcOnly>
           <MobileOnly>
             <MdRateReview />
-          </MobileOnly>
-        </NavButton>
-        <NavButton
-          selected={activeTab === "changepw"}
-          onClick={() => handleTabClick("changepw", resetInputFields)}>
-          <PcOnly>비밀번호 변경</PcOnly>
-          <MobileOnly>
-            <RiLockPasswordFill />
           </MobileOnly>
         </NavButton>
         <NavButton
@@ -1175,42 +1113,6 @@ function MyPage() {
               </ModalBackground>
             )}
           </ReviewStoresContainer>
-        )}
-
-        {activeTab === "changepw" && (
-          <Wrapper>
-            <InputCenter
-              type="password"
-              placeholder="현재 비밀번호"
-              value={oldPassword}
-              onChange={handleOldPasswordChange}
-            />
-            <InputCenter
-              type="password"
-              placeholder="변경 비밀번호"
-              value={newPassword}
-              onChange={handleNewPasswordChange}
-            />
-            <InputCenter
-              type="password"
-              placeholder="변경 비밀번호 재입력"
-              value={newPasswordConfirm}
-              onChange={handleNewPasswordConfirmChange}
-            />
-            <Center>
-              {isChanged ? (
-                <>
-                  <AbleButton onClick={handleSubmit2}>확인</AbleButton>
-                  <AbleButton onClick={handleCancel}>취소</AbleButton>
-                </>
-              ) : (
-                <>
-                  <DisableButton disabled>확인</DisableButton>
-                  <AbleButton onClick={handleCancel}>취소</AbleButton>
-                </>
-              )}
-            </Center>
-          </Wrapper>
         )}
         {activeTab === "withdrawal" && (
           <Wrapper>
