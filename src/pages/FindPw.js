@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import Logo2 from "../assets/logo2.png";
+import apiClient from "../api";
 
 const Container = styled.div`
   position: relative;
@@ -85,8 +85,8 @@ function FindPw() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/password_reset/`,
+      const response = await apiClient.post(
+        `/users/password_reset/`,
         {
           username: e.target.username.value,
           email: e.target.email.value,

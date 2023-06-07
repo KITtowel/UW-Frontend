@@ -12,7 +12,7 @@ import { AiOutlineLike, AiFillLike } from 'react-icons/ai';
 import { MdRateReview, MdLocationOn } from "react-icons/md";
 import { BsFillPersonFill } from "react-icons/bs";
 import { Pagination } from "../components";
-import axios from "axios";
+import apiClient from "../api";
 
 const cityOptions = {
   경상북도: [
@@ -557,8 +557,8 @@ function MyPage() {
 
   const getProfileData = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`
+      const response = await apiClient.get(
+        `/users/profile/${storedUserId}/`
       );
       setUserData(response.data);
     } catch (error) {
@@ -619,8 +619,8 @@ function MyPage() {
         formData.append("image", image);
       }
   
-      await axios.put(
-        `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`,
+      await apiClient.put(
+        `/users/profile/${storedUserId}/`,
         formData,
         {
           headers: {
@@ -649,8 +649,8 @@ function MyPage() {
 
   const fetchLikedStores = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/stores/liked_list/?page=${likePage}`,
+      const response = await apiClient.post(
+        `/stores/liked_list/?page=${likePage}`,
         null,
         {
           headers: {
@@ -685,8 +685,8 @@ function MyPage() {
         results: newData,
       }));
 
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/stores/like/${id}/`,
+      const response = await apiClient.post(
+        `/stores/like/${id}/`,
         null,
         {
           headers: {
@@ -746,8 +746,8 @@ function MyPage() {
       if (rating !== 0) {
         body.rating = rating;
       }
-      const response = await axios.put(
-        `${process.env.REACT_APP_API_BASE_URL}/stores/reviews/${selectedReviewId}/`,
+      const response = await apiClient.put(
+        `/stores/reviews/${selectedReviewId}/`,
         body,
         config
       );
@@ -761,8 +761,8 @@ function MyPage() {
 
   const getReviews = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/stores/reviewed_list/?page=${reviewPage}`,
+      const response = await apiClient.post(
+        `/stores/reviewed_list/?page=${reviewPage}`,
         {},
         {
           headers: {
@@ -779,8 +779,8 @@ function MyPage() {
 
   const handleDelete = async reviewId => {
     try {
-      const response = await axios.delete(
-        `${process.env.REACT_APP_API_BASE_URL}/stores/reviews/${reviewId}/`,
+      const response = await apiClient.delete(
+        `/stores/reviews/${reviewId}/`,
         {
           headers: {
             Authorization: `Token ${storedToken}`,
@@ -817,8 +817,8 @@ function MyPage() {
 
   const handleSubmit2 = async () => {
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/password_change/`,
+      const response = await apiClient.post(
+        `/users/password_change/`,
         {
           old_password: oldPassword,
           new_password: newPassword,
@@ -850,8 +850,8 @@ function MyPage() {
 
   const handleSubmit3 = async () => {
     try {
-      await axios.delete(
-        `${process.env.REACT_APP_API_BASE_URL}/users/profile/${storedUserId}/`,
+      await apiClient.delete(
+        `/users/profile/${storedUserId}/`,
         {
           data: { reason },
         }

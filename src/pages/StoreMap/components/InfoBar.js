@@ -6,7 +6,7 @@ import { BsPersonFill } from "react-icons/bs";
 import { AiFillCreditCard, AiOutlineMenu } from "react-icons/ai";
 import Button from "../../../components/Button";
 import { useAuth } from "../../../contexts/AuthContext";
-import axios from "axios";
+import apiClient from "../../../api";
 
 const Container = styled.div`
   display: ${props => (props.show ? "flex" : "none")};
@@ -122,8 +122,8 @@ function InfoBar() {
       return;
     }
     try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_BASE_URL}/users/moneycheck/${storedUserId}/`
+      const response = await apiClient.get(
+        `/users/moneycheck/${storedUserId}/`
       );
       window.open(response.data.url, "_blank");
     } catch (error) {

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { InfoBar, KakaoMap, SideBar } from "./components";
-import axios from "axios";
+import apiClient from "../../api";
 
 const Container = styled.div`
   display: flex;
@@ -52,7 +52,7 @@ const NearStore = () => {
   }
 
   const getStoreDetail = async (id) => {
-    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/detail/${id}/`,
+    const res = await apiClient.post(`/stores/detail/${id}/`,
     null,
       {
         headers: {

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import axios from "axios";
+import apiClient from "../api";
 
 const Callback = () => {
   const locate = useLocation();
@@ -20,8 +20,8 @@ const Callback = () => {
         const searchParams = new URLSearchParams(locate.hash.substring(1));
         const access_token = searchParams.get("access_token");
 
-        const naverResponse = await axios.post(
-          `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/naver/`,
+        const naverResponse = await apiClient.post(
+          `/users/rest-auth/naver/`,
           {
             access_token: access_token,
           }

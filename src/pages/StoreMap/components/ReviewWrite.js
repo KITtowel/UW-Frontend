@@ -1,6 +1,6 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import apiClient from '../../../api';
 
 const Container = styled.div`
   position: fixed;
@@ -113,7 +113,7 @@ const ReviewWrite = ({getStoreDetail, store_id, setReviewing, windowHeight}) => 
       return;
     }
 
-    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/detail/${store_id}/reviews/`,
+    const res = await apiClient.post(`/stores/detail/${store_id}/reviews/`,
     {
       "content": content,
       "rating": selectedRating,

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { MdGpsFixed } from 'react-icons/md'
 import { Map, MapMarker, MapTypeControl, MarkerClusterer, ZoomControl } from 'react-kakao-maps-sdk';
-import axios from 'axios';
 import { Asian1, Asian2, Cafe1, Cafe2, Chicken1, Chicken2, China1, China2, Convi1, Convi2, Current, Etc1, Etc2, Fast1, Fast2, Half1, Half2, Japan1, Japan2, Korean1, Korean2, Marker1, Marker2, Pizza1, Pizza2 } from '../../../assets/marker';
 import apiClient from '../../../api';
 
@@ -111,7 +110,7 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
   // 가맹점 정보를 받아옴
   useEffect(() => {
     async function getStoreMakerList()  {
-      // const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/map_mark/`, {
+      // const res = await apiClient.post(`/stores/map_mark/`, {
       //   "latitude": state.center.lat,
       //   "longitude": state.center.lng,
       //   "ne_latitude": state.neLat,
@@ -126,20 +125,20 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
         "ne_longitude": state.neLng,
         "sw_latitude": state.swLat,
         "sw_longitude": state.swLng
-      })
+      });
       setMarkerList(res.data.data);
-      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/`, {
+      const listRes = await apiClient.post(`/stores/distance_order/`, {
         "latitude": state.center.lat,
         "longitude": state.center.lng,
         "ne_latitude": state.neLat,
         "ne_longitude": state.neLng,
         "sw_latitude": state.swLat,
         "sw_longitude": state.swLng
-      })
+      });
       setStoreList(listRes.data);
     }
     async function getStoreTagList() {
-      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/category_map_mark/`, {
+      const listRes = await apiClient.post(`/stores/category_map_mark/`, {
         "latitude": state.center.lat,
         "longitude": state.center.lng,
         "ne_latitude": state.neLat,
@@ -152,7 +151,7 @@ function KakaoMap({state, setState, setStoreList, detailPageInfo, getStoreDetail
     }
 
     async function getStoreSearchList() {
-      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/search_map_mark/`, {
+      const listRes = await apiClient.post(`/stores/search_map_mark/`, {
         "latitude": state.center.lat,
         "longitude": state.center.lng,
         "ne_latitude": state.neLat,

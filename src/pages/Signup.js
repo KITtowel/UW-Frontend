@@ -3,8 +3,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Select from "../components/Select";
 import { useAuth } from "../contexts/AuthContext";
-import axios from "axios";
 import Logo2 from "../assets/logo2.png";
+import apiClient from "../api";
 
 const cityOptions = {
   경상북도: [
@@ -244,8 +244,8 @@ const Signup = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/register/`,
+      const response = await apiClient.post(
+        `/users/register/`,
         userPayload
       );
 

@@ -6,8 +6,8 @@ import { AiTwotoneStar } from "react-icons/ai";
 import { MdLocationOn } from "react-icons/md";
 import { Pagination } from '../../../components';
 import DetailStore from './DetailStore';
-import axios from 'axios';
 import ReviewWrite from './ReviewWrite';
+import apiClient from '../../../api';
 
 const Container = styled.div`
   position: fixed;
@@ -383,7 +383,7 @@ function SideBar({
   }, []);
 
   async function getStoreSearchList() {
-    const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/search_distance_order/?page=${page}`, {
+    const listRes = await apiClient.post(`/stores/search_distance_order/?page=${page}`, {
       "latitude": state.center.lat,
       "longitude": state.center.lng,
       "ne_latitude": state.neLat,
@@ -402,7 +402,7 @@ function SideBar({
 
   useEffect(() => {
     async function getStoreList()  {
-      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/distance_order/?page=${page}`, {
+      const listRes = await apiClient.post(`/stores/distance_order/?page=${page}`, {
         "latitude": state.center.lat,
         "longitude": state.center.lng,
         "ne_latitude": state.neLat,
@@ -413,7 +413,7 @@ function SideBar({
       setStoreList(listRes.data);
     }
     async function getStoreTagList() {
-      const listRes = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/category_distance_order/?page=${page}`, {
+      const listRes = await apiClient.post(`/stores/category_distance_order/?page=${page}`, {
         "latitude": state.center.lat,
         "longitude": state.center.lng,
         "ne_latitude": state.neLat,

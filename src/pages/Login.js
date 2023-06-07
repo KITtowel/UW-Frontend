@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { RiUser6Line, RiLockLine } from "react-icons/ri";
 import { BsCheckCircleFill, BsCheckCircle } from "react-icons/bs";
 import Logo2 from "../assets/logo2.png";
 import Kakao from "../assets/kakao.png";
 import KakaoLogin from "react-kakao-login";
 import jwt_decode from "jwt-decode";
+import apiClient from "../api";
 
 const Button = styled.button`
   padding: 11px 0;
@@ -182,8 +182,8 @@ function Login() {
       const email = decodedToken.email;
       const nickname = decodedToken.nickname;
   
-      const axiosResponse = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/rest-auth/kakao/`,
+      const axiosResponse = await apiClient.post(
+        `/users/rest-auth/kakao/`,
         {
           access_token,
           nickname,
@@ -215,8 +215,8 @@ function Login() {
     event.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/login/`,
+      const response = await apiClient.post(
+        `/users/login/`,
         {
           username,
           password,

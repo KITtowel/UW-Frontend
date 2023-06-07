@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import { HiOutlinePencilAlt } from 'react-icons/hi';
 import { AiOutlineLike, AiFillLike, AiOutlineAlert, AiTwotoneStar } from 'react-icons/ai';
 import { MdLocationOn } from "react-icons/md";
-import axios from 'axios';
 import { useAuth } from '../../../contexts/AuthContext';
+import apiClient from '../../../api';
 
 const LocationIcon = styled(MdLocationOn)`
   font-size: 1.3em;
@@ -285,7 +285,7 @@ function DetailStore({detailPageInfo, setReviewing, windowHeight}) {
   }, []);
 
   async function changeIsLike() {
-    await axios.post(`${process.env.REACT_APP_API_BASE_URL}/stores/like/${detailPageInfo.store_id}/`,
+    await apiClient.post(`/stores/like/${detailPageInfo.store_id}/`,
     null,
     {
       headers: {
@@ -307,8 +307,8 @@ function DetailStore({detailPageInfo, setReviewing, windowHeight}) {
 
     if (reason) {
       try {
-        await axios.post(
-          `${process.env.REACT_APP_API_BASE_URL}/stores/reviews/${id}/report/`,
+        await apiClient.post(
+          `/stores/reviews/${id}/report/`,
           {
             reason: reason,
           },

@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import Logo2 from "../assets/logo2.png";
+import apiClient from "../api";
 
 const Container = styled.div`
   position: relative;
@@ -84,8 +84,8 @@ function FindId() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_BASE_URL}/users/username_find/`,
+      const response = await apiClient.post(
+        `/users/username_find/`,
         {
           email: e.target.email.value,
         }
