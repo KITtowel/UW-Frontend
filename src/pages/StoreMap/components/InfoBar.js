@@ -58,7 +58,7 @@ const Icon = styled.button`
 
 const Btn = styled(Button)`
   position: absolute;
-  top: calc(100vh - 55px);
+  top: calc(100% - 55px);
   font-size: 12px;
   padding: 7px 12px;
   background-color: ${props => props.isAuthenticated === true && "#f08684"};
